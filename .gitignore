@@ -1,0 +1,16 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
+
+# Old PHP backend (not needed on Vercel)
+api/
+
+# Old Firebase config (replaced by Supabase)
+firebase-config.js
+
+# Local dev only
+supabase-setup.sql

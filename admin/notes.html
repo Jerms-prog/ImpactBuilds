@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Notes — Impact Builds Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="admin.css"/>
+</head>
+<body>
+
+<header class="admin-topbar">
+  <div class="admin-topbar__logo">
+    <svg width="15" height="20" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="0,7 8,2 28,2 20,7" fill="rgba(215,225,252,0.85)"/>
+      <polygon points="0,7 20,7 20,35 0,35" fill="rgba(255,255,255,0.96)"/>
+      <polygon points="20,7 28,2 28,30 20,35" fill="rgba(185,202,242,0.78)"/>
+      <rect x="0" y="10" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="14" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="18" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="22" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="26" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="30" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="33" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+    </svg>
+    Impact<span>Builds</span>
+    <svg width="13" height="12" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="16,2 30,26 2,26" fill="#fff" stroke="#d04040" stroke-width="5" stroke-linejoin="round"/>
+      <rect x="13.5" y="9" width="5" height="9" rx="2.5" fill="#1a1a1a"/>
+      <circle cx="16" cy="22.5" r="2.5" fill="#1a1a1a"/>
+    </svg>
+  </div>
+  <span class="badge-role">Admin</span>
+  <div class="admin-topbar__spacer"></div>
+  <div class="admin-topbar__actions">
+    <a href="../index.html" class="btn btn--ghost btn--sm" target="_blank">View Site</a>
+    <button class="btn btn--danger btn--sm" data-logout>Log Out</button>
+  </div>
+</header>
+
+<div class="admin-layout">
+  <nav class="admin-sidebar">
+    <span class="sidebar-section-label">Main</span>
+    <a href="dashboard.html" class="sidebar-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a href="notes.html" class="sidebar-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Notes
+    </a>
+    <a href="media.html" class="sidebar-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Media
+    </a>
+    <a href="messages.html" class="sidebar-link" data-msg-badge>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Messages
+    </a>
+    <a href="users.html" class="sidebar-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Users
+    </a>
+    <a href="settings.html" class="sidebar-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </a>
+  </nav>
+
+  <main class="admin-main">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:0.25rem;">
+      <h1 class="admin-page-title" style="margin-bottom:0;">Manage Notes</h1>
+      <a href="edit-note.html" class="btn btn--teal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add New Note
+      </a>
+    </div>
+    <p class="admin-page-sub">Create and manage developer notes visible on the public website.</p>
+
+    <!-- Filters -->
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+      <input class="form-control" type="text" id="searchInput" placeholder="Search notes…" style="max-width:260px;"/>
+      <select class="form-control" id="filterCategory" style="max-width:160px;">
+        <option value="">All Categories</option>
+        <option>General</option><option>Features</option><option>Updates</option><option>Guide</option>
+      </select>
+      <select class="form-control" id="filterStatus" style="max-width:140px;">
+        <option value="">All Status</option>
+        <option>Published</option><option>Draft</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="notesBody"></tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <p>No notes found. <a href="edit-note.html" style="color:var(--teal);">Create one now.</a></p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Delete confirm modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <h2 class="modal-title">Delete Note?</h2>
+    <p style="font-size:0.9rem;color:var(--text-muted);">This action cannot be undone. The note will be permanently removed.</p>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" id="deleteCancelBtn">Cancel</button>
+      <button class="btn btn--danger" id="deleteConfirmBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="admin.js"></script>
+<script>
+(async () => {
+  if (!await AUTH.guard()) return;
+
+  let pendingDeleteId = null;
+  const deleteModal  = document.getElementById('deleteModal');
+
+  function showToast(msg, type = 'success') {
+    const t = document.createElement('div');
+    t.className = `toast toast--${type}`;
+    t.textContent = msg;
+    document.getElementById('toastContainer').appendChild(t);
+    requestAnimationFrame(() => t.classList.add('show'));
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000);
+  }
+
+  async function renderTable() {
+    const search       = document.getElementById('searchInput').value.toLowerCase();
+    const catFilter    = document.getElementById('filterCategory').value;
+    const statusFilter = document.getElementById('filterStatus').value;
+
+    const all   = await CMS.getNotes();
+    const notes = all.filter(n => {
+      const matchSearch = n.title.toLowerCase().includes(search) || n.content.toLowerCase().includes(search);
+      const matchCat    = !catFilter    || n.category === catFilter;
+      const matchStatus = !statusFilter || n.status   === statusFilter;
+      return matchSearch && matchCat && matchStatus;
+    });
+
+    const tbody = document.getElementById('notesBody');
+    const empty = document.getElementById('emptyState');
+
+    if (notes.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = notes.map(n => `
+      <tr id="row-${n.id}">
+        <td class="td-title">${sanitize(n.title)}</td>
+        <td><span class="category-badge">${sanitize(n.category)}</span></td>
+        <td>${fmtDate(n.date)}</td>
+        <td>
+          <span class="status-badge status-badge--${n.status.toLowerCase()}" id="status-${n.id}">
+            ${sanitize(n.status)}
+          </span>
+        </td>
+        <td class="td-actions">
+          <a href="edit-note.html?id=${n.id}" class="btn btn--ghost btn--sm btn--icon" title="Edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </a>
+          <button class="btn btn--warning btn--sm btn--icon" title="Toggle Status" data-toggle="${n.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          </button>
+          <button class="btn btn--danger btn--sm btn--icon" title="Delete" data-delete="${n.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </td>
+      </tr>`).join('');
+
+    /* Toggle status */
+    tbody.querySelectorAll('[data-toggle]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const newStatus = await CMS.toggleNoteStatus(btn.dataset.toggle);
+        const badge = document.getElementById(`status-${btn.dataset.toggle}`);
+        if (badge && newStatus) {
+          badge.textContent = newStatus;
+          badge.className = `status-badge status-badge--${newStatus.toLowerCase()}`;
+        }
+        showToast(`Note marked as ${newStatus}.`);
+      });
+    });
+
+    /* Delete */
+    tbody.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        pendingDeleteId = btn.dataset.delete;
+        deleteModal.classList.add('open');
+      });
+    });
+  }
+
+  renderTable();
+  document.getElementById('searchInput').addEventListener('input', () => renderTable());
+  document.getElementById('filterCategory').addEventListener('change', () => renderTable());
+  document.getElementById('filterStatus').addEventListener('change', () => renderTable());
+
+  document.getElementById('deleteCancelBtn').addEventListener('click', () => { deleteModal.classList.remove('open'); pendingDeleteId = null; });
+  deleteModal.addEventListener('click', (e) => { if (e.target === deleteModal) { deleteModal.classList.remove('open'); pendingDeleteId = null; } });
+
+  document.getElementById('deleteConfirmBtn').addEventListener('click', async () => {
+    if (!pendingDeleteId) return;
+    await CMS.deleteNote(pendingDeleteId);
+    deleteModal.classList.remove('open');
+    showToast('Note deleted.', 'error');
+    pendingDeleteId = null;
+    renderTable();
+  });
+})();
+</script>
+</body>
+</html>

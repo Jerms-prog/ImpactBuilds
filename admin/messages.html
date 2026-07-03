@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Messages — Impact Builds Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="admin.css"/>
+</head>
+<body>
+
+<header class="admin-topbar">
+  <div class="admin-topbar__logo">
+    <svg width="15" height="20" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="0,7 8,2 28,2 20,7" fill="rgba(215,225,252,0.85)"/>
+      <polygon points="0,7 20,7 20,35 0,35" fill="rgba(255,255,255,0.96)"/>
+      <polygon points="20,7 28,2 28,30 20,35" fill="rgba(185,202,242,0.78)"/>
+      <rect x="0" y="10" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="14" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="18" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="22" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="26" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="30" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+      <rect x="0" y="33" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
+    </svg>
+    Impact<span>Builds</span>
+    <svg width="13" height="12" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="16,2 30,26 2,26" fill="#fff" stroke="#d04040" stroke-width="5" stroke-linejoin="round"/>
+      <rect x="13.5" y="9" width="5" height="9" rx="2.5" fill="#1a1a1a"/>
+      <circle cx="16" cy="22.5" r="2.5" fill="#1a1a1a"/>
+    </svg>
+  </div>
+  <span class="badge-role">Admin</span>
+  <div class="admin-topbar__spacer"></div>
+  <div class="admin-topbar__actions">
+    <a href="../index.html" class="btn btn--ghost btn--sm" target="_blank">View Site</a>
+    <button class="btn btn--danger btn--sm" data-logout>Log Out</button>
+  </div>
+</header>
+
+<div class="admin-layout">
+  <nav class="admin-sidebar">
+    <span class="sidebar-section-label">Main</span>
+    <a href="dashboard.html" class="sidebar-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a href="notes.html" class="sidebar-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Notes
+    </a>
+    <a href="media.html" class="sidebar-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Media
+    </a>
+    <a href="messages.html" class="sidebar-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Messages
+    </a>
+    <a href="users.html" class="sidebar-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Users
+    </a>
+    <a href="settings.html" class="sidebar-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </a>
+  </nav>
+
+  <main class="admin-main">
+    <!-- Page header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:0.25rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <h1 class="admin-page-title" style="margin-bottom:0;">Messages</h1>
+        <span id="unreadBadge" style="display:none;background:var(--danger);color:#fff;font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:12px;"></span>
+      </div>
+      <button class="btn btn--ghost btn--sm" id="markAllBtn">Mark All as Read</button>
+    </div>
+    <p class="admin-page-sub">Messages submitted through the "Join the Conversation" form on the public website.</p>
+
+    <!-- Filters -->
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+      <input class="form-control" type="text" id="searchInput" placeholder="Search by name, email or message…" style="max-width:280px;"/>
+      <select class="form-control" id="filterSubject" style="max-width:180px;">
+        <option value="">All Subjects</option>
+        <option>General Inquiry</option>
+        <option>Download Request</option>
+        <option>Game Feedback</option>
+        <option>Bug Report</option>
+        <option>Other</option>
+      </select>
+      <select class="form-control" id="filterStatus" style="max-width:140px;">
+        <option value="">All Messages</option>
+        <option value="unread">Unread</option>
+        <option value="read">Read</option>
+      </select>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:10px;"></th>
+              <th>From</th>
+              <th>Subject</th>
+              <th>Preview</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="msgBody"></tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <p>No messages yet. They appear here when visitors submit the contact form.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- View message modal -->
+<div class="modal-overlay" id="viewModal">
+  <div class="modal" style="max-width:560px;">
+    <h2 class="modal-title" id="modalSubject"></h2>
+    <div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.25rem;">
+      <div style="display:flex;gap:0.5rem;align-items:center;">
+        <span style="font-size:0.75rem;color:var(--text-muted);min-width:50px;">From:</span>
+        <strong id="modalName" style="font-size:0.9rem;"></strong>
+        <span style="font-size:0.8rem;color:var(--text-muted);" id="modalEmail"></span>
+      </div>
+      <div style="display:flex;gap:0.5rem;align-items:center;">
+        <span style="font-size:0.75rem;color:var(--text-muted);min-width:50px;">Date:</span>
+        <span style="font-size:0.85rem;" id="modalDate"></span>
+      </div>
+    </div>
+    <div id="modalBody" style="background:var(--bg-subtle,#f6f8ff);border:1px solid var(--border-light,#e0e4f0);border-radius:var(--radius-sm);padding:1rem;font-size:0.9rem;line-height:1.7;white-space:pre-wrap;word-break:break-word;min-height:80px;"></div>
+    <div class="modal-actions" style="margin-top:1.25rem;">
+      <button class="btn btn--ghost" id="viewCloseBtn">Close</button>
+      <button class="btn btn--danger btn--sm" id="viewDeleteBtn">Delete Message</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirm modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <h2 class="modal-title">Delete Message?</h2>
+    <p style="font-size:0.9rem;color:var(--text-muted);">This cannot be undone. The message will be permanently removed.</p>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" id="deleteCancelBtn">Cancel</button>
+      <button class="btn btn--danger" id="deleteConfirmBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="admin.js"></script>
+<script>
+(async () => {
+  if (!await AUTH.guard()) return;
+
+  let pendingDeleteId = null;
+  let viewingId       = null;
+  const viewModal    = document.getElementById('viewModal');
+  const deleteModal  = document.getElementById('deleteModal');
+
+  function showToast(msg, type = 'success') {
+    const t = document.createElement('div');
+    t.className = `toast toast--${type}`;
+    t.textContent = msg;
+    document.getElementById('toastContainer').appendChild(t);
+    requestAnimationFrame(() => t.classList.add('show'));
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000);
+  }
+
+  function fmtDateTime(iso) {
+    return new Date(iso).toLocaleString('en-PH', {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  async function updateUnreadBadge() {
+    const count = await CMS.getUnreadCount();
+    const badge = document.getElementById('unreadBadge');
+    badge.textContent = count + ' unread';
+    badge.style.display = count > 0 ? 'inline-block' : 'none';
+  }
+
+  async function renderTable() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const subj   = document.getElementById('filterSubject').value;
+    const status = document.getElementById('filterStatus').value;
+
+    const all  = await CMS.getMessages();
+    const msgs = all.filter(m => {
+      const matchSearch = !search ||
+        m.name.toLowerCase().includes(search) ||
+        m.email.toLowerCase().includes(search) ||
+        m.message.toLowerCase().includes(search);
+      const matchSubj   = !subj   || m.subject === subj;
+      const matchStatus = !status ||
+        (status === 'read'   &&  m.read) ||
+        (status === 'unread' && !m.read);
+      return matchSearch && matchSubj && matchStatus;
+    });
+
+    const tbody = document.getElementById('msgBody');
+    const empty = document.getElementById('emptyState');
+
+    if (msgs.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      updateUnreadBadge();
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = msgs.map(m => `
+      <tr id="row-${m.id}" style="${!m.read ? 'font-weight:600;' : ''}">
+        <td>
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${!m.read ? 'var(--teal)' : 'transparent'};border:1px solid ${!m.read ? 'var(--teal)' : 'var(--border-light,#ccc)'};"></span>
+        </td>
+        <td>
+          <div>${sanitize(m.name)}</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);font-weight:400;">${sanitize(m.email)}</div>
+        </td>
+        <td><span class="category-badge">${sanitize(m.subject)}</span></td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:400;font-size:0.85rem;color:var(--text-muted);">
+          ${sanitize(m.message.slice(0, 70))}${m.message.length > 70 ? '…' : ''}
+        </td>
+        <td style="white-space:nowrap;font-size:0.82rem;">${fmtDateTime(m.date)}</td>
+        <td class="td-actions">
+          <button class="btn btn--ghost btn--sm btn--icon" title="View message" data-view="${m.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button class="btn btn--danger btn--sm btn--icon" title="Delete" data-delete="${m.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </td>
+      </tr>`).join('');
+
+    tbody.querySelectorAll('[data-view]').forEach(btn => {
+      btn.addEventListener('click', () => openView(btn.dataset.view));
+    });
+
+    tbody.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        pendingDeleteId = btn.dataset.delete;
+        deleteModal.classList.add('open');
+      });
+    });
+
+    updateUnreadBadge();
+  }
+
+  async function openView(id) {
+    const m = await CMS.getMessage(id);
+    if (!m) return;
+    viewingId = id;
+
+    document.getElementById('modalSubject').textContent = m.subject;
+    document.getElementById('modalName').textContent    = m.name;
+    document.getElementById('modalEmail').textContent   = '‹' + m.email + '›';
+    document.getElementById('modalDate').textContent    = fmtDateTime(m.date);
+    document.getElementById('modalBody').textContent    = m.message;
+
+    viewModal.classList.add('open');
+
+    if (!m.read) {
+      await CMS.markRead(id);
+      const row = document.getElementById('row-' + id);
+      if (row) {
+        row.style.fontWeight = '';
+        const dot = row.querySelector('span[style*="border-radius:50%"]');
+        if (dot) {
+          dot.style.background = 'transparent';
+          dot.style.border = '1px solid var(--border-light,#ccc)';
+        }
+      }
+      updateUnreadBadge();
+    }
+  }
+
+  document.getElementById('viewCloseBtn').addEventListener('click', () => {
+    viewModal.classList.remove('open');
+    viewingId = null;
+  });
+  viewModal.addEventListener('click', (e) => {
+    if (e.target === viewModal) { viewModal.classList.remove('open'); viewingId = null; }
+  });
+
+  document.getElementById('viewDeleteBtn').addEventListener('click', () => {
+    if (!viewingId) return;
+    pendingDeleteId = viewingId;
+    viewModal.classList.remove('open');
+    viewingId = null;
+    deleteModal.classList.add('open');
+  });
+
+  document.getElementById('deleteCancelBtn').addEventListener('click', () => {
+    deleteModal.classList.remove('open');
+    pendingDeleteId = null;
+  });
+  deleteModal.addEventListener('click', (e) => {
+    if (e.target === deleteModal) { deleteModal.classList.remove('open'); pendingDeleteId = null; }
+  });
+  document.getElementById('deleteConfirmBtn').addEventListener('click', async () => {
+    if (!pendingDeleteId) return;
+    await CMS.deleteMessage(pendingDeleteId);
+    deleteModal.classList.remove('open');
+    pendingDeleteId = null;
+    showToast('Message deleted.', 'error');
+    renderTable();
+  });
+
+  document.getElementById('markAllBtn').addEventListener('click', async () => {
+    await CMS.markAllRead();
+    showToast('All messages marked as read.');
+    renderTable();
+  });
+
+  document.getElementById('searchInput').addEventListener('input', () => renderTable());
+  document.getElementById('filterSubject').addEventListener('change', () => renderTable());
+  document.getElementById('filterStatus').addEventListener('change', () => renderTable());
+
+  renderTable();
+})();
+</script>
+</body>
+</html>
