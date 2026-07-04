@@ -220,6 +220,7 @@
         <div class="mm-username">
           <span id="mmHeaderUsername"></span>
           <span class="role-badge role-badge--admin" id="mmStaffIndicator" style="display:none;">Staff</span>
+          <span class="role-badge" id="mmModIndicator" style="display:none;background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.25);">Mod</span>
         </div>
         <div class="mm-joined" id="mmHeaderJoined"></div>
       </div>
@@ -252,12 +253,21 @@
     <!-- Permissions -->
     <div class="mm-section">
       <div class="mm-section-label">Permissions</div>
-      <div class="staff-row">
-        <div class="staff-row-info">
-          <strong>Staff Status</strong>
-          <span>Shows a Staff badge on their posts, comments, and profile page.</span>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        <div class="staff-row">
+          <div class="staff-row-info">
+            <strong>Moderator</strong>
+            <span>Can delete any post or comment in the community.</span>
+          </div>
+          <button class="btn btn--sm" id="mmModToggleBtn" onclick="toggleMemberModerator()"></button>
         </div>
-        <button class="btn btn--sm" id="mmStaffToggleBtn" onclick="toggleMemberStaff()"></button>
+        <div class="staff-row">
+          <div class="staff-row-info">
+            <strong>Staff</strong>
+            <span>Shows Staff badge. Can post announcements + everything Mods can.</span>
+          </div>
+          <button class="btn btn--sm" id="mmStaffToggleBtn" onclick="toggleMemberStaff()"></button>
+        </div>
       </div>
     </div>
 
@@ -365,6 +375,8 @@ function renderMembers(members) {
     const joined = new Date(m.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
     const roleBadge = m.is_staff
       ? `<span class="role-badge role-badge--admin">Staff</span>`
+      : m.is_moderator
+      ? `<span class="role-badge" style="background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.25);">Mod</span>`
       : `<span class="role-badge role-badge--community">Member</span>`;
     return `
       <div class="user-card" onclick="openMemberModal('${m.user_id}')">
@@ -401,7 +413,8 @@ function openMemberModal(userId) {
   document.getElementById('mmHeaderJoined').textContent =
     'Joined ' + new Date(m.created_at).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
   document.getElementById('mmViewProfileLink').href = `../profile.html?user=${encodeURIComponent(m.username)}`;
-  document.getElementById('mmStaffIndicator').style.display = m.is_staff ? 'inline-block' : 'none';
+  document.getElementById('mmStaffIndicator').style.display = m.is_staff     ? 'inline-block' : 'none';
+  document.getElementById('mmModIndicator').style.display   = m.is_moderator ? 'inline-block' : 'none';
 
   document.getElementById('mmStatsRow').innerHTML = `
     <div class="mm-stat"><strong>${m.post_count||0}</strong><span>Posts</span></div>
@@ -414,6 +427,7 @@ function openMemberModal(userId) {
   document.getElementById('mmBio').value         = m.bio          || '';
 
   updateStaffToggleBtn(m.is_staff);
+  updateModToggleBtn(m.is_moderator);
 
   document.getElementById('mmDeleteConfirm').classList.remove('show');
   document.getElementById('mmDeleteBtn').style.display = 'inline-flex';
@@ -434,6 +448,34 @@ function updateStaffToggleBtn(isStaff) {
     btn.textContent = 'Grant Staff';
     btn.className   = 'btn btn--teal btn--sm';
   }
+}
+
+function updateModToggleBtn(isMod) {
+  const btn = document.getElementById('mmModToggleBtn');
+  if (isMod) {
+    btn.textContent = 'Revoke Mod';
+    btn.className   = 'btn btn--danger btn--sm';
+  } else {
+    btn.textContent = 'Grant Mod';
+    btn.className   = 'btn btn--ghost btn--sm';
+    btn.style.cssText = 'color:#c084fc;border-color:rgba(168,85,247,0.35);';
+  }
+}
+
+/* ---- Toggle Moderator ---- */
+async function toggleMemberModerator() {
+  if (!currentMember) return;
+  const newVal = !currentMember.is_moderator;
+  const { error } = await supabase.from('profiles')
+    .update({ is_moderator: newVal }).eq('user_id', currentMember.user_id);
+  if (error) { showAlert('mmAlert', error.message, 'error'); return; }
+  currentMember.is_moderator = newVal;
+  const idx = allMembers.findIndex(m => m.user_id === currentMember.user_id);
+  if (idx !== -1) allMembers[idx].is_moderator = newVal;
+  updateModToggleBtn(newVal);
+  document.getElementById('mmModIndicator').style.display = newVal ? 'inline-block' : 'none';
+  renderMembers(allMembers);
+  showToast(newVal ? `${currentMember.username} is now a Moderator.` : `${currentMember.username} Moderator status removed.`);
 }
 
 /* ---- Toggle Staff ---- */

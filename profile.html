@@ -199,6 +199,7 @@
               <div class="profile-id__username">
                 ${escHtml(p.username)}
                 ${p.is_staff ? '<span class="staff-badge" style="font-size:0.65rem;padding:0.15rem 0.5rem;">Staff</span>' : ''}
+                ${p.is_moderator ? '<span class="mod-badge" style="font-size:0.65rem;padding:0.15rem 0.5rem;">Mod</span>' : ''}
               </div>
               ${p.display_name && p.display_name !== p.username
                 ? `<div class="profile-id__display">${escHtml(p.display_name)}</div>` : ''}

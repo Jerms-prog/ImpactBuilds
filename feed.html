@@ -170,6 +170,13 @@
           <label class="c-label" for="cpTags">Tags <span style="color:rgba(255,255,255,0.3);font-weight:400">(comma separated, up to 4)</span></label>
           <input class="c-input" type="text" id="cpTags" placeholder="earthquake, highrise, glitch…"/>
         </div>
+        <div class="c-field" id="cpAnnouncementField" style="display:none;">
+          <label class="c-label" style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;font-weight:500;">
+            <input type="checkbox" id="cpAnnouncement" style="width:15px;height:15px;accent-color:#FFB800;flex-shrink:0;"/>
+            📢 Post as Announcement
+            <span style="font-weight:400;opacity:0.4;font-size:0.78rem;">(pinned in all categories)</span>
+          </label>
+        </div>
         <span class="c-err" id="cpGlobalErr" style="display:block;margin-bottom:0.75rem;text-align:center;"></span>
         <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
           <button type="button" class="c-btn-outline" onclick="closeCreatePost()">Cancel</button>
@@ -220,6 +227,9 @@
         document.getElementById('sidebarProfile').style.display = 'block';
         document.getElementById('sidebarPostBtn').style.display = 'block';
         document.getElementById('navMyProfile').style.display   = 'list-item';
+        if (currentProfile?.is_staff) {
+          document.getElementById('cpAnnouncementField').style.display = 'block';
+        }
         document.getElementById('sidebarAvatar').textContent    = initial;
         document.getElementById('sidebarUsername').textContent  = profile?.username || 'User';
 
@@ -243,28 +253,38 @@
 
     // ---- Load feed ----
     async function loadFeed() {
-      document.getElementById('feedLoading').style.display = 'block';
-      document.getElementById('feedEmpty').style.display   = 'none';
-      document.getElementById('feedPosts').innerHTML = '<div id="feedLoading" style="text-align:center;padding:3rem;color:rgba(255,255,255,0.35);font-size:0.85rem;">Loading posts…</div>';
+      document.getElementById('feedPosts').innerHTML = '<div style="text-align:center;padding:3rem;color:rgba(255,255,255,0.35);font-size:0.85rem;">Loading posts…</div>';
+      document.getElementById('feedEmpty').style.display = 'none';
 
+      // Regular posts (server-side category filter)
       let query = window.supabase.from('posts').select('*');
       if (currentCategory !== 'all') query = query.eq('category', currentCategory);
       if (currentSort === 'top') query = query.order('likes_count', { ascending: false });
       else                        query = query.order('created_at',  { ascending: false });
-      query = query.limit(40);
+      const { data: rawPosts } = await query.limit(40);
 
-      const { data: posts, error } = await query;
-      document.getElementById('feedPosts').innerHTML = '';
+      // Announcements always pinned at top regardless of category
+      const { data: annPosts } = await window.supabase
+        .from('posts').select('*').eq('is_announcement', true)
+        .order('created_at', { ascending: false }).limit(5);
 
-      if (error || !posts || posts.length === 0) {
-        document.getElementById('feedEmpty').style.display = 'block';
-        return;
+      // Merge: announcements first, regular posts after (deduplicated)
+      const annIds  = new Set((annPosts||[]).map(p => p.id));
+      const regular = (rawPosts||[]).filter(p => !annIds.has(p.id) && !p.is_announcement);
+      let displayPosts = [...(annPosts||[]), ...regular];
+
+      // Client-side safety filter (fixes any server-side bypass)
+      if (currentCategory !== 'all') {
+        displayPosts = displayPosts.filter(p => p.is_announcement || p.category === currentCategory);
       }
 
+      document.getElementById('feedPosts').innerHTML = '';
+      if (!displayPosts.length) { document.getElementById('feedEmpty').style.display = 'block'; return; }
+
       // Load profiles for all authors
-      const userIds = [...new Set(posts.map(p => p.user_id))];
+      const userIds = [...new Set(displayPosts.map(p => p.user_id))];
       const { data: profiles } = await window.supabase
-        .from('profiles').select('user_id, username, display_name, is_staff').in('user_id', userIds);
+        .from('profiles').select('user_id, username, display_name, is_staff, is_moderator').in('user_id', userIds);
       const profileMap = Object.fromEntries((profiles || []).map(p => [p.user_id, p]));
 
       // Load liked posts for current user
@@ -272,32 +292,39 @@
       if (currentSession) {
         const { data: likes } = await window.supabase
           .from('post_likes').select('post_id').eq('user_id', currentSession.user.id)
-          .in('post_id', posts.map(p => p.id));
+          .in('post_id', displayPosts.map(p => p.id));
         if (likes) likes.forEach(l => likedSet.add(l.post_id));
       }
 
-      const container = document.getElementById('feedPosts');
-      posts.forEach(post => {
+      const canModerate = currentProfile?.is_staff || currentProfile?.is_moderator;
+      const container   = document.getElementById('feedPosts');
+
+      displayPosts.forEach(post => {
         const author   = profileMap[post.user_id] || {};
         const catSlug  = (CATEGORIES[post.category]?.slug) || 'discussion';
         const tags     = (post.tags || []).slice(0, 4);
-        const date     = new Date(post.created_at);
-        const dateStr  = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const dateStr  = new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         const tagsHtml = tags.map(t => `<span class="c-tag">#${t}</span>`).join('');
         const excerpt  = (post.content || '').replace(/\n/g,' ').slice(0, 140) + ((post.content?.length > 140) ? '…' : '');
         const imgHtml  = post.image_url
           ? `<img class="post-card__image" src="${escHtml(post.image_url)}" alt="post image" loading="lazy"/>`
           : '';
+        const isOwnPost    = currentSession && post.user_id === currentSession.user.id;
+        const canDelete    = isOwnPost || canModerate;
+        const annLabel     = post.is_announcement ? `<span class="announcement-pin">📢 Announcement</span>` : '';
+        const authorBadges = (author.is_staff ? '<span class="staff-badge">Staff</span>' : '')
+                           + (author.is_moderator ? '<span class="mod-badge">Mod</span>' : '');
 
         const card = document.createElement('a');
         card.href = `post.html?id=${post.id}`;
-        card.className = 'post-card';
+        card.className = 'post-card' + (post.is_announcement ? ' post-card--announcement' : '');
+        card.dataset.postid = post.id;
         card.innerHTML = `
           <div class="post-card__stripe post-card__stripe--${catSlug}"></div>
           <div class="post-card__body">
             <div class="post-card__meta">
-              <span class="c-cat c-cat--${catSlug}">${post.category}</span>
-              ${tagsHtml}
+              <span class="c-cat c-cat--${catSlug}">${escHtml(post.category)}</span>
+              ${annLabel}${tagsHtml}
             </div>
             <div class="post-card__title">${escHtml(post.title)}</div>
             ${excerpt ? `<div class="post-card__excerpt">${escHtml(excerpt)}</div>` : ''}
@@ -305,15 +332,28 @@
               <div class="post-card__author">
                 <div class="c-avatar" style="width:22px;height:22px;font-size:0.6rem;">${(author.username||'?')[0].toUpperCase()}</div>
                 <span class="post-card__author-name">${escHtml(author.username || 'Unknown')}</span>
-                ${author.is_staff ? '<span class="staff-badge">Staff</span>' : ''}
+                ${authorBadges}
               </div>
               <span class="post-card__stat">❤️ ${post.likes_count || 0}</span>
               <span class="post-card__date">${dateStr}</span>
+              ${canDelete ? `<button class="post-card__del" onclick="event.preventDefault();event.stopPropagation();deletePost('${post.id}',this)" title="Delete post">🗑</button>` : ''}
             </div>
           </div>
           ${imgHtml}`;
         container.appendChild(card);
       });
+    }
+
+    async function deletePost(postId, btn) {
+      if (!confirm('Delete this post and all its comments?')) return;
+      if (btn) btn.disabled = true;
+      await window.supabase.from('post_likes').delete().eq('post_id', postId);
+      await window.supabase.from('comments').delete().eq('post_id', postId);
+      const { error } = await window.supabase.from('posts').delete().eq('id', postId);
+      if (error) { showToast(error.message, true); if (btn) btn.disabled = false; return; }
+      const card = document.querySelector(`[data-postid="${postId}"]`);
+      if (card) card.remove();
+      showToast('Post deleted.');
     }
 
     function setCategory(cat, btn) {
@@ -385,9 +425,11 @@
 
       const tags = tagsRaw.split(',').map(t => t.trim().replace(/^#+/,'')).filter(t => t.length > 0).slice(0, 4);
 
+      const isAnnouncement = !!(currentProfile?.is_staff && document.getElementById('cpAnnouncement')?.checked);
       const { data: newPost, error } = await window.supabase.from('posts').insert({
         user_id: currentSession.user.id,
-        title, content, category, tags, image_url: imageUrl
+        title, content, category, tags, image_url: imageUrl,
+        is_announcement: isAnnouncement
       }).select().single();
 
       if (error) {

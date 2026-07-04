@@ -115,7 +115,7 @@
       document.title = `Impact Builds | ${post.title}`;
 
       const { data: author } = await window.supabase
-        .from('profiles').select('user_id, username, display_name, is_staff').eq('user_id', post.user_id).single();
+        .from('profiles').select('user_id, username, display_name, is_staff, is_moderator').eq('user_id', post.user_id).single();
 
       let userLiked = false;
       if (currentSession) {
@@ -128,7 +128,11 @@
       const tags     = (post.tags || []).slice(0,4);
       const dateStr  = new Date(post.created_at).toLocaleDateString('en-US',{ year:'numeric', month:'long', day:'numeric' });
       const tagsHtml = tags.map(t => `<span class="c-tag">#${t}</span>`).join('');
-      const authorInitial = (author?.username || '?')[0].toUpperCase();
+      const authorInitial  = (author?.username || '?')[0].toUpperCase();
+      const authorBadges   = (author?.is_staff ? '<span class="staff-badge">Staff</span>' : '')
+                           + (author?.is_moderator ? '<span class="mod-badge">Mod</span>' : '');
+      const canDeletePost  = currentSession && (post.user_id === currentSession.user.id || currentProfile?.is_staff || currentProfile?.is_moderator);
+      const annBanner      = post.is_announcement ? `<div style="margin-bottom:0.75rem;"><span class="announcement-pin">📢 Announcement</span></div>` : '';
 
       const layout = document.getElementById('postLayout');
       layout.innerHTML = `
@@ -136,6 +140,7 @@
           <div class="post-detail__stripe post-card__stripe--${catSlug}" style="height:4px;"></div>
           <div class="post-detail__content">
             <div class="post-detail__header">
+              ${annBanner}
               <span class="c-cat c-cat--${catSlug}">${escHtml(post.category)}</span>
               ${tagsHtml}
             </div>
@@ -148,15 +153,18 @@
                 <div class="post-detail__author-info">
                   <div class="post-detail__author-name">
                     ${escHtml(author?.username || 'Unknown')}
-                    ${author?.is_staff ? '<span class="staff-badge">Staff</span>' : ''}
+                    ${authorBadges}
                   </div>
                   <div class="post-detail__author-date">${dateStr}</div>
                 </div>
               </a>
-              <button class="c-like-btn ${userLiked ? 'liked' : ''}" id="likeBtn" onclick="toggleLike()">
-                <span class="c-like-icon">${userLiked ? '❤️' : '🤍'}</span>
-                <span id="likeCount">${post.likes_count || 0}</span>
-              </button>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                ${canDeletePost ? `<button class="c-btn-ghost" style="font-size:0.78rem;color:rgba(248,113,113,0.7);padding:0.35rem 0.7rem;" onclick="deleteThisPost()">🗑 Delete Post</button>` : ''}
+                <button class="c-like-btn ${userLiked ? 'liked' : ''}" id="likeBtn" onclick="toggleLike()">
+                  <span class="c-like-icon">${userLiked ? '❤️' : '🤍'}</span>
+                  <span id="likeCount">${post.likes_count || 0}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -183,7 +191,7 @@
       let profileMap = {};
       if (userIds.length) {
         const { data: profiles } = await window.supabase
-          .from('profiles').select('user_id, username, is_staff').in('user_id', userIds);
+          .from('profiles').select('user_id, username, is_staff, is_moderator').in('user_id', userIds);
         profileMap = Object.fromEntries((profiles||[]).map(p=>[p.user_id, p]));
       }
 
@@ -207,6 +215,10 @@
         const replyBtn = currentSession && !isNested
           ? `<button class="comment-reply-btn" onclick="toggleReplyBox('${c.id}')">Reply</button>`
           : '';
+        const canDelComment = currentSession && (c.user_id === currentSession.user.id || currentProfile?.is_staff || currentProfile?.is_moderator);
+        const deleteBtn = canDelComment
+          ? `<button class="comment-reply-btn" style="color:rgba(248,113,113,0.6);" onclick="deleteComment('${c.id}')">Delete</button>`
+          : '';
         const replyBox = currentSession && !isNested
           ? `<div class="reply-compose" id="replyBox-${c.id}" style="display:none;margin-left:2.7rem;">
                <div class="c-avatar" style="width:24px;height:24px;font-size:0.6rem;">${(currentProfile?.username||'?')[0].toUpperCase()}</div>
@@ -222,16 +234,18 @@
         const nestedHtml = repliesForThis.length
           ? `<div class="comment-replies">${repliesForThis.map(r => renderComment(r, true)).join('')}</div>`
           : '';
+        const authorBadges = (auth.is_staff ? '<span class="staff-badge">Staff</span>' : '')
+                           + (auth.is_moderator ? '<span class="mod-badge">Mod</span>' : '');
         return `
           <div class="comment-item" id="comment-${c.id}">
             <div class="comment-header">
               <div class="c-avatar" style="width:28px;height:28px;font-size:0.72rem;">${initial}</div>
               <a href="profile.html?user=${escHtml(auth.username||'')}" class="comment-author">${escHtml(auth.username||'Unknown')}</a>
-              ${auth.is_staff ? '<span class="staff-badge">Staff</span>' : ''}
+              ${authorBadges}
               <span class="comment-date">${dStr}</span>
             </div>
             <div class="comment-body">${escHtml(c.content)}</div>
-            <div class="comment-actions">${replyBtn}</div>
+            <div class="comment-actions">${replyBtn}${deleteBtn}</div>
             ${replyBox}
             ${nestedHtml}
           </div>`;
@@ -278,6 +292,24 @@
       });
       if (error) { showToast(error.message, true); return; }
       showToast('Reply posted!');
+      await loadComments();
+    }
+
+    async function deleteThisPost() {
+      if (!currentSession) return;
+      if (!confirm('Delete this post and all its comments? This cannot be undone.')) return;
+      await window.supabase.from('post_likes').delete().eq('post_id', postId);
+      await window.supabase.from('comments').delete().eq('post_id', postId);
+      await window.supabase.from('posts').delete().eq('id', postId);
+      window.location.href = 'feed.html';
+    }
+
+    async function deleteComment(commentId) {
+      if (!currentSession) return;
+      if (!confirm('Delete this comment?')) return;
+      const { error } = await window.supabase.from('comments').delete().eq('id', commentId);
+      if (error) { showToast(error.message, true); return; }
+      showToast('Comment deleted.');
       await loadComments();
     }
 
