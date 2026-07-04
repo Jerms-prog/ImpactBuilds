@@ -28,9 +28,31 @@ function fmtDate(iso) {
 const AUTH = {
   _user: null,
 
+  /* Fetch the admin email whitelist from the settings table */
+  async _getAdminEmails() {
+    try {
+      const { data } = await supabase.from('settings')
+        .select('setting_value').eq('setting_key', 'admin_emails').maybeSingle();
+      if (data && Array.isArray(data.setting_value)) return data.setting_value;
+    } catch (_) {}
+    return [];
+  },
+
+  async _isAdmin(email) {
+    const list = await this._getAdminEmails();
+    return list.map(e => e.toLowerCase()).includes(email.toLowerCase());
+  },
+
   async login(email, password) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return { ok: false, message: error.message };
+
+    const allowed = await this._isAdmin(data.user.email);
+    if (!allowed) {
+      await supabase.auth.signOut();
+      return { ok: false, message: 'This account does not have admin access.' };
+    }
+
     this._user = { email: data.user.email, displayName: data.user.email.split('@')[0], role: 'admin' };
     return { ok: true, user: this._user };
   },
@@ -49,8 +71,13 @@ const AUTH = {
   async guard(redirect = true) {
     const { data } = await supabase.auth.getSession();
     if (data.session) {
-      this._user = { email: data.session.user.email, displayName: data.session.user.email.split('@')[0], role: 'admin' };
-      return true;
+      const allowed = await this._isAdmin(data.session.user.email);
+      if (allowed) {
+        this._user = { email: data.session.user.email, displayName: data.session.user.email.split('@')[0], role: 'admin' };
+        return true;
+      }
+      /* Valid session but not an admin — sign them out silently */
+      await supabase.auth.signOut();
     }
     if (redirect) window.location.href = 'login.html';
     return false;
