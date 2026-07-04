@@ -198,11 +198,19 @@
 
       const userId = authData.user?.id;
       if (userId) {
+        // Check if this email is in the admin whitelist
+        const { data: adminSetting } = await window.supabase
+          .from('settings').select('setting_value').eq('setting_key', 'admin_emails').maybeSingle();
+        const adminList = Array.isArray(adminSetting?.setting_value) ? adminSetting.setting_value : [];
+        const isStaff = adminList.map(e => e.toLowerCase()).includes(email.toLowerCase());
+
         await window.supabase.from('profiles').insert({
           user_id: userId,
           username,
-          display_name: username
+          display_name: username,
+          is_staff: isStaff
         });
+
         // Founding member badge: award if one of first 20
         const { count } = await window.supabase.from('profiles').select('*', { count: 'exact', head: true });
         if (count && count <= 20) {

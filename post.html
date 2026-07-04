@@ -115,7 +115,7 @@
       document.title = `Impact Builds | ${post.title}`;
 
       const { data: author } = await window.supabase
-        .from('profiles').select('user_id, username, display_name').eq('user_id', post.user_id).single();
+        .from('profiles').select('user_id, username, display_name, is_staff').eq('user_id', post.user_id).single();
 
       let userLiked = false;
       if (currentSession) {
@@ -146,7 +146,10 @@
               <a href="profile.html?user=${escHtml(author?.username||'')}" class="post-detail__author">
                 <div class="c-avatar c-avatar--lg">${authorInitial}</div>
                 <div class="post-detail__author-info">
-                  <div class="post-detail__author-name">${escHtml(author?.username || 'Unknown')}</div>
+                  <div class="post-detail__author-name">
+                    ${escHtml(author?.username || 'Unknown')}
+                    ${author?.is_staff ? '<span class="staff-badge">Staff</span>' : ''}
+                  </div>
                   <div class="post-detail__author-date">${dateStr}</div>
                 </div>
               </a>
@@ -180,7 +183,7 @@
       let profileMap = {};
       if (userIds.length) {
         const { data: profiles } = await window.supabase
-          .from('profiles').select('user_id, username').in('user_id', userIds);
+          .from('profiles').select('user_id, username, is_staff').in('user_id', userIds);
         profileMap = Object.fromEntries((profiles||[]).map(p=>[p.user_id, p]));
       }
 
@@ -224,6 +227,7 @@
             <div class="comment-header">
               <div class="c-avatar" style="width:28px;height:28px;font-size:0.72rem;">${initial}</div>
               <a href="profile.html?user=${escHtml(auth.username||'')}" class="comment-author">${escHtml(auth.username||'Unknown')}</a>
+              ${auth.is_staff ? '<span class="staff-badge">Staff</span>' : ''}
               <span class="comment-date">${dStr}</span>
             </div>
             <div class="comment-body">${escHtml(c.content)}</div>

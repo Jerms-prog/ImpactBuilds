@@ -264,7 +264,7 @@
       // Load profiles for all authors
       const userIds = [...new Set(posts.map(p => p.user_id))];
       const { data: profiles } = await window.supabase
-        .from('profiles').select('user_id, username, display_name').in('user_id', userIds);
+        .from('profiles').select('user_id, username, display_name, is_staff').in('user_id', userIds);
       const profileMap = Object.fromEntries((profiles || []).map(p => [p.user_id, p]));
 
       // Load liked posts for current user
@@ -305,6 +305,7 @@
               <div class="post-card__author">
                 <div class="c-avatar" style="width:22px;height:22px;font-size:0.6rem;">${(author.username||'?')[0].toUpperCase()}</div>
                 <span class="post-card__author-name">${escHtml(author.username || 'Unknown')}</span>
+                ${author.is_staff ? '<span class="staff-badge">Staff</span>' : ''}
               </div>
               <span class="post-card__stat">❤️ ${post.likes_count || 0}</span>
               <span class="post-card__date">${dateStr}</span>

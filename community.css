@@ -198,6 +198,18 @@ body.community-page {
 .c-cat--ideas       { background: rgba(52,211,153,0.1);   color: var(--cat-ideas);       border: 1px solid rgba(52,211,153,0.28); }
 .c-cat--bugs        { background: rgba(251,146,60,0.1);   color: var(--cat-bugs);        border: 1px solid rgba(251,146,60,0.28); }
 
+.staff-badge {
+  display: inline-flex; align-items: center;
+  font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: rgba(0,200,212,0.1);
+  color: #00c8d4;
+  border: 1px solid rgba(0,200,212,0.3);
+  border-radius: 4px; padding: 0.1rem 0.45rem;
+  vertical-align: middle; margin-left: 0.3rem;
+  flex-shrink: 0;
+}
+
 .c-tag {
   display: inline-block;
   font-size: 0.68rem; font-weight: 500;

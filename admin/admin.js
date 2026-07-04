@@ -53,6 +53,9 @@ const AUTH = {
       return { ok: false, message: 'This account does not have admin access.' };
     }
 
+    /* Mark their community profile as staff */
+    await supabase.from('profiles').update({ is_staff: true }).eq('user_id', data.user.id);
+
     this._user = { email: data.user.email, displayName: data.user.email.split('@')[0], role: 'admin' };
     return { ok: true, user: this._user };
   },
@@ -73,6 +76,8 @@ const AUTH = {
     if (data.session) {
       const allowed = await this._isAdmin(data.session.user.email);
       if (allowed) {
+        /* Keep is_staff in sync each session */
+        await supabase.from('profiles').update({ is_staff: true }).eq('user_id', data.session.user.id);
         this._user = { email: data.session.user.email, displayName: data.session.user.email.split('@')[0], role: 'admin' };
         return true;
       }
