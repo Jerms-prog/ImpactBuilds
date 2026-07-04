@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Impact Builds | Join the Community</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="community.css"/>
+</head>
+<body class="community-page">
+
+  <!-- City background (matches main site) -->
+  <div class="city-bg" aria-hidden="true">
+    <svg viewBox="0 0 1440 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <pattern id="win-lg" x="0" y="0" width="50" height="38" patternUnits="userSpaceOnUse"><rect x="6" y="6" width="30" height="22" fill="#9aaed4" opacity="0.5"/></pattern>
+        <pattern id="win-sm" x="0" y="0" width="32" height="28" patternUnits="userSpaceOnUse"><rect x="5" y="5" width="18" height="14" fill="#9aaed4" opacity="0.5"/></pattern>
+      </defs>
+      <polygon points="0,50 185,50 228,16 43,16" fill="#8090c4"/>
+      <polygon points="185,50 228,16 228,760 185,760" fill="#6070a8"/>
+      <rect x="0" y="50" width="185" height="700" fill="#7b8cc0"/>
+      <rect x="6" y="56" width="173" height="694" fill="url(#win-lg)" opacity="0.85"/>
+      <rect x="193" y="175" width="72" height="525" fill="#7b8cc0"/>
+      <rect x="196" y="178" width="66" height="522" fill="url(#win-sm)" opacity="0.7"/>
+      <rect x="1258" y="0" width="182" height="700" fill="#7b8cc0"/>
+      <rect x="1261" y="3" width="179" height="697" fill="url(#win-lg)" opacity="0.85"/>
+      <rect x="1165" y="170" width="86" height="530" fill="#7b8cc0"/>
+      <rect x="1168" y="173" width="80" height="527" fill="url(#win-sm)" opacity="0.7"/>
+      <rect x="462" y="230" width="18" height="470" fill="#6a7ab5"/>
+      <rect x="444" y="262" width="54" height="11" fill="#6a7ab5"/>
+      <rect x="960" y="230" width="18" height="470" fill="#6a7ab5"/>
+      <rect x="942" y="262" width="54" height="11" fill="#6a7ab5"/>
+      <path d="M -80 580 C 40 580 300 230 471 230 Q 720 320 969 230 C 1100 230 1360 580 1520 580" stroke="#6a7ab5" stroke-width="5" fill="none"/>
+      <rect x="60" y="574" width="1320" height="14" fill="#6a7ab5"/>
+    </svg>
+  </div>
+
+  <!-- Nav -->
+  <header class="c-header">
+    <nav class="c-nav container">
+      <a href="index.html" class="c-nav__logo">
+        <img src="images/pclogo.png" alt="Impact Builds" class="custom-logo">
+      </a>
+      <ul class="c-nav__links">
+        <li><a href="feed.html" class="c-nav__link">Community Feed</a></li>
+      </ul>
+      <div class="c-nav__auth" id="cNavAuth"></div>
+    </nav>
+  </header>
+
+  <!-- Auth card -->
+  <main class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="images/pclogo.png" alt="Impact Builds"/>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab active" id="tabSignIn" role="tab" onclick="switchTab('signin')">Sign In</button>
+        <button class="auth-tab"        id="tabSignUp" role="tab" onclick="switchTab('signup')">Join Up</button>
+      </div>
+
+      <!-- Sign In Form -->
+      <form class="auth-form active" id="formSignIn" novalidate>
+        <div class="c-field">
+          <label class="c-label" for="siEmail">Email</label>
+          <input class="c-input" type="email" id="siEmail" placeholder="your@email.com" required autocomplete="email"/>
+          <span class="c-err" id="siEmailErr"></span>
+        </div>
+        <div class="c-field">
+          <label class="c-label" for="siPassword">Password</label>
+          <input class="c-input" type="password" id="siPassword" placeholder="••••••••" required autocomplete="current-password"/>
+          <span class="c-err" id="siPasswordErr"></span>
+        </div>
+        <span class="c-err" id="siGlobalErr" style="display:block;margin-bottom:0.75rem;text-align:center;"></span>
+        <button class="auth-submit" type="submit" id="siBtn">Sign In</button>
+        <p class="auth-footer-note">
+          No account? <a href="#" onclick="switchTab('signup');return false;">Join the crew →</a>
+        </p>
+      </form>
+
+      <!-- Sign Up Form -->
+      <form class="auth-form" id="formSignUp" novalidate>
+        <div class="c-field">
+          <label class="c-label" for="suUsername">Username</label>
+          <input class="c-input" type="text" id="suUsername" placeholder="CoolBuilder42" required autocomplete="username"
+                 maxlength="24" pattern="[a-zA-Z0-9_]+"/>
+          <span class="c-err" id="suUsernameErr"></span>
+        </div>
+        <div class="c-field">
+          <label class="c-label" for="suEmail">Email</label>
+          <input class="c-input" type="email" id="suEmail" placeholder="your@email.com" required autocomplete="email"/>
+          <span class="c-err" id="suEmailErr"></span>
+        </div>
+        <div class="c-field">
+          <label class="c-label" for="suPassword">Password <span style="color:rgba(255,255,255,0.3);font-weight:400">(min 6 chars)</span></label>
+          <input class="c-input" type="password" id="suPassword" placeholder="••••••••" required autocomplete="new-password" minlength="6"/>
+          <span class="c-err" id="suPasswordErr"></span>
+        </div>
+        <span class="c-err" id="suGlobalErr" style="display:block;margin-bottom:0.75rem;text-align:center;"></span>
+        <button class="auth-submit" type="submit" id="suBtn">Create Account</button>
+        <p class="auth-footer-note">
+          Already a member? <a href="#" onclick="switchTab('signin');return false;">Sign in →</a>
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+    // ---- Nav auth state ----
+    (async function() {
+      const { data: { session } } = await window.supabase.auth.getSession();
+      if (session) { window.location.replace('feed.html'); return; }
+      document.getElementById('cNavAuth').innerHTML =
+        '<span style="font-size:0.78rem;color:rgba(255,255,255,0.4)">Not signed in</span>';
+    })();
+
+    // ---- Tab toggle ----
+    function switchTab(tab) {
+      document.getElementById('tabSignIn').classList.toggle('active', tab === 'signin');
+      document.getElementById('tabSignUp').classList.toggle('active', tab === 'signup');
+      document.getElementById('formSignIn').classList.toggle('active', tab === 'signin');
+      document.getElementById('formSignUp').classList.toggle('active', tab === 'signup');
+      clearErrors();
+    }
+
+    // Check URL for ?mode=register
+    if (new URLSearchParams(window.location.search).get('mode') === 'register') {
+      switchTab('signup');
+    }
+
+    function clearErrors() {
+      ['siEmailErr','siPasswordErr','siGlobalErr','suUsernameErr','suEmailErr','suPasswordErr','suGlobalErr']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
+    }
+
+    // ---- Sign In ----
+    document.getElementById('formSignIn').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      clearErrors();
+      const email    = document.getElementById('siEmail').value.trim();
+      const password = document.getElementById('siPassword').value;
+      let ok = true;
+      if (!email)    { document.getElementById('siEmailErr').textContent = 'Email is required.'; ok = false; }
+      if (!password) { document.getElementById('siPasswordErr').textContent = 'Password is required.'; ok = false; }
+      if (!ok) return;
+
+      const btn = document.getElementById('siBtn');
+      btn.disabled = true; btn.textContent = 'Signing in…';
+
+      const { error } = await window.supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        document.getElementById('siGlobalErr').textContent = error.message;
+        btn.disabled = false; btn.textContent = 'Sign In';
+        return;
+      }
+      window.location.href = 'feed.html';
+    });
+
+    // ---- Sign Up ----
+    document.getElementById('formSignUp').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      clearErrors();
+      const username = document.getElementById('suUsername').value.trim();
+      const email    = document.getElementById('suEmail').value.trim();
+      const password = document.getElementById('suPassword').value;
+      let ok = true;
+
+      if (!username || !/^[a-zA-Z0-9_]{3,24}$/.test(username)) {
+        document.getElementById('suUsernameErr').textContent = 'Username must be 3–24 chars, letters/numbers/underscore only.';
+        ok = false;
+      }
+      if (!email)          { document.getElementById('suEmailErr').textContent = 'Email is required.'; ok = false; }
+      if (password.length < 6) { document.getElementById('suPasswordErr').textContent = 'Password must be at least 6 characters.'; ok = false; }
+      if (!ok) return;
+
+      // Check username is available
+      const { data: existing } = await window.supabase
+        .from('profiles').select('id').eq('username', username).maybeSingle();
+      if (existing) {
+        document.getElementById('suUsernameErr').textContent = 'Username is already taken.';
+        return;
+      }
+
+      const btn = document.getElementById('suBtn');
+      btn.disabled = true; btn.textContent = 'Creating account…';
+
+      const { data: authData, error: authErr } = await window.supabase.auth.signUp({ email, password });
+      if (authErr) {
+        document.getElementById('suGlobalErr').textContent = authErr.message;
+        btn.disabled = false; btn.textContent = 'Create Account';
+        return;
+      }
+
+      const userId = authData.user?.id;
+      if (userId) {
+        await window.supabase.from('profiles').insert({
+          user_id: userId,
+          username,
+          display_name: username
+        });
+        // Founding member badge: award if one of first 20
+        const { count } = await window.supabase.from('profiles').select('*', { count: 'exact', head: true });
+        if (count && count <= 20) {
+          await window.supabase.from('user_badges').insert({ user_id: userId, badge_id: 'founding_member' }).maybeSingle();
+        }
+      }
+
+      window.location.href = 'feed.html';
+    });
+  </script>
+</body>
+</html>

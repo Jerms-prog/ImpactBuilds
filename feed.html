@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Impact Builds | Community Feed</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="community.css"/>
+</head>
+<body class="community-page">
+
+  <!-- City background -->
+  <div class="city-bg" aria-hidden="true">
+    <svg viewBox="0 0 1440 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <pattern id="win-lg" x="0" y="0" width="50" height="38" patternUnits="userSpaceOnUse"><rect x="6" y="6" width="30" height="22" fill="#9aaed4" opacity="0.5"/></pattern>
+        <pattern id="win-sm" x="0" y="0" width="32" height="28" patternUnits="userSpaceOnUse"><rect x="5" y="5" width="18" height="14" fill="#9aaed4" opacity="0.5"/></pattern>
+      </defs>
+      <polygon points="0,50 185,50 228,16 43,16" fill="#8090c4"/>
+      <polygon points="185,50 228,16 228,760 185,760" fill="#6070a8"/>
+      <rect x="0" y="50" width="185" height="700" fill="#7b8cc0"/>
+      <rect x="6" y="56" width="173" height="694" fill="url(#win-lg)" opacity="0.85"/>
+      <rect x="193" y="175" width="72" height="525" fill="#7b8cc0"/>
+      <rect x="196" y="178" width="66" height="522" fill="url(#win-sm)" opacity="0.7"/>
+      <rect x="1258" y="0" width="182" height="700" fill="#7b8cc0"/>
+      <rect x="1261" y="3" width="179" height="697" fill="url(#win-lg)" opacity="0.85"/>
+      <rect x="1165" y="170" width="86" height="530" fill="#7b8cc0"/>
+      <rect x="1168" y="173" width="80" height="527" fill="url(#win-sm)" opacity="0.7"/>
+      <rect x="462" y="230" width="18" height="470" fill="#6a7ab5"/>
+      <rect x="444" y="262" width="54" height="11" fill="#6a7ab5"/>
+      <rect x="960" y="230" width="18" height="470" fill="#6a7ab5"/>
+      <rect x="942" y="262" width="54" height="11" fill="#6a7ab5"/>
+      <path d="M -80 580 C 40 580 300 230 471 230 Q 720 320 969 230 C 1100 230 1360 580 1520 580" stroke="#6a7ab5" stroke-width="5" fill="none"/>
+      <rect x="60" y="574" width="1320" height="14" fill="#6a7ab5"/>
+    </svg>
+  </div>
+
+  <!-- Nav -->
+  <header class="c-header">
+    <nav class="c-nav container">
+      <a href="index.html" class="c-nav__logo">
+        <img src="images/pclogo.png" alt="Impact Builds" class="custom-logo">
+      </a>
+      <ul class="c-nav__links">
+        <li><a href="feed.html" class="c-nav__link active">Feed</a></li>
+        <li><a href="profile.html" class="c-nav__link" id="navMyProfile" style="display:none">My Profile</a></li>
+      </ul>
+      <div class="c-nav__auth" id="cNavAuth"></div>
+    </nav>
+  </header>
+
+  <div class="feed-layout">
+
+    <!-- Sidebar -->
+    <aside class="feed-sidebar">
+      <!-- My profile mini card (when logged in) -->
+      <div class="sidebar-card" id="sidebarProfile" style="display:none">
+        <div class="sidebar-profile">
+          <div class="c-avatar" id="sidebarAvatar">?</div>
+          <div>
+            <div class="sidebar-username" id="sidebarUsername">—</div>
+            <div class="sidebar-stats" id="sidebarStats">0 posts</div>
+          </div>
+        </div>
+        <a href="profile.html" class="c-btn-outline" style="width:100%;text-align:center;display:block;font-size:0.78rem;">View Profile</a>
+      </div>
+
+      <!-- Post button (when logged in) -->
+      <div id="sidebarPostBtn" style="display:none">
+        <button class="c-btn" style="width:100%;font-size:0.85rem;" onclick="openCreatePost()">+ New Post</button>
+      </div>
+
+      <!-- Guest CTA -->
+      <div class="sidebar-card" id="sidebarGuest">
+        <div class="sidebar-title">Join the Crew</div>
+        <p style="font-size:0.78rem;color:rgba(255,255,255,0.5);margin-bottom:0.75rem;line-height:1.5;">
+          Share your builds, disaster moments, and ideas with the Impact Builds community.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <a href="auth.html?mode=register" class="c-btn" style="text-align:center">Join Up</a>
+          <a href="auth.html" class="c-btn-outline" style="text-align:center">Sign In</a>
+        </div>
+      </div>
+
+      <!-- Category filter -->
+      <div class="sidebar-card">
+        <div class="sidebar-title">Categories</div>
+        <ul class="cat-filter-list" id="catFilterList">
+          <li>
+            <button class="cat-filter-item active" data-cat="all" onclick="setCategory('all',this)">
+              <span class="cat-filter-dot" style="background:rgba(255,255,255,0.3)"></span> All Posts
+            </button>
+          </li>
+          <li><button class="cat-filter-item" data-cat="Builds"           onclick="setCategory('Builds',this)">
+            <span class="cat-filter-dot" style="background:var(--cat-builds)"></span> 🏗️ Builds</button></li>
+          <li><button class="cat-filter-item" data-cat="Disaster Moments" onclick="setCategory('Disaster Moments',this)">
+            <span class="cat-filter-dot" style="background:var(--cat-disaster)"></span> 💥 Disaster Moments</button></li>
+          <li><button class="cat-filter-item" data-cat="Screenshots"      onclick="setCategory('Screenshots',this)">
+            <span class="cat-filter-dot" style="background:var(--cat-screenshots)"></span> 📸 Screenshots</button></li>
+          <li><button class="cat-filter-item" data-cat="Discussion"       onclick="setCategory('Discussion',this)">
+            <span class="cat-filter-dot" style="background:var(--cat-discussion)"></span> 💬 Discussion</button></li>
+          <li><button class="cat-filter-item" data-cat="Ideas"            onclick="setCategory('Ideas',this)">
+            <span class="cat-filter-dot" style="background:var(--cat-ideas)"></span> 💡 Ideas</button></li>
+          <li><button class="cat-filter-item" data-cat="Bug Reports"      onclick="setCategory('Bug Reports',this)">
+            <span class="cat-filter-dot" style="background:var(--cat-bugs)"></span> 🐛 Bug Reports</button></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main feed -->
+    <main class="feed-main">
+      <div class="feed-toolbar">
+        <h1 id="feedTitle">COMMUNITY FEED</h1>
+        <div class="feed-sort">
+          <button class="sort-btn active" onclick="setSort('latest',this)">Latest</button>
+          <button class="sort-btn" onclick="setSort('top',this)">Top</button>
+        </div>
+      </div>
+
+      <div class="feed-posts" id="feedPosts">
+        <!-- Skeleton loading state -->
+        <div id="feedLoading" style="text-align:center;padding:3rem;color:rgba(255,255,255,0.35);font-size:0.85rem;">
+          Loading posts…
+        </div>
+      </div>
+
+      <div class="feed-empty" id="feedEmpty" style="display:none;">
+        <div class="big">🏗️</div>
+        <p>No posts yet in this category.</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem;">Be the first to post!</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Post Modal -->
+  <div class="c-modal-backdrop" id="createPostModal">
+    <div class="c-modal">
+      <button class="c-modal__close" onclick="closeCreatePost()">&times;</button>
+      <div class="c-modal__title">POST TO THE BOARD</div>
+      <form id="createPostForm" novalidate>
+        <div class="c-field">
+          <label class="c-label" for="cpTitle">Title</label>
+          <input class="c-input" type="text" id="cpTitle" placeholder="Give your post a title…" maxlength="120" required/>
+          <span class="c-err" id="cpTitleErr"></span>
+        </div>
+        <div class="c-field">
+          <label class="c-label" for="cpCategory">Category</label>
+          <select class="c-select" id="cpCategory" required>
+            <option value="Builds">🏗️ Builds</option>
+            <option value="Disaster Moments">💥 Disaster Moments</option>
+            <option value="Screenshots">📸 Screenshots</option>
+            <option value="Discussion" selected>💬 Discussion</option>
+            <option value="Ideas">💡 Ideas</option>
+            <option value="Bug Reports">🐛 Bug Reports</option>
+          </select>
+        </div>
+        <div class="c-field">
+          <label class="c-label" for="cpContent">Description</label>
+          <textarea class="c-textarea" id="cpContent" placeholder="Write something…" rows="4"></textarea>
+        </div>
+        <div class="c-field">
+          <label class="c-label" for="cpImage">Image <span style="color:rgba(255,255,255,0.3);font-weight:400">(optional)</span></label>
+          <input class="c-input" type="file" id="cpImage" accept="image/png,image/jpeg,image/gif,image/webp"
+                 style="padding:0.5rem 0.75rem;cursor:pointer;"/>
+          <span style="font-size:0.72rem;color:rgba(255,255,255,0.3);margin-top:0.3rem;display:block;">Max 5 MB — PNG, JPG, GIF, WebP</span>
+        </div>
+        <div class="c-field">
+          <label class="c-label" for="cpTags">Tags <span style="color:rgba(255,255,255,0.3);font-weight:400">(comma separated, up to 4)</span></label>
+          <input class="c-input" type="text" id="cpTags" placeholder="earthquake, highrise, glitch…"/>
+        </div>
+        <span class="c-err" id="cpGlobalErr" style="display:block;margin-bottom:0.75rem;text-align:center;"></span>
+        <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
+          <button type="button" class="c-btn-outline" onclick="closeCreatePost()">Cancel</button>
+          <button type="submit" class="c-btn" id="cpSubmitBtn">Post It</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="c-toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+    const CATEGORIES = {
+      'Builds':          { slug: 'builds',       emoji: '🏗️' },
+      'Disaster Moments':{ slug: 'disaster',     emoji: '💥' },
+      'Screenshots':     { slug: 'screenshots',  emoji: '📸' },
+      'Discussion':      { slug: 'discussion',   emoji: '💬' },
+      'Ideas':           { slug: 'ideas',         emoji: '💡' },
+      'Bug Reports':     { slug: 'bugs',          emoji: '🐛' }
+    };
+
+    let currentSession = null;
+    let currentProfile = null;
+    let currentCategory = 'all';
+    let currentSort = 'latest';
+
+    // ---- Init ----
+    (async function init() {
+      const { data: { session } } = await window.supabase.auth.getSession();
+      currentSession = session;
+
+      if (session) {
+        const { data: profile } = await window.supabase
+          .from('profiles').select('*').eq('user_id', session.user.id).single();
+        currentProfile = profile;
+
+        // Nav
+        const initial = (profile?.username || 'U')[0].toUpperCase();
+        document.getElementById('cNavAuth').innerHTML = `
+          <a href="profile.html" class="c-nav__user">${initial} ${profile?.username || 'User'}</a>
+          <button class="c-nav__logout" onclick="signOut()">Log Out</button>`;
+
+        // Sidebar
+        document.getElementById('sidebarGuest').style.display  = 'none';
+        document.getElementById('sidebarProfile').style.display = 'block';
+        document.getElementById('sidebarPostBtn').style.display = 'block';
+        document.getElementById('navMyProfile').style.display   = 'list-item';
+        document.getElementById('sidebarAvatar').textContent    = initial;
+        document.getElementById('sidebarUsername').textContent  = profile?.username || 'User';
+
+        // Post count
+        const { count } = await window.supabase.from('posts')
+          .select('*', { count: 'exact', head: true }).eq('user_id', session.user.id);
+        document.getElementById('sidebarStats').textContent = `${count || 0} post${count === 1 ? '' : 's'}`;
+      } else {
+        document.getElementById('cNavAuth').innerHTML = `
+          <a href="auth.html" class="c-btn-outline">Sign In</a>
+          <a href="auth.html?mode=register" class="c-btn">Join Up</a>`;
+      }
+
+      await loadFeed();
+    })();
+
+    async function signOut() {
+      await window.supabase.auth.signOut();
+      window.location.reload();
+    }
+
+    // ---- Load feed ----
+    async function loadFeed() {
+      document.getElementById('feedLoading').style.display = 'block';
+      document.getElementById('feedEmpty').style.display   = 'none';
+      document.getElementById('feedPosts').innerHTML = '<div id="feedLoading" style="text-align:center;padding:3rem;color:rgba(255,255,255,0.35);font-size:0.85rem;">Loading posts…</div>';
+
+      let query = window.supabase.from('posts').select('*');
+      if (currentCategory !== 'all') query = query.eq('category', currentCategory);
+      if (currentSort === 'top') query = query.order('likes_count', { ascending: false });
+      else                        query = query.order('created_at',  { ascending: false });
+      query = query.limit(40);
+
+      const { data: posts, error } = await query;
+      document.getElementById('feedPosts').innerHTML = '';
+
+      if (error || !posts || posts.length === 0) {
+        document.getElementById('feedEmpty').style.display = 'block';
+        return;
+      }
+
+      // Load profiles for all authors
+      const userIds = [...new Set(posts.map(p => p.user_id))];
+      const { data: profiles } = await window.supabase
+        .from('profiles').select('user_id, username, display_name').in('user_id', userIds);
+      const profileMap = Object.fromEntries((profiles || []).map(p => [p.user_id, p]));
+
+      // Load liked posts for current user
+      let likedSet = new Set();
+      if (currentSession) {
+        const { data: likes } = await window.supabase
+          .from('post_likes').select('post_id').eq('user_id', currentSession.user.id)
+          .in('post_id', posts.map(p => p.id));
+        if (likes) likes.forEach(l => likedSet.add(l.post_id));
+      }
+
+      const container = document.getElementById('feedPosts');
+      posts.forEach(post => {
+        const author   = profileMap[post.user_id] || {};
+        const catSlug  = (CATEGORIES[post.category]?.slug) || 'discussion';
+        const tags     = (post.tags || []).slice(0, 4);
+        const date     = new Date(post.created_at);
+        const dateStr  = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const tagsHtml = tags.map(t => `<span class="c-tag">#${t}</span>`).join('');
+        const excerpt  = (post.content || '').replace(/\n/g,' ').slice(0, 140) + ((post.content?.length > 140) ? '…' : '');
+        const imgHtml  = post.image_url
+          ? `<img class="post-card__image" src="${escHtml(post.image_url)}" alt="post image" loading="lazy"/>`
+          : '';
+
+        const card = document.createElement('a');
+        card.href = `post.html?id=${post.id}`;
+        card.className = 'post-card';
+        card.innerHTML = `
+          <div class="post-card__stripe post-card__stripe--${catSlug}"></div>
+          <div class="post-card__body">
+            <div class="post-card__meta">
+              <span class="c-cat c-cat--${catSlug}">${post.category}</span>
+              ${tagsHtml}
+            </div>
+            <div class="post-card__title">${escHtml(post.title)}</div>
+            ${excerpt ? `<div class="post-card__excerpt">${escHtml(excerpt)}</div>` : ''}
+            <div class="post-card__footer">
+              <div class="post-card__author">
+                <div class="c-avatar" style="width:22px;height:22px;font-size:0.6rem;">${(author.username||'?')[0].toUpperCase()}</div>
+                <span class="post-card__author-name">${escHtml(author.username || 'Unknown')}</span>
+              </div>
+              <span class="post-card__stat">❤️ ${post.likes_count || 0}</span>
+              <span class="post-card__date">${dateStr}</span>
+            </div>
+          </div>
+          ${imgHtml}`;
+        container.appendChild(card);
+      });
+    }
+
+    function setCategory(cat, btn) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-filter-item').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const title = cat === 'all' ? 'COMMUNITY FEED' : (CATEGORIES[cat]?.emoji || '') + ' ' + cat.toUpperCase();
+      document.getElementById('feedTitle').textContent = title;
+      loadFeed();
+    }
+
+    function setSort(sort, btn) {
+      currentSort = sort;
+      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadFeed();
+    }
+
+    // ---- Create Post Modal ----
+    function openCreatePost() {
+      if (!currentSession) { window.location.href = 'auth.html'; return; }
+      document.getElementById('createPostModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeCreatePost() {
+      document.getElementById('createPostModal').classList.remove('open');
+      document.body.style.overflow = '';
+      document.getElementById('createPostForm').reset();
+      document.getElementById('cpGlobalErr').textContent = '';
+    }
+    document.getElementById('createPostModal').addEventListener('click', function(e) {
+      if (e.target === this) closeCreatePost();
+    });
+
+    document.getElementById('createPostForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (!currentSession) return;
+
+      const title    = document.getElementById('cpTitle').value.trim();
+      const category = document.getElementById('cpCategory').value;
+      const content  = document.getElementById('cpContent').value.trim();
+      const tagsRaw  = document.getElementById('cpTags').value;
+      const imgFile  = document.getElementById('cpImage').files[0];
+      const btn      = document.getElementById('cpSubmitBtn');
+
+      document.getElementById('cpTitleErr').textContent = '';
+      document.getElementById('cpGlobalErr').textContent = '';
+
+      if (!title) { document.getElementById('cpTitleErr').textContent = 'Title is required.'; return; }
+
+      btn.disabled = true; btn.textContent = 'Posting…';
+
+      let imageUrl = null;
+      if (imgFile) {
+        if (imgFile.size > 5 * 1024 * 1024) {
+          document.getElementById('cpGlobalErr').textContent = 'Image must be under 5 MB.';
+          btn.disabled = false; btn.textContent = 'Post It'; return;
+        }
+        const ext  = imgFile.name.split('.').pop();
+        const path = `posts/${currentSession.user.id}/${Date.now()}.${ext}`;
+        const { error: upErr } = await window.supabase.storage.from('post-images').upload(path, imgFile);
+        if (upErr) {
+          document.getElementById('cpGlobalErr').textContent = 'Image upload failed: ' + upErr.message;
+          btn.disabled = false; btn.textContent = 'Post It'; return;
+        }
+        const { data: pubData } = window.supabase.storage.from('post-images').getPublicUrl(path);
+        imageUrl = pubData.publicUrl;
+      }
+
+      const tags = tagsRaw.split(',').map(t => t.trim().replace(/^#+/,'')).filter(t => t.length > 0).slice(0, 4);
+
+      const { data: newPost, error } = await window.supabase.from('posts').insert({
+        user_id: currentSession.user.id,
+        title, content, category, tags, image_url: imageUrl
+      }).select().single();
+
+      if (error) {
+        document.getElementById('cpGlobalErr').textContent = error.message;
+        btn.disabled = false; btn.textContent = 'Post It'; return;
+      }
+
+      // Check badge conditions
+      await checkAndAwardBadges(currentSession.user.id, newPost, category);
+
+      closeCreatePost();
+      showToast('Post published!');
+      loadFeed();
+      btn.disabled = false; btn.textContent = 'Post It';
+    });
+
+    async function checkAndAwardBadges(userId, newPost, category) {
+      const { count: postCount } = await window.supabase
+        .from('posts').select('*', { count: 'exact', head: true }).eq('user_id', userId);
+
+      const insertBadge = (id) => window.supabase.from('user_badges')
+        .insert({ user_id: userId, badge_id: id }).maybeSingle();
+
+      if (postCount >= 1)  await insertBadge('pioneer');
+      if (postCount >= 10) await insertBadge('master_builder');
+
+      if (category === 'Disaster Moments') {
+        const { count: disCount } = await window.supabase.from('posts')
+          .select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('category','Disaster Moments');
+        if (disCount >= 5) await insertBadge('disaster_chaser');
+      }
+
+      if (category === 'Builds' && newPost.image_url) {
+        const { count: buildCount } = await window.supabase.from('posts')
+          .select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('category','Builds').not('image_url','is',null);
+        if (buildCount >= 3) await insertBadge('architect');
+      }
+
+      const { data: likesData } = await window.supabase.from('posts')
+        .select('likes_count').eq('user_id', userId);
+      const totalLikes = (likesData || []).reduce((s, p) => s + (p.likes_count || 0), 0);
+      if (totalLikes >= 50) await insertBadge('community_star');
+    }
+
+    // ---- Util ----
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'c-toast' + (isError ? ' error' : '');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>

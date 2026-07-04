@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Impact Builds | Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="community.css"/>
+</head>
+<body class="community-page">
+
+  <!-- City background -->
+  <div class="city-bg" aria-hidden="true">
+    <svg viewBox="0 0 1440 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <pattern id="win-lg" x="0" y="0" width="50" height="38" patternUnits="userSpaceOnUse"><rect x="6" y="6" width="30" height="22" fill="#9aaed4" opacity="0.5"/></pattern>
+        <pattern id="win-sm" x="0" y="0" width="32" height="28" patternUnits="userSpaceOnUse"><rect x="5" y="5" width="18" height="14" fill="#9aaed4" opacity="0.5"/></pattern>
+      </defs>
+      <polygon points="0,50 185,50 228,16 43,16" fill="#8090c4"/>
+      <polygon points="185,50 228,16 228,760 185,760" fill="#6070a8"/>
+      <rect x="0" y="50" width="185" height="700" fill="#7b8cc0"/>
+      <rect x="6" y="56" width="173" height="694" fill="url(#win-lg)" opacity="0.85"/>
+      <rect x="193" y="175" width="72" height="525" fill="#7b8cc0"/>
+      <rect x="196" y="178" width="66" height="522" fill="url(#win-sm)" opacity="0.7"/>
+      <rect x="1258" y="0" width="182" height="700" fill="#7b8cc0"/>
+      <rect x="1261" y="3" width="179" height="697" fill="url(#win-lg)" opacity="0.85"/>
+      <rect x="1165" y="170" width="86" height="530" fill="#7b8cc0"/>
+      <rect x="1168" y="173" width="80" height="527" fill="url(#win-sm)" opacity="0.7"/>
+      <rect x="462" y="230" width="18" height="470" fill="#6a7ab5"/>
+      <rect x="444" y="262" width="54" height="11" fill="#6a7ab5"/>
+      <rect x="960" y="230" width="18" height="470" fill="#6a7ab5"/>
+      <rect x="942" y="262" width="54" height="11" fill="#6a7ab5"/>
+      <path d="M -80 580 C 40 580 300 230 471 230 Q 720 320 969 230 C 1100 230 1360 580 1520 580" stroke="#6a7ab5" stroke-width="5" fill="none"/>
+      <rect x="60" y="574" width="1320" height="14" fill="#6a7ab5"/>
+    </svg>
+  </div>
+
+  <!-- Nav -->
+  <header class="c-header">
+    <nav class="c-nav container">
+      <a href="index.html" class="c-nav__logo">
+        <img src="images/pclogo.png" alt="Impact Builds" class="custom-logo">
+      </a>
+      <ul class="c-nav__links">
+        <li><a href="feed.html" class="c-nav__link">← Feed</a></li>
+        <li><a href="profile.html" class="c-nav__link active" id="navMyProfile" style="display:none">My Profile</a></li>
+      </ul>
+      <div class="c-nav__auth" id="cNavAuth"></div>
+    </nav>
+  </header>
+
+  <div class="profile-layout" id="profileLayout">
+    <div style="text-align:center;padding:4rem;color:rgba(255,255,255,0.35);">Loading profile…</div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="c-modal-backdrop" id="editProfileModal">
+    <div class="c-modal">
+      <button class="c-modal__close" onclick="closeEditProfile()">&times;</button>
+      <div class="c-modal__title">EDIT PROFILE</div>
+      <form id="editProfileForm">
+        <div class="c-field">
+          <label class="c-label" for="epDisplayName">Display Name</label>
+          <input class="c-input" type="text" id="epDisplayName" maxlength="40"/>
+        </div>
+        <div class="c-field">
+          <label class="c-label" for="epBio">Bio <span style="color:rgba(255,255,255,0.3);font-weight:400">(max 160 chars)</span></label>
+          <textarea class="c-textarea" id="epBio" maxlength="160" rows="3" placeholder="Tell the crew about yourself…"></textarea>
+        </div>
+        <span class="c-err" id="epErr" style="display:block;margin-bottom:0.75rem;text-align:center;"></span>
+        <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
+          <button type="button" class="c-btn-outline" onclick="closeEditProfile()">Cancel</button>
+          <button type="submit" class="c-btn" id="epSaveBtn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="c-toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+    const ALL_BADGES = [
+      { id: 'pioneer',        name: 'Pioneer',        icon: '🏅' },
+      { id: 'master_builder', name: 'Master Builder',  icon: '🔥' },
+      { id: 'community_star', name: 'Community Star',  icon: '⭐' },
+      { id: 'disaster_chaser',name: 'Disaster Chaser', icon: '💥' },
+      { id: 'top_contractor', name: 'Top Contractor',  icon: '🏆' },
+      { id: 'founding_member',name: 'Founding Member', icon: '🌊' },
+      { id: 'sharp_eye',      name: 'Sharp Eye',       icon: '🎯' },
+      { id: 'architect',      name: 'Architect',       icon: '📐' }
+    ];
+
+    const CATEGORIES = {
+      'Builds':          'builds',
+      'Disaster Moments':'disaster',
+      'Screenshots':     'screenshots',
+      'Discussion':      'discussion',
+      'Ideas':           'ideas',
+      'Bug Reports':     'bugs'
+    };
+
+    let currentSession = null;
+    let viewedProfile  = null;
+    let isOwnProfile   = false;
+
+    (async function init() {
+      const { data: { session } } = await window.supabase.auth.getSession();
+      currentSession = session;
+
+      if (session) {
+        const { data: myProfile } = await window.supabase
+          .from('profiles').select('*').eq('user_id', session.user.id).single();
+        const initial = (myProfile?.username || 'U')[0].toUpperCase();
+        document.getElementById('cNavAuth').innerHTML = `
+          <a href="profile.html" class="c-nav__user">${initial} ${myProfile?.username || 'User'}</a>
+          <button class="c-nav__logout" onclick="signOut()">Log Out</button>`;
+        document.getElementById('navMyProfile').style.display = 'list-item';
+      } else {
+        document.getElementById('cNavAuth').innerHTML = `
+          <a href="auth.html" class="c-btn-outline">Sign In</a>
+          <a href="auth.html?mode=register" class="c-btn">Join Up</a>`;
+      }
+
+      // Determine which profile to show
+      const targetUsername = new URLSearchParams(window.location.search).get('user');
+      if (targetUsername) {
+        const { data: profile } = await window.supabase
+          .from('profiles').select('*').eq('username', targetUsername).single();
+        viewedProfile = profile;
+        isOwnProfile  = session ? session.user.id === profile?.user_id : false;
+      } else if (session) {
+        const { data: profile } = await window.supabase
+          .from('profiles').select('*').eq('user_id', session.user.id).single();
+        viewedProfile = profile;
+        isOwnProfile  = true;
+      } else {
+        window.location.href = 'auth.html';
+        return;
+      }
+
+      if (!viewedProfile) {
+        document.getElementById('profileLayout').innerHTML =
+          '<div style="text-align:center;padding:4rem;color:rgba(255,255,255,0.4)">Profile not found. <a href="feed.html" style="color:#FFB800">Back to feed</a></div>';
+        return;
+      }
+
+      await renderProfile();
+    })();
+
+    async function signOut() {
+      await window.supabase.auth.signOut();
+      window.location.href = 'auth.html';
+    }
+
+    async function renderProfile() {
+      const p = viewedProfile;
+      document.title = `Impact Builds | ${p.username}`;
+
+      // Stats
+      const { count: postCount } = await window.supabase
+        .from('posts').select('*', { count: 'exact', head: true }).eq('user_id', p.user_id);
+      const { count: commentCount } = await window.supabase
+        .from('comments').select('*', { count: 'exact', head: true }).eq('user_id', p.user_id);
+      const { data: postsForLikes } = await window.supabase
+        .from('posts').select('likes_count').eq('user_id', p.user_id);
+      const totalLikes = (postsForLikes||[]).reduce((s, r) => s + (r.likes_count||0), 0);
+
+      // Earned badges
+      const { data: earnedRows } = await window.supabase
+        .from('user_badges').select('badge_id').eq('user_id', p.user_id);
+      const earnedSet = new Set((earnedRows||[]).map(r => r.badge_id));
+
+      const joinDate  = new Date(p.created_at).toLocaleDateString('en-US',{year:'numeric',month:'long'});
+      const initial   = (p.username||'?')[0].toUpperCase();
+      const editBtn   = isOwnProfile
+        ? `<button class="profile-id__edit" onclick="openEditProfile()">Edit Profile</button>`
+        : '';
+
+      const badgePinsHtml = ALL_BADGES.map(b => {
+        const has = earnedSet.has(b.id);
+        return `<div class="badge-pin${has?'':' badge-pin--locked'}" title="${b.name}">
+          <span class="pin-icon">${b.icon}</span>
+          <span class="pin-name">${b.name}</span>
+        </div>`;
+      }).join('');
+
+      const layout = document.getElementById('profileLayout');
+      layout.innerHTML = `
+        <!-- ID card -->
+        <div class="profile-id-card">
+          <div class="profile-id__top">
+            <div class="c-avatar c-avatar--xl">${initial}</div>
+            <div class="profile-id__info">
+              <div class="profile-id__username">${escHtml(p.username)}</div>
+              ${p.display_name && p.display_name !== p.username
+                ? `<div class="profile-id__display">${escHtml(p.display_name)}</div>` : ''}
+              <div class="profile-id__bio">${p.bio ? escHtml(p.bio) : '<span style="color:rgba(255,255,255,0.25);font-style:italic">No bio yet.</span>'}</div>
+              <div class="profile-id__joined">Member since ${joinDate}</div>
+            </div>
+            ${editBtn}
+          </div>
+          <div class="profile-stats">
+            <div class="profile-stat"><div class="profile-stat__num">${postCount||0}</div><div class="profile-stat__label">Posts</div></div>
+            <div class="profile-stat"><div class="profile-stat__num">${totalLikes}</div><div class="profile-stat__label">Likes</div></div>
+            <div class="profile-stat"><div class="profile-stat__num">${commentCount||0}</div><div class="profile-stat__label">Comments</div></div>
+            <div class="profile-stat"><div class="profile-stat__num">${earnedSet.size}</div><div class="profile-stat__label">Badges</div></div>
+          </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="profile-badges-section">
+          <div class="profile-section-title">Earned Badges</div>
+          <div class="badge-pins">${badgePinsHtml}</div>
+        </div>
+
+        <!-- Posts -->
+        <div>
+          <div class="profile-tabs">
+            <button class="profile-tab active" onclick="showTab('posts',this)">Posts</button>
+            <button class="profile-tab" onclick="showTab('liked',this)">Liked</button>
+          </div>
+          <div class="profile-posts" id="profilePosts">
+            <div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.35);">Loading…</div>
+          </div>
+        </div>`;
+
+      await loadProfilePosts('posts');
+    }
+
+    let currentTab = 'posts';
+    function showTab(tab, btn) {
+      currentTab = tab;
+      document.querySelectorAll('.profile-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadProfilePosts(tab);
+    }
+
+    async function loadProfilePosts(tab) {
+      const container = document.getElementById('profilePosts');
+      container.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.35)">Loading…</div>';
+
+      let posts = [];
+      if (tab === 'posts') {
+        const { data } = await window.supabase.from('posts').select('*')
+          .eq('user_id', viewedProfile.user_id).order('created_at', { ascending: false });
+        posts = data || [];
+      } else {
+        const { data: liked } = await window.supabase.from('post_likes')
+          .select('post_id').eq('user_id', viewedProfile.user_id);
+        if (liked && liked.length) {
+          const ids = liked.map(l => l.post_id);
+          const { data } = await window.supabase.from('posts').select('*').in('id', ids).order('created_at', { ascending: false });
+          posts = data || [];
+        }
+      }
+
+      if (!posts.length) {
+        container.innerHTML = `<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.35);font-size:0.85rem;">
+          ${tab === 'posts' ? 'No posts yet.' : 'No liked posts yet.'}</div>`;
+        return;
+      }
+
+      // Get profiles for liked posts authors
+      const userIds = [...new Set(posts.map(p => p.user_id))];
+      const { data: profiles } = await window.supabase
+        .from('profiles').select('user_id, username').in('user_id', userIds);
+      const profileMap = Object.fromEntries((profiles||[]).map(p=>[p.user_id, p]));
+
+      container.innerHTML = '';
+      posts.forEach(post => {
+        const author  = profileMap[post.user_id] || {};
+        const catSlug = CATEGORIES[post.category] || 'discussion';
+        const dateStr = new Date(post.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+        const excerpt = (post.content||'').replace(/\n/g,' ').slice(0,120) + (post.content?.length > 120 ? '…' : '');
+        const tagsHtml = (post.tags||[]).slice(0,3).map(t=>`<span class="c-tag">#${t}</span>`).join('');
+
+        const card = document.createElement('a');
+        card.href = `post.html?id=${post.id}`;
+        card.className = 'post-card';
+        card.innerHTML = `
+          <div class="post-card__stripe post-card__stripe--${catSlug}"></div>
+          <div class="post-card__body">
+            <div class="post-card__meta">
+              <span class="c-cat c-cat--${catSlug}">${escHtml(post.category)}</span>
+              ${tagsHtml}
+            </div>
+            <div class="post-card__title">${escHtml(post.title)}</div>
+            ${excerpt ? `<div class="post-card__excerpt">${escHtml(excerpt)}</div>` : ''}
+            <div class="post-card__footer">
+              ${tab === 'liked' ? `<div class="post-card__author"><span class="post-card__author-name">by ${escHtml(author.username||'Unknown')}</span></div>` : ''}
+              <span class="post-card__stat">❤️ ${post.likes_count||0}</span>
+              <span class="post-card__date">${dateStr}</span>
+            </div>
+          </div>
+          ${post.image_url ? `<img class="post-card__image" src="${escHtml(post.image_url)}" alt="" loading="lazy"/>` : ''}`;
+        container.appendChild(card);
+      });
+    }
+
+    // ---- Edit Profile Modal ----
+    function openEditProfile() {
+      if (!isOwnProfile) return;
+      document.getElementById('epDisplayName').value = viewedProfile.display_name || '';
+      document.getElementById('epBio').value         = viewedProfile.bio || '';
+      document.getElementById('epErr').textContent   = '';
+      document.getElementById('editProfileModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeEditProfile() {
+      document.getElementById('editProfileModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('editProfileModal').addEventListener('click', function(e) {
+      if (e.target === this) closeEditProfile();
+    });
+
+    document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (!currentSession || !isOwnProfile) return;
+      const displayName = document.getElementById('epDisplayName').value.trim();
+      const bio         = document.getElementById('epBio').value.trim();
+      const btn         = document.getElementById('epSaveBtn');
+      btn.disabled = true; btn.textContent = 'Saving…';
+      document.getElementById('epErr').textContent = '';
+
+      const { error } = await window.supabase.from('profiles')
+        .update({ display_name: displayName, bio })
+        .eq('user_id', currentSession.user.id);
+
+      if (error) {
+        document.getElementById('epErr').textContent = error.message;
+        btn.disabled = false; btn.textContent = 'Save Changes';
+        return;
+      }
+
+      viewedProfile.display_name = displayName;
+      viewedProfile.bio          = bio;
+      closeEditProfile();
+      showToast('Profile updated!');
+      await renderProfile();
+    });
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'c-toast' + (isError ? ' error' : '');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Impact Builds | Post</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="community.css"/>
+</head>
+<body class="community-page">
+
+  <!-- City background -->
+  <div class="city-bg" aria-hidden="true">
+    <svg viewBox="0 0 1440 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <pattern id="win-lg" x="0" y="0" width="50" height="38" patternUnits="userSpaceOnUse"><rect x="6" y="6" width="30" height="22" fill="#9aaed4" opacity="0.5"/></pattern>
+        <pattern id="win-sm" x="0" y="0" width="32" height="28" patternUnits="userSpaceOnUse"><rect x="5" y="5" width="18" height="14" fill="#9aaed4" opacity="0.5"/></pattern>
+      </defs>
+      <polygon points="0,50 185,50 228,16 43,16" fill="#8090c4"/>
+      <polygon points="185,50 228,16 228,760 185,760" fill="#6070a8"/>
+      <rect x="0" y="50" width="185" height="700" fill="#7b8cc0"/>
+      <rect x="6" y="56" width="173" height="694" fill="url(#win-lg)" opacity="0.85"/>
+      <rect x="193" y="175" width="72" height="525" fill="#7b8cc0"/>
+      <rect x="196" y="178" width="66" height="522" fill="url(#win-sm)" opacity="0.7"/>
+      <rect x="1258" y="0" width="182" height="700" fill="#7b8cc0"/>
+      <rect x="1261" y="3" width="179" height="697" fill="url(#win-lg)" opacity="0.85"/>
+      <rect x="1165" y="170" width="86" height="530" fill="#7b8cc0"/>
+      <rect x="1168" y="173" width="80" height="527" fill="url(#win-sm)" opacity="0.7"/>
+      <rect x="462" y="230" width="18" height="470" fill="#6a7ab5"/>
+      <rect x="444" y="262" width="54" height="11" fill="#6a7ab5"/>
+      <rect x="960" y="230" width="18" height="470" fill="#6a7ab5"/>
+      <rect x="942" y="262" width="54" height="11" fill="#6a7ab5"/>
+      <path d="M -80 580 C 40 580 300 230 471 230 Q 720 320 969 230 C 1100 230 1360 580 1520 580" stroke="#6a7ab5" stroke-width="5" fill="none"/>
+      <rect x="60" y="574" width="1320" height="14" fill="#6a7ab5"/>
+    </svg>
+  </div>
+
+  <!-- Nav -->
+  <header class="c-header">
+    <nav class="c-nav container">
+      <a href="index.html" class="c-nav__logo">
+        <img src="images/pclogo.png" alt="Impact Builds" class="custom-logo">
+      </a>
+      <ul class="c-nav__links">
+        <li><a href="feed.html" class="c-nav__link">← Feed</a></li>
+        <li><a href="profile.html" class="c-nav__link" id="navMyProfile" style="display:none">My Profile</a></li>
+      </ul>
+      <div class="c-nav__auth" id="cNavAuth"></div>
+    </nav>
+  </header>
+
+  <div class="post-layout" id="postLayout">
+    <div style="text-align:center;padding:4rem;color:rgba(255,255,255,0.35);">Loading post…</div>
+  </div>
+
+  <!-- Toast -->
+  <div class="c-toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+    const CATEGORIES = {
+      'Builds':          'builds',
+      'Disaster Moments':'disaster',
+      'Screenshots':     'screenshots',
+      'Discussion':      'discussion',
+      'Ideas':           'ideas',
+      'Bug Reports':     'bugs'
+    };
+
+    let currentSession = null;
+    let currentProfile = null;
+    const postId = new URLSearchParams(window.location.search).get('id');
+
+    (async function init() {
+      if (!postId) { window.location.href = 'feed.html'; return; }
+
+      const { data: { session } } = await window.supabase.auth.getSession();
+      currentSession = session;
+
+      if (session) {
+        const { data: profile } = await window.supabase
+          .from('profiles').select('*').eq('user_id', session.user.id).single();
+        currentProfile = profile;
+        const initial = (profile?.username || 'U')[0].toUpperCase();
+        document.getElementById('cNavAuth').innerHTML = `
+          <a href="profile.html" class="c-nav__user">${initial} ${profile?.username || 'User'}</a>
+          <button class="c-nav__logout" onclick="signOut()">Log Out</button>`;
+        document.getElementById('navMyProfile').style.display = 'list-item';
+      } else {
+        document.getElementById('cNavAuth').innerHTML = `
+          <a href="auth.html" class="c-btn-outline">Sign In</a>
+          <a href="auth.html?mode=register" class="c-btn">Join Up</a>`;
+      }
+
+      await loadPost();
+    })();
+
+    async function signOut() {
+      await window.supabase.auth.signOut();
+      window.location.reload();
+    }
+
+    async function loadPost() {
+      const { data: post, error } = await window.supabase
+        .from('posts').select('*').eq('id', postId).single();
+      if (error || !post) {
+        document.getElementById('postLayout').innerHTML =
+          '<div style="text-align:center;padding:4rem;color:rgba(255,255,255,0.4)">Post not found. <a href="feed.html" style="color:#FFB800">Back to feed</a></div>';
+        return;
+      }
+
+      document.title = `Impact Builds | ${post.title}`;
+
+      const { data: author } = await window.supabase
+        .from('profiles').select('user_id, username, display_name').eq('user_id', post.user_id).single();
+
+      let userLiked = false;
+      if (currentSession) {
+        const { data: likeRow } = await window.supabase.from('post_likes')
+          .select('post_id').eq('post_id', postId).eq('user_id', currentSession.user.id).maybeSingle();
+        userLiked = !!likeRow;
+      }
+
+      const catSlug  = CATEGORIES[post.category] || 'discussion';
+      const tags     = (post.tags || []).slice(0,4);
+      const dateStr  = new Date(post.created_at).toLocaleDateString('en-US',{ year:'numeric', month:'long', day:'numeric' });
+      const tagsHtml = tags.map(t => `<span class="c-tag">#${t}</span>`).join('');
+      const authorInitial = (author?.username || '?')[0].toUpperCase();
+
+      const layout = document.getElementById('postLayout');
+      layout.innerHTML = `
+        <div class="post-detail">
+          <div class="post-detail__stripe post-card__stripe--${catSlug}" style="height:4px;"></div>
+          <div class="post-detail__content">
+            <div class="post-detail__header">
+              <span class="c-cat c-cat--${catSlug}">${escHtml(post.category)}</span>
+              ${tagsHtml}
+            </div>
+            <h1 class="post-detail__title">${escHtml(post.title)}</h1>
+            ${post.image_url ? `<img class="post-detail__image" src="${escHtml(post.image_url)}" alt="post image"/>` : ''}
+            ${post.content ? `<p class="post-detail__body">${escHtml(post.content)}</p>` : ''}
+            <div class="post-detail__author-bar">
+              <a href="profile.html?user=${escHtml(author?.username||'')}" class="post-detail__author">
+                <div class="c-avatar c-avatar--lg">${authorInitial}</div>
+                <div class="post-detail__author-info">
+                  <div class="post-detail__author-name">${escHtml(author?.username || 'Unknown')}</div>
+                  <div class="post-detail__author-date">${dateStr}</div>
+                </div>
+              </a>
+              <button class="c-like-btn ${userLiked ? 'liked' : ''}" id="likeBtn" onclick="toggleLike()">
+                <span class="c-like-icon">${userLiked ? '❤️' : '🤍'}</span>
+                <span id="likeCount">${post.likes_count || 0}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="comments-section" id="commentsSection"></div>
+      `;
+
+      await loadComments(post.likes_count || 0);
+    }
+
+    async function loadComments() {
+      const { data: comments, error } = await window.supabase
+        .from('comments').select('*').eq('post_id', postId).order('created_at', { ascending: true });
+
+      const section = document.getElementById('commentsSection');
+      if (!section) return;
+
+      const allComments = comments || [];
+      const roots   = allComments.filter(c => !c.parent_id);
+      const replies = allComments.filter(c =>  c.parent_id);
+
+      // Load all author profiles
+      const userIds = [...new Set(allComments.map(c => c.user_id))];
+      let profileMap = {};
+      if (userIds.length) {
+        const { data: profiles } = await window.supabase
+          .from('profiles').select('user_id, username').in('user_id', userIds);
+        profileMap = Object.fromEntries((profiles||[]).map(p=>[p.user_id, p]));
+      }
+
+      const composeHtml = currentSession ? `
+        <div class="comment-compose">
+          <div class="c-avatar">${(currentProfile?.username||'?')[0].toUpperCase()}</div>
+          <div class="comment-compose__input">
+            <textarea id="rootCommentInput" placeholder="Write a comment…" rows="2"></textarea>
+            <div class="comment-compose__actions">
+              <button class="c-btn" style="font-size:0.8rem;padding:0.4rem 0.9rem;" onclick="submitRootComment()">Post Comment</button>
+            </div>
+          </div>
+        </div>` :
+        `<div class="login-prompt"><a href="auth.html">Sign in</a> to join the conversation.</div>`;
+
+      const renderComment = (c, isNested = false) => {
+        const auth    = profileMap[c.user_id] || {};
+        const initial = (auth.username || '?')[0].toUpperCase();
+        const dStr    = new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+        const repliesForThis = replies.filter(r => r.parent_id === c.id);
+        const replyBtn = currentSession && !isNested
+          ? `<button class="comment-reply-btn" onclick="toggleReplyBox('${c.id}')">Reply</button>`
+          : '';
+        const replyBox = currentSession && !isNested
+          ? `<div class="reply-compose" id="replyBox-${c.id}" style="display:none;margin-left:2.7rem;">
+               <div class="c-avatar" style="width:24px;height:24px;font-size:0.6rem;">${(currentProfile?.username||'?')[0].toUpperCase()}</div>
+               <div style="flex:1">
+                 <textarea placeholder="Write a reply…" rows="2" id="replyInput-${c.id}"></textarea>
+                 <div style="display:flex;gap:0.5rem;justify-content:flex-end;margin-top:0.4rem;">
+                   <button class="c-btn-ghost" onclick="toggleReplyBox('${c.id}')">Cancel</button>
+                   <button class="c-btn" style="font-size:0.75rem;padding:0.35rem 0.75rem;" onclick="submitReply('${c.id}')">Reply</button>
+                 </div>
+               </div>
+             </div>`
+          : '';
+        const nestedHtml = repliesForThis.length
+          ? `<div class="comment-replies">${repliesForThis.map(r => renderComment(r, true)).join('')}</div>`
+          : '';
+        return `
+          <div class="comment-item" id="comment-${c.id}">
+            <div class="comment-header">
+              <div class="c-avatar" style="width:28px;height:28px;font-size:0.72rem;">${initial}</div>
+              <a href="profile.html?user=${escHtml(auth.username||'')}" class="comment-author">${escHtml(auth.username||'Unknown')}</a>
+              <span class="comment-date">${dStr}</span>
+            </div>
+            <div class="comment-body">${escHtml(c.content)}</div>
+            <div class="comment-actions">${replyBtn}</div>
+            ${replyBox}
+            ${nestedHtml}
+          </div>`;
+      };
+
+      section.innerHTML = `
+        <div class="comments-title">COMMENTS (${allComments.length})</div>
+        ${composeHtml}
+        <div class="comment-list" id="commentList">
+          ${roots.length ? roots.map(c => renderComment(c)).join('') : '<p style="font-size:0.85rem;color:rgba(255,255,255,0.35);padding:1rem 0;">No comments yet. Be the first!</p>'}
+        </div>`;
+    }
+
+    function toggleReplyBox(commentId) {
+      const box = document.getElementById(`replyBox-${commentId}`);
+      if (!box) return;
+      const isOpen = box.style.display !== 'none';
+      box.style.display = isOpen ? 'none' : 'flex';
+      if (!isOpen) document.getElementById(`replyInput-${commentId}`)?.focus();
+    }
+
+    async function submitRootComment() {
+      if (!currentSession) return;
+      const input = document.getElementById('rootCommentInput');
+      const content = input.value.trim();
+      if (!content) return;
+      const { error } = await window.supabase.from('comments').insert({
+        post_id: postId, user_id: currentSession.user.id, content
+      });
+      if (error) { showToast(error.message, true); return; }
+      input.value = '';
+      showToast('Comment posted!');
+      await loadComments();
+    }
+
+    async function submitReply(parentId) {
+      if (!currentSession) return;
+      const input = document.getElementById(`replyInput-${parentId}`);
+      const content = input.value.trim();
+      if (!content) return;
+      const { error } = await window.supabase.from('comments').insert({
+        post_id: postId, user_id: currentSession.user.id,
+        parent_id: parentId, content
+      });
+      if (error) { showToast(error.message, true); return; }
+      showToast('Reply posted!');
+      await loadComments();
+    }
+
+    async function toggleLike() {
+      if (!currentSession) { window.location.href = 'auth.html'; return; }
+      const btn      = document.getElementById('likeBtn');
+      const countEl  = document.getElementById('likeCount');
+      const isLiked  = btn.classList.contains('liked');
+      const current  = parseInt(countEl.textContent) || 0;
+
+      btn.disabled = true;
+      if (isLiked) {
+        await window.supabase.from('post_likes').delete()
+          .eq('post_id', postId).eq('user_id', currentSession.user.id);
+        await window.supabase.from('posts').update({ likes_count: Math.max(0, current - 1) }).eq('id', postId);
+        btn.classList.remove('liked');
+        btn.querySelector('.c-like-icon').textContent = '🤍';
+        countEl.textContent = Math.max(0, current - 1);
+      } else {
+        await window.supabase.from('post_likes').insert({ post_id: postId, user_id: currentSession.user.id }).maybeSingle();
+        const newCount = current + 1;
+        await window.supabase.from('posts').update({ likes_count: newCount }).eq('id', postId);
+        btn.classList.add('liked');
+        btn.querySelector('.c-like-icon').textContent = '❤️';
+        countEl.textContent = newCount;
+
+        // Check community star badge for post author
+        const { data: postRow } = await window.supabase.from('posts').select('user_id').eq('id', postId).single();
+        if (postRow) {
+          const { data: authorPosts } = await window.supabase.from('posts').select('likes_count').eq('user_id', postRow.user_id);
+          const total = (authorPosts||[]).reduce((s,p)=>s+(p.likes_count||0),0);
+          if (total >= 50) {
+            await window.supabase.from('user_badges').insert({ user_id: postRow.user_id, badge_id: 'community_star' }).maybeSingle();
+          }
+        }
+      }
+      btn.disabled = false;
+    }
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'c-toast' + (isError ? ' error' : '');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>
