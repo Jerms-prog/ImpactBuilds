@@ -11,10 +11,11 @@
     .users-tab { padding:0.38rem 1.1rem; border:none; background:none; border-radius:6px; font-size:0.82rem; font-weight:600; color:var(--text-muted); cursor:pointer; transition:all 0.18s; }
     .users-tab.active { background:rgba(0,200,212,0.12); color:var(--teal); }
 
-    .user-card { background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); padding:1.1rem 1.25rem; display:flex; align-items:center; gap:1rem; }
+    .user-card { background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); padding:1.1rem 1.25rem; display:flex; align-items:center; gap:1rem; cursor:pointer; transition:border-color 0.15s, box-shadow 0.15s; border:1px solid transparent; }
+    .user-card:hover { border-color:rgba(0,200,212,0.25); box-shadow:0 0 0 1px rgba(0,200,212,0.1),var(--shadow); }
     .user-avatar { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1rem; color:#fff; flex-shrink:0; }
-    .user-avatar--admin   { background:linear-gradient(135deg,var(--teal),#0099a8); }
-    .user-avatar--community { background:linear-gradient(135deg,#6a73bb,#4a50a0); }
+    .user-avatar--admin    { background:linear-gradient(135deg,var(--teal),#0099a8); }
+    .user-avatar--community{ background:linear-gradient(135deg,#6a73bb,#4a50a0); }
     .user-info h3 { font-size:0.9rem; font-weight:700; color:var(--text); margin-bottom:0.15rem; }
     .user-info p  { font-size:0.78rem; color:var(--text-muted); }
     .user-actions { display:flex; gap:0.5rem; margin-left:auto; align-items:center; flex-shrink:0; }
@@ -24,15 +25,37 @@
     .users-list { display:flex; flex-direction:column; gap:0.6rem; }
 
     .member-stat { display:inline-flex; align-items:center; gap:0.25rem; font-size:0.73rem; color:var(--text-muted); background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:4px; padding:0.15rem 0.5rem; }
-
     .search-bar { display:flex; gap:0.5rem; margin-bottom:1rem; }
     .search-bar input { flex:1; background:var(--input-bg); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:inherit; font-size:0.85rem; padding:0.55rem 0.85rem; outline:none; transition:border-color 0.2s; }
     .search-bar input:focus { border-color:var(--teal); }
     .search-bar input::placeholder { color:var(--text-dim); }
-
     .empty-state { text-align:center; padding:2.5rem 1rem; color:var(--text-muted); font-size:0.85rem; }
-
     .admin-self-badge { font-size:0.65rem; color:var(--text-muted); background:rgba(255,255,255,0.06); padding:0.1rem 0.4rem; border-radius:3px; }
+
+    /* Management modal extras */
+    .modal-scrollable { max-height:88vh; overflow-y:auto; }
+    .mm-header { display:flex; align-items:center; gap:1rem; padding-bottom:1.25rem; margin-bottom:1.25rem; border-bottom:1px solid var(--border); }
+    .mm-header-info { flex:1; min-width:0; }
+    .mm-header-info .mm-username { font-size:1rem; font-weight:700; color:var(--text); display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; }
+    .mm-header-info .mm-joined  { font-size:0.78rem; color:var(--text-muted); margin-top:0.15rem; }
+
+    .mm-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:0.5rem; margin-bottom:1.35rem; }
+    .mm-stat { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:7px; padding:0.55rem 0.5rem; text-align:center; }
+    .mm-stat strong { display:block; font-size:1rem; font-weight:700; color:var(--text); }
+    .mm-stat span   { font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.07em; }
+
+    .mm-section { margin-bottom:1.25rem; }
+    .mm-section-label { font-size:0.68rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.75rem; }
+
+    .staff-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem; }
+    .staff-row-info { font-size:0.83rem; }
+    .staff-row-info strong { display:block; color:var(--text); margin-bottom:0.15rem; }
+    .staff-row-info span { color:var(--text-muted); font-size:0.75rem; }
+
+    .mm-danger { background:rgba(200,50,50,0.05); border:1px solid rgba(200,50,50,0.18); border-radius:8px; padding:1rem; margin-top:0.5rem; }
+    .mm-danger-msg { font-size:0.78rem; color:var(--text-muted); margin-bottom:0.75rem; line-height:1.55; }
+    .mm-delete-confirm { display:none; background:rgba(200,50,50,0.1); border:1px solid rgba(200,50,50,0.3); border-radius:6px; padding:0.7rem 0.9rem; font-size:0.82rem; color:var(--text); align-items:center; justify-content:space-between; gap:0.75rem; flex-wrap:wrap; margin-top:0.75rem; }
+    .mm-delete-confirm.show { display:flex; }
   </style>
 </head>
 <body>
@@ -67,7 +90,7 @@
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
       <div>
         <h1 class="admin-page-title" style="margin-bottom:0;">Users</h1>
-        <p class="admin-page-sub" style="margin-bottom:0;">Manage admin accounts and view community members.</p>
+        <p class="admin-page-sub" style="margin-bottom:0;">Manage admin accounts and community members.</p>
       </div>
       <button class="btn btn--teal" id="addAdminBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -75,7 +98,7 @@
       </button>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start;">
+    <div style="display:grid;grid-template-columns:1fr 300px;gap:1.5rem;align-items:start;">
 
       <!-- Left: tabs + lists -->
       <div>
@@ -108,8 +131,9 @@
             </div>
             <div style="padding:1rem 1.25rem 0.5rem;">
               <div class="search-bar">
-                <input type="text" id="memberSearch" placeholder="Search by username…" oninput="filterMembers()"/>
+                <input type="text" id="memberSearch" placeholder="Search by username or display name…" oninput="filterMembers()"/>
               </div>
+              <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.85rem;">Click any member to manage their account.</p>
               <div class="users-list" id="membersList">
                 <div class="empty-state">Loading…</div>
               </div>
@@ -136,15 +160,17 @@
               <strong style="color:var(--text);font-size:0.78rem;">Active</strong>
             </div>
             <hr style="border:none;border-top:1px solid var(--border);"/>
-            <p style="font-size:0.75rem;color:var(--text-muted);line-height:1.5;">Multiple admins can be signed in simultaneously — each with their own account. Only emails in the admin whitelist can access this panel.</p>
+            <p style="font-size:0.75rem;color:var(--text-muted);line-height:1.5;">Multiple admins can be signed in simultaneously. Only whitelisted emails can access this panel.</p>
             <button class="btn btn--danger btn--sm btn--full" data-logout>Log Out</button>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-header"><h3>Admin Whitelist</h3></div>
-          <div class="card-body" style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">
-            Only emails stored in <strong style="color:var(--text);">Settings → admin_emails</strong> can log into this panel. Add an email there to grant admin access, or use <strong style="color:var(--text);">Add Admin</strong> above.
+          <div class="card-header"><h3>What you can do</h3></div>
+          <div class="card-body" style="font-size:0.78rem;color:var(--text-muted);line-height:1.7;display:flex;flex-direction:column;gap:0.35rem;">
+            <div>✏️ <strong style="color:var(--text);">Edit</strong> username, display name, and bio</div>
+            <div>⭐ <strong style="color:var(--teal);">Grant or revoke</strong> Staff status</div>
+            <div>🗑️ <strong style="color:#e06060;">Delete</strong> account and all their content</div>
           </div>
         </div>
       </div>
@@ -157,7 +183,7 @@
   <div class="modal">
     <h2 class="modal-title">Add Admin Account</h2>
     <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6;">
-      Enter the email of the new admin. They will be added to the whitelist and a Supabase auth account will need to be created for them separately.
+      Enter the email of the new admin. They will be added to the whitelist. They should register on the community page with this email to also get a community profile.
     </p>
     <div class="login-alert" id="addAdminAlert"></div>
     <div style="margin-bottom:1rem;">
@@ -183,14 +209,77 @@
   </div>
 </div>
 
-<!-- View Member Modal -->
+<!-- Member Management Modal -->
 <div class="modal-overlay" id="memberModal">
-  <div class="modal" style="max-width:480px;">
-    <h2 class="modal-title" id="memberModalTitle">Member</h2>
-    <div id="memberModalBody" style="font-size:0.85rem;color:var(--text-muted);"></div>
-    <div class="modal-actions">
+  <div class="modal modal-scrollable" style="max-width:520px;">
+
+    <!-- Header -->
+    <div class="mm-header">
+      <div class="user-avatar user-avatar--community" id="mmAvatar" style="width:52px;height:52px;font-size:1.2rem;flex-shrink:0;"></div>
+      <div class="mm-header-info">
+        <div class="mm-username">
+          <span id="mmHeaderUsername"></span>
+          <span class="role-badge role-badge--admin" id="mmStaffIndicator" style="display:none;">Staff</span>
+        </div>
+        <div class="mm-joined" id="mmHeaderJoined"></div>
+      </div>
+      <a id="mmViewProfileLink" href="#" target="_blank" class="btn btn--ghost btn--sm" style="flex-shrink:0;">View Profile →</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="mm-stats" id="mmStatsRow"></div>
+
+    <!-- Edit Profile -->
+    <div class="mm-section">
+      <div class="mm-section-label">Edit Profile</div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+        <div>
+          <label style="font-size:0.72rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:0.3rem;">Username</label>
+          <input class="form-control" type="text" id="mmUsername" maxlength="24" placeholder="CoolBuilder42"/>
+          <span style="font-size:0.7rem;color:var(--text-dim);margin-top:0.25rem;display:block;">Letters, numbers, underscore only (3–24 chars). Changing this breaks existing profile links.</span>
+        </div>
+        <div>
+          <label style="font-size:0.72rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:0.3rem;">Display Name</label>
+          <input class="form-control" type="text" id="mmDisplayName" maxlength="40" placeholder="Cool Builder"/>
+        </div>
+        <div>
+          <label style="font-size:0.72rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:0.3rem;">Bio <span style="font-weight:400;opacity:0.5;">(max 160 chars)</span></label>
+          <textarea class="form-control" id="mmBio" rows="3" maxlength="160" style="resize:vertical;" placeholder="Member bio…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Permissions -->
+    <div class="mm-section">
+      <div class="mm-section-label">Permissions</div>
+      <div class="staff-row">
+        <div class="staff-row-info">
+          <strong>Staff Status</strong>
+          <span>Shows a Staff badge on their posts, comments, and profile page.</span>
+        </div>
+        <button class="btn btn--sm" id="mmStaffToggleBtn" onclick="toggleMemberStaff()"></button>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="mm-danger">
+      <div class="mm-section-label" style="color:rgba(220,80,80,0.85);">Danger Zone</div>
+      <div class="mm-danger-msg">Deleting this account permanently removes their profile, all posts, comments, and badges. Their login credentials stay registered — they could re-join with the same email.</div>
+      <button class="btn btn--danger btn--sm" id="mmDeleteBtn" onclick="promptDeleteMember()">Delete Account</button>
+      <div class="mm-delete-confirm" id="mmDeleteConfirm">
+        <span>⚠️ Delete <strong id="mmDeleteConfirmName"></strong>? This cannot be undone.</span>
+        <div style="display:flex;gap:0.5rem;flex-shrink:0;">
+          <button class="btn btn--ghost btn--sm" onclick="cancelDeleteMember()">Cancel</button>
+          <button class="btn btn--danger btn--sm" id="mmDeleteConfirmBtn" onclick="confirmDeleteMember()">Yes, Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-alert" id="mmAlert" style="margin-top:1rem;"></div>
+
+    <div class="modal-actions" style="margin-top:1.25rem;">
       <button class="btn btn--ghost" id="memberModalCloseBtn">Close</button>
-      <a id="memberModalProfileLink" href="#" target="_blank" class="btn btn--teal">View Profile</a>
+      <button class="btn btn--teal" id="mmSaveBtn" onclick="saveMemberChanges()">Save Changes</button>
     </div>
   </div>
 </div>
@@ -205,17 +294,16 @@ let allMembers = [];
 let adminEmails = [];
 let currentUserEmail = '';
 let pendingRemoveEmail = null;
+let currentMember = null;
 
 function showTab(tab, btn) {
-  document.getElementById('tabAdmins').style.display   = tab === 'admins'    ? 'block' : 'none';
+  document.getElementById('tabAdmins').style.display    = tab === 'admins'    ? 'block' : 'none';
   document.getElementById('tabCommunity').style.display = tab === 'community' ? 'block' : 'none';
   document.querySelectorAll('.users-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 }
 
-function initials(str) {
-  return (str || '?')[0].toUpperCase();
-}
+function initials(str) { return (str || '?')[0].toUpperCase(); }
 
 function showToast(msg, type = 'success') {
   const t = document.createElement('div');
@@ -226,20 +314,23 @@ function showToast(msg, type = 'success') {
   setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000);
 }
 
+function showAlert(id, msg, type) {
+  const el = document.getElementById(id);
+  el.className = `login-alert show ${type}`;
+  el.textContent = msg;
+  if (type === 'success') setTimeout(() => { el.className = 'login-alert'; el.textContent = ''; }, 3000);
+}
+
 /* ---- Render admin list ---- */
 function renderAdmins() {
   const list = document.getElementById('adminsList');
   document.getElementById('adminCount').textContent = `${adminEmails.length} account${adminEmails.length!==1?'s':''}`;
-
-  if (!adminEmails.length) {
-    list.innerHTML = '<div class="empty-state">No admin accounts configured.</div>';
-    return;
-  }
+  if (!adminEmails.length) { list.innerHTML = '<div class="empty-state">No admin accounts configured.</div>'; return; }
 
   list.innerHTML = adminEmails.map(email => {
     const isSelf = email.toLowerCase() === currentUserEmail.toLowerCase();
     return `
-      <div class="user-card">
+      <div class="user-card" style="cursor:default;">
         <div class="user-avatar user-avatar--admin">${email[0].toUpperCase()}</div>
         <div class="user-info">
           <h3>${sanitize(email)} ${isSelf ? '<span class="admin-self-badge">You</span>' : ''}</h3>
@@ -268,15 +359,15 @@ function renderMembers(members) {
   const list = document.getElementById('membersList');
   document.getElementById('memberCount').textContent = `${allMembers.length} member${allMembers.length!==1?'s':''}`;
 
-  if (!members.length) {
-    list.innerHTML = '<div class="empty-state">No community members yet.</div>';
-    return;
-  }
+  if (!members.length) { list.innerHTML = '<div class="empty-state">No community members yet.</div>'; return; }
 
   list.innerHTML = members.map(m => {
     const joined = new Date(m.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const roleBadge = m.is_staff
+      ? `<span class="role-badge role-badge--admin">Staff</span>`
+      : `<span class="role-badge role-badge--community">Member</span>`;
     return `
-      <div class="user-card" style="cursor:pointer;" data-member='${JSON.stringify({id:m.id,username:m.username,display:m.display_name,bio:m.bio,joined,posts:m.post_count,badges:m.badge_count})}'>
+      <div class="user-card" onclick="openMemberModal('${m.user_id}')">
         <div class="user-avatar user-avatar--community">${initials(m.username)}</div>
         <div class="user-info">
           <h3>${sanitize(m.username)}${m.display_name && m.display_name !== m.username ? ` <span style="font-weight:400;color:var(--text-muted);">${sanitize(m.display_name)}</span>` : ''}</h3>
@@ -285,36 +376,168 @@ function renderMembers(members) {
         <div class="user-actions">
           <span class="member-stat">📝 ${m.post_count || 0}</span>
           <span class="member-stat">🏅 ${m.badge_count || 0}</span>
-          <span class="role-badge role-badge--community">Member</span>
+          ${roleBadge}
         </div>
       </div>`;
   }).join('');
-
-  list.querySelectorAll('[data-member]').forEach(card => {
-    card.addEventListener('click', () => {
-      const m = JSON.parse(card.dataset.member);
-      document.getElementById('memberModalTitle').textContent = m.username;
-      document.getElementById('memberModalBody').innerHTML = `
-        <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1rem;">
-          <div style="display:flex;justify-content:space-between;"><span>Display name</span><strong style="color:var(--text);">${sanitize(m.display||m.username)}</strong></div>
-          <div style="display:flex;justify-content:space-between;"><span>Joined</span><strong style="color:var(--text);">${sanitize(m.joined)}</strong></div>
-          <div style="display:flex;justify-content:space-between;"><span>Posts</span><strong style="color:var(--text);">${m.posts || 0}</strong></div>
-          <div style="display:flex;justify-content:space-between;"><span>Badges earned</span><strong style="color:var(--text);">${m.badges || 0}</strong></div>
-          ${m.bio ? `<div style="margin-top:0.5rem;padding:0.75rem;background:rgba(255,255,255,0.04);border-radius:6px;font-size:0.82rem;line-height:1.5;color:var(--text);">${sanitize(m.bio)}</div>` : ''}
-        </div>`;
-      document.getElementById('memberModalProfileLink').href = `../profile.html?user=${encodeURIComponent(m.username)}`;
-      document.getElementById('memberModal').classList.add('open');
-    });
-  });
 }
 
 function filterMembers() {
   const q = document.getElementById('memberSearch').value.trim().toLowerCase();
-  const filtered = q ? allMembers.filter(m => (m.username||'').toLowerCase().includes(q) || (m.display_name||'').toLowerCase().includes(q)) : allMembers;
+  const filtered = q
+    ? allMembers.filter(m => (m.username||'').toLowerCase().includes(q) || (m.display_name||'').toLowerCase().includes(q))
+    : allMembers;
   renderMembers(filtered);
 }
 
-/* ---- Load admin whitelist from settings ---- */
+/* ---- Open member management modal ---- */
+function openMemberModal(userId) {
+  currentMember = allMembers.find(m => m.user_id === userId);
+  if (!currentMember) return;
+  const m = currentMember;
+
+  document.getElementById('mmAvatar').textContent = initials(m.username);
+  document.getElementById('mmHeaderUsername').textContent = m.username;
+  document.getElementById('mmHeaderJoined').textContent =
+    'Joined ' + new Date(m.created_at).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('mmViewProfileLink').href = `../profile.html?user=${encodeURIComponent(m.username)}`;
+  document.getElementById('mmStaffIndicator').style.display = m.is_staff ? 'inline-block' : 'none';
+
+  document.getElementById('mmStatsRow').innerHTML = `
+    <div class="mm-stat"><strong>${m.post_count||0}</strong><span>Posts</span></div>
+    <div class="mm-stat"><strong>${m.comment_count||0}</strong><span>Comments</span></div>
+    <div class="mm-stat"><strong>${m.likes_count||0}</strong><span>Likes</span></div>
+    <div class="mm-stat"><strong>${m.badge_count||0}</strong><span>Badges</span></div>`;
+
+  document.getElementById('mmUsername').value    = m.username     || '';
+  document.getElementById('mmDisplayName').value = m.display_name || '';
+  document.getElementById('mmBio').value         = m.bio          || '';
+
+  updateStaffToggleBtn(m.is_staff);
+
+  document.getElementById('mmDeleteConfirm').classList.remove('show');
+  document.getElementById('mmDeleteBtn').style.display = 'inline-flex';
+  document.getElementById('mmAlert').className = 'login-alert';
+  document.getElementById('mmAlert').textContent = '';
+  document.getElementById('mmSaveBtn').disabled = false;
+  document.getElementById('mmSaveBtn').textContent = 'Save Changes';
+
+  document.getElementById('memberModal').classList.add('open');
+}
+
+function updateStaffToggleBtn(isStaff) {
+  const btn = document.getElementById('mmStaffToggleBtn');
+  if (isStaff) {
+    btn.textContent = 'Revoke Staff';
+    btn.className   = 'btn btn--danger btn--sm';
+  } else {
+    btn.textContent = 'Grant Staff';
+    btn.className   = 'btn btn--teal btn--sm';
+  }
+}
+
+/* ---- Toggle Staff ---- */
+async function toggleMemberStaff() {
+  if (!currentMember) return;
+  const newVal = !currentMember.is_staff;
+  const { error } = await supabase.from('profiles')
+    .update({ is_staff: newVal }).eq('user_id', currentMember.user_id);
+  if (error) { showAlert('mmAlert', error.message, 'error'); return; }
+
+  currentMember.is_staff = newVal;
+  const idx = allMembers.findIndex(m => m.user_id === currentMember.user_id);
+  if (idx !== -1) allMembers[idx].is_staff = newVal;
+
+  updateStaffToggleBtn(newVal);
+  document.getElementById('mmStaffIndicator').style.display = newVal ? 'inline-block' : 'none';
+  renderMembers(allMembers);
+  showToast(newVal ? `${currentMember.username} is now Staff.` : `${currentMember.username} Staff status removed.`);
+}
+
+/* ---- Save profile edits ---- */
+async function saveMemberChanges() {
+  if (!currentMember) return;
+  const btn = document.getElementById('mmSaveBtn');
+  const newUsername    = document.getElementById('mmUsername').value.trim();
+  const newDisplayName = document.getElementById('mmDisplayName').value.trim();
+  const newBio         = document.getElementById('mmBio').value.trim();
+
+  if (!newUsername || !/^[a-zA-Z0-9_]{3,24}$/.test(newUsername)) {
+    showAlert('mmAlert', 'Username must be 3–24 chars: letters, numbers, underscore only.', 'error'); return;
+  }
+
+  if (newUsername.toLowerCase() !== currentMember.username.toLowerCase()) {
+    const { data: existing } = await supabase.from('profiles')
+      .select('id').eq('username', newUsername).maybeSingle();
+    if (existing) { showAlert('mmAlert', 'That username is already taken.', 'error'); return; }
+  }
+
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const { error } = await supabase.from('profiles').update({
+    username:     newUsername,
+    display_name: newDisplayName || newUsername,
+    bio:          newBio || null
+  }).eq('user_id', currentMember.user_id);
+
+  btn.disabled = false; btn.textContent = 'Save Changes';
+
+  if (error) { showAlert('mmAlert', error.message, 'error'); return; }
+
+  currentMember.username     = newUsername;
+  currentMember.display_name = newDisplayName || newUsername;
+  currentMember.bio          = newBio;
+  const idx = allMembers.findIndex(m => m.user_id === currentMember.user_id);
+  if (idx !== -1) { allMembers[idx].username = newUsername; allMembers[idx].display_name = newDisplayName; allMembers[idx].bio = newBio; }
+
+  document.getElementById('mmAvatar').textContent = initials(newUsername);
+  document.getElementById('mmHeaderUsername').textContent = newUsername;
+  document.getElementById('mmViewProfileLink').href = `../profile.html?user=${encodeURIComponent(newUsername)}`;
+  renderMembers(allMembers);
+  showAlert('mmAlert', 'Profile updated.', 'success');
+}
+
+/* ---- Delete member ---- */
+function promptDeleteMember() {
+  document.getElementById('mmDeleteConfirmName').textContent = currentMember?.username || 'this account';
+  document.getElementById('mmDeleteConfirm').classList.add('show');
+  document.getElementById('mmDeleteBtn').style.display = 'none';
+}
+
+function cancelDeleteMember() {
+  document.getElementById('mmDeleteConfirm').classList.remove('show');
+  document.getElementById('mmDeleteBtn').style.display = 'inline-flex';
+}
+
+async function confirmDeleteMember() {
+  if (!currentMember) return;
+  const btn = document.getElementById('mmDeleteConfirmBtn');
+  btn.disabled = true; btn.textContent = 'Deleting…';
+
+  const uid = currentMember.user_id;
+  const username = currentMember.username;
+
+  // Delete in safe order
+  await supabase.from('user_badges').delete().eq('user_id', uid);
+  await supabase.from('post_likes').delete().eq('user_id', uid);
+  await supabase.from('comments').delete().eq('user_id', uid);
+  await supabase.from('posts').delete().eq('user_id', uid);
+  const { error } = await supabase.from('profiles').delete().eq('user_id', uid);
+
+  if (error) {
+    btn.disabled = false; btn.textContent = 'Yes, Delete';
+    showAlert('mmAlert', error.message, 'error'); return;
+  }
+
+  document.getElementById('memberModal').classList.remove('open');
+  allMembers = allMembers.filter(m => m.user_id !== uid);
+  document.getElementById('memberCount').textContent = `${allMembers.length} member${allMembers.length!==1?'s':''}`;
+  renderMembers(allMembers);
+  showToast(`${username} deleted.`, 'error');
+  currentMember = null;
+}
+
+/* ---- Load admin whitelist ---- */
 async function loadAdminEmails() {
   const { data } = await supabase.from('settings')
     .select('setting_value').eq('setting_key','admin_emails').maybeSingle();
@@ -329,34 +552,33 @@ async function saveAdminEmails(emails) {
   renderAdmins();
 }
 
-/* ---- Load community members from profiles ---- */
+/* ---- Load community members ---- */
 async function loadMembers() {
   const { data: profiles } = await supabase.from('profiles')
     .select('*').order('created_at', { ascending: false });
 
-  if (!profiles || !profiles.length) {
-    allMembers = [];
-    renderMembers([]);
-    return;
-  }
+  if (!profiles || !profiles.length) { allMembers = []; renderMembers([]); return; }
 
-  // Get post counts per user
   const userIds = profiles.map(p => p.user_id);
-  const { data: posts } = await supabase.from('posts')
-    .select('user_id').in('user_id', userIds);
-  const postCountMap = {};
-  (posts || []).forEach(p => { postCountMap[p.user_id] = (postCountMap[p.user_id] || 0) + 1; });
 
-  // Get badge counts per user
-  const { data: badges } = await supabase.from('user_badges')
-    .select('user_id').in('user_id', userIds);
-  const badgeCountMap = {};
-  (badges || []).forEach(b => { badgeCountMap[b.user_id] = (badgeCountMap[b.user_id] || 0) + 1; });
+  const [{ data: posts }, { data: badges }, { data: comments }, { data: postLikesData }] = await Promise.all([
+    supabase.from('posts').select('user_id, likes_count').in('user_id', userIds),
+    supabase.from('user_badges').select('user_id').in('user_id', userIds),
+    supabase.from('comments').select('user_id').in('user_id', userIds),
+    supabase.from('post_likes').select('user_id').in('user_id', userIds)
+  ]);
+
+  const postCountMap = {}, badgeCountMap = {}, commentCountMap = {}, likesMap = {};
+  (posts    || []).forEach(p => { postCountMap[p.user_id]    = (postCountMap[p.user_id]    || 0) + 1; likesMap[p.user_id] = (likesMap[p.user_id] || 0) + (p.likes_count||0); });
+  (badges   || []).forEach(b => { badgeCountMap[b.user_id]   = (badgeCountMap[b.user_id]   || 0) + 1; });
+  (comments || []).forEach(c => { commentCountMap[c.user_id] = (commentCountMap[c.user_id] || 0) + 1; });
 
   allMembers = profiles.map(p => ({
     ...p,
-    post_count:  postCountMap[p.user_id]  || 0,
-    badge_count: badgeCountMap[p.user_id] || 0
+    post_count:    postCountMap[p.user_id]    || 0,
+    badge_count:   badgeCountMap[p.user_id]   || 0,
+    comment_count: commentCountMap[p.user_id] || 0,
+    likes_count:   likesMap[p.user_id]        || 0
   }));
 
   document.getElementById('memberCount').textContent = `${allMembers.length} member${allMembers.length!==1?'s':''}`;
@@ -369,8 +591,8 @@ async function loadMembers() {
 
   const user = AUTH.getUser();
   currentUserEmail = user ? user.email : '';
-  document.getElementById('currentUser').textContent = currentUserEmail;
-  document.getElementById('topbarWho').textContent = currentUserEmail;
+  document.getElementById('currentUser').textContent  = currentUserEmail;
+  document.getElementById('topbarWho').textContent    = currentUserEmail;
 
   await loadAdminEmails();
   await loadMembers();
@@ -394,8 +616,7 @@ async function loadMembers() {
     if (adminEmails.map(e=>e.toLowerCase()).includes(email)) {
       alertEl.className = 'login-alert show error'; alertEl.textContent = 'This email is already an admin.'; return;
     }
-    const updated = [...adminEmails, email];
-    await saveAdminEmails(updated);
+    await saveAdminEmails([...adminEmails, email]);
     addModal.classList.remove('open');
     showToast(`${email} added as admin.`);
   });
@@ -406,19 +627,28 @@ async function loadMembers() {
   removeModal.addEventListener('click', e => { if (e.target === removeModal) { removeModal.classList.remove('open'); pendingRemoveEmail = null; } });
   document.getElementById('removeAdminConfirmBtn').addEventListener('click', async () => {
     if (!pendingRemoveEmail) return;
-    const updated = adminEmails.filter(e => e.toLowerCase() !== pendingRemoveEmail.toLowerCase());
-    await saveAdminEmails(updated);
+    await saveAdminEmails(adminEmails.filter(e => e.toLowerCase() !== pendingRemoveEmail.toLowerCase()));
     removeModal.classList.remove('open');
     showToast(`${pendingRemoveEmail} removed from admin.`, 'error');
     pendingRemoveEmail = null;
   });
 
   /* Member modal close */
-  document.getElementById('memberModalCloseBtn').addEventListener('click', () => document.getElementById('memberModal').classList.remove('open'));
-  document.getElementById('memberModal').addEventListener('click', e => { if (e.target === document.getElementById('memberModal')) document.getElementById('memberModal').classList.remove('open'); });
+  const memberModal = document.getElementById('memberModal');
+  document.getElementById('memberModalCloseBtn').addEventListener('click', () => {
+    memberModal.classList.remove('open'); currentMember = null;
+  });
+  memberModal.addEventListener('click', e => {
+    if (e.target === memberModal) { memberModal.classList.remove('open'); currentMember = null; }
+  });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { addModal.classList.remove('open'); removeModal.classList.remove('open'); document.getElementById('memberModal').classList.remove('open'); }
+    if (e.key === 'Escape') {
+      addModal.classList.remove('open');
+      removeModal.classList.remove('open');
+      memberModal.classList.remove('open');
+      currentMember = null;
+    }
   });
 
   document.querySelectorAll('[data-logout]').forEach(b => b.addEventListener('click', () => AUTH.logout()));
