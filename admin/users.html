@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -7,47 +7,46 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="admin.css"/>
   <style>
-    .user-card { background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); padding:1.5rem; display:flex; align-items:center; gap:1.25rem; }
-    .user-avatar { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-h); font-weight:800; font-size:1.2rem; color:#fff; flex-shrink:0; }
-    .user-avatar--admin { background:linear-gradient(135deg,var(--teal),#0099a8); }
-    .user-avatar--viewer { background:linear-gradient(135deg,#6a73bb,#4a50a0); }
-    .user-info h3 { font-size:0.95rem; font-weight:700; color:var(--text); margin-bottom:0.2rem; }
-    .user-info p { font-size:0.8rem; color:var(--text-muted); }
-    .user-actions { display:flex; gap:0.5rem; margin-left:auto; align-items:center; }
-    .role-badge { display:inline-block; padding:0.2rem 0.65rem; border-radius:100px; font-size:0.7rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; }
-    .role-badge--admin  { background:rgba(0,200,212,0.15); color:var(--teal); border:1px solid rgba(0,200,212,0.25); }
-    .role-badge--viewer { background:rgba(106,115,187,0.15); color:#6a73bb; border:1px solid rgba(106,115,187,0.25); }
-    .users-list { display:flex; flex-direction:column; gap:0.875rem; }
-    .invite-form { background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); padding:1.5rem; }
-    .invite-form h3 { font-family:var(--font-h); font-size:0.95rem; font-weight:700; color:var(--text); margin-bottom:1rem; }
+    .users-tabs { display:flex; gap:3px; background:var(--sidebar-bg); border:1px solid var(--border); border-radius:8px; padding:3px; width:fit-content; margin-bottom:1.5rem; }
+    .users-tab { padding:0.38rem 1.1rem; border:none; background:none; border-radius:6px; font-size:0.82rem; font-weight:600; color:var(--text-muted); cursor:pointer; transition:all 0.18s; }
+    .users-tab.active { background:rgba(0,200,212,0.12); color:var(--teal); }
+
+    .user-card { background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); padding:1.1rem 1.25rem; display:flex; align-items:center; gap:1rem; }
+    .user-avatar { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1rem; color:#fff; flex-shrink:0; }
+    .user-avatar--admin   { background:linear-gradient(135deg,var(--teal),#0099a8); }
+    .user-avatar--community { background:linear-gradient(135deg,#6a73bb,#4a50a0); }
+    .user-info h3 { font-size:0.9rem; font-weight:700; color:var(--text); margin-bottom:0.15rem; }
+    .user-info p  { font-size:0.78rem; color:var(--text-muted); }
+    .user-actions { display:flex; gap:0.5rem; margin-left:auto; align-items:center; flex-shrink:0; }
+    .role-badge { display:inline-block; padding:0.18rem 0.6rem; border-radius:100px; font-size:0.68rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; }
+    .role-badge--admin     { background:rgba(0,200,212,0.15); color:var(--teal); border:1px solid rgba(0,200,212,0.25); }
+    .role-badge--community { background:rgba(106,115,187,0.15); color:#8a93d4; border:1px solid rgba(106,115,187,0.25); }
+    .users-list { display:flex; flex-direction:column; gap:0.6rem; }
+
+    .member-stat { display:inline-flex; align-items:center; gap:0.25rem; font-size:0.73rem; color:var(--text-muted); background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:4px; padding:0.15rem 0.5rem; }
+
+    .search-bar { display:flex; gap:0.5rem; margin-bottom:1rem; }
+    .search-bar input { flex:1; background:var(--input-bg); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:inherit; font-size:0.85rem; padding:0.55rem 0.85rem; outline:none; transition:border-color 0.2s; }
+    .search-bar input:focus { border-color:var(--teal); }
+    .search-bar input::placeholder { color:var(--text-dim); }
+
+    .empty-state { text-align:center; padding:2.5rem 1rem; color:var(--text-muted); font-size:0.85rem; }
+
+    .admin-self-badge { font-size:0.65rem; color:var(--text-muted); background:rgba(255,255,255,0.06); padding:0.1rem 0.4rem; border-radius:3px; }
   </style>
 </head>
 <body>
 
 <header class="admin-topbar">
   <div class="admin-topbar__logo">
-    <svg width="15" height="20" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="0,7 8,2 28,2 20,7" fill="rgba(215,225,252,0.85)"/>
-      <polygon points="0,7 20,7 20,35 0,35" fill="rgba(255,255,255,0.96)"/>
-      <polygon points="20,7 28,2 28,30 20,35" fill="rgba(185,202,242,0.78)"/>
-      <rect x="0" y="10" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
-      <rect x="0" y="14" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
-      <rect x="0" y="18" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
-      <rect x="0" y="22" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
-      <rect x="0" y="26" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
-      <rect x="0" y="30" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
-      <rect x="0" y="33" width="20" height="2" fill="rgba(135,160,215,0.55)"/>
-    </svg>
+    <svg width="15" height="20" viewBox="0 0 28 36" fill="none"><polygon points="0,7 8,2 28,2 20,7" fill="rgba(215,225,252,0.85)"/><polygon points="0,7 20,7 20,35 0,35" fill="rgba(255,255,255,0.96)"/><polygon points="20,7 28,2 28,30 20,35" fill="rgba(185,202,242,0.78)"/><rect x="0" y="10" width="20" height="2" fill="rgba(135,160,215,0.55)"/><rect x="0" y="14" width="20" height="2" fill="rgba(135,160,215,0.55)"/><rect x="0" y="18" width="20" height="2" fill="rgba(135,160,215,0.55)"/><rect x="0" y="22" width="20" height="2" fill="rgba(135,160,215,0.55)"/><rect x="0" y="26" width="20" height="2" fill="rgba(135,160,215,0.55)"/><rect x="0" y="30" width="20" height="2" fill="rgba(135,160,215,0.55)"/><rect x="0" y="33" width="20" height="2" fill="rgba(135,160,215,0.55)"/></svg>
     Impact<span>Builds</span>
-    <svg width="13" height="12" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="16,2 30,26 2,26" fill="#fff" stroke="#d04040" stroke-width="5" stroke-linejoin="round"/>
-      <rect x="13.5" y="9" width="5" height="9" rx="2.5" fill="#1a1a1a"/>
-      <circle cx="16" cy="22.5" r="2.5" fill="#1a1a1a"/>
-    </svg>
+    <svg width="13" height="12" viewBox="0 0 32 28" fill="none"><polygon points="16,2 30,26 2,26" fill="#fff" stroke="#d04040" stroke-width="5" stroke-linejoin="round"/><rect x="13.5" y="9" width="5" height="9" rx="2.5" fill="#1a1a1a"/><circle cx="16" cy="22.5" r="2.5" fill="#1a1a1a"/></svg>
   </div>
   <span class="badge-role">Admin</span>
   <div class="admin-topbar__spacer"></div>
   <div class="admin-topbar__actions">
+    <span id="topbarWho" style="font-size:0.78rem;color:var(--text-muted);"></span>
     <a href="../index.html" class="btn btn--ghost btn--sm" target="_blank">View Site</a>
     <button class="btn btn--danger btn--sm" data-logout>Log Out</button>
   </div>
@@ -56,115 +55,96 @@
 <div class="admin-layout">
   <nav class="admin-sidebar">
     <span class="sidebar-section-label">Main</span>
-    <a href="dashboard.html" class="sidebar-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Dashboard
-    </a>
-    <a href="notes.html" class="sidebar-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
-      Notes
-    </a>
-    <a href="media.html" class="sidebar-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-      Media
-    </a>
-    <a href="messages.html" class="sidebar-link" data-msg-badge>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Messages
-    </a>
-    <a href="users.html" class="sidebar-link active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      Users
-    </a>
-    <a href="settings.html" class="sidebar-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Settings
-    </a>
+    <a href="dashboard.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+    <a href="notes.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>Notes</a>
+    <a href="media.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Media</a>
+    <a href="messages.html" class="sidebar-link" data-msg-badge><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Messages</a>
+    <a href="users.html" class="sidebar-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Users</a>
+    <a href="settings.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l-.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
   </nav>
 
   <main class="admin-main">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:0.25rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
       <div>
         <h1 class="admin-page-title" style="margin-bottom:0;">Users</h1>
-        <p class="admin-page-sub" style="margin-bottom:0;">Manage admin accounts and viewer access.</p>
+        <p class="admin-page-sub" style="margin-bottom:0;">Manage admin accounts and view community members.</p>
       </div>
-      <button class="btn btn--teal" id="addUserBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add User
+      <button class="btn btn--teal" id="addAdminBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Admin
       </button>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 360px;gap:1.5rem;margin-top:1.5rem;align-items:start;">
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start;">
 
-      <!-- Users list -->
+      <!-- Left: tabs + lists -->
       <div>
-        <div class="card" style="margin-bottom:1.25rem;">
-          <div class="card-header">
-            <h3>All Users</h3>
-            <span id="userCount" style="font-size:0.8rem;color:var(--text-muted);"></span>
-          </div>
-          <div class="users-list" style="padding:1.25rem;" id="usersList"></div>
+        <div class="users-tabs">
+          <button class="users-tab active" onclick="showTab('admins',this)">Admin Accounts</button>
+          <button class="users-tab" onclick="showTab('community',this)">Community Members</button>
         </div>
 
-        <!-- Activity log -->
-        <div class="card">
-          <div class="card-header"><h3>Recent Activity</h3></div>
-          <div class="card-body">
-            <div id="activityLog" style="display:flex;flex-direction:column;gap:0.6rem;"></div>
+        <!-- ADMIN ACCOUNTS tab -->
+        <div id="tabAdmins">
+          <div class="card">
+            <div class="card-header">
+              <h3>Admin Accounts</h3>
+              <span id="adminCount" style="font-size:0.8rem;color:var(--text-muted);"></span>
+            </div>
+            <div style="padding:1rem 1.25rem;">
+              <div class="users-list" id="adminsList">
+                <div class="empty-state">Loading…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMMUNITY MEMBERS tab -->
+        <div id="tabCommunity" style="display:none;">
+          <div class="card">
+            <div class="card-header">
+              <h3>Community Members</h3>
+              <span id="memberCount" style="font-size:0.8rem;color:var(--text-muted);"></span>
+            </div>
+            <div style="padding:1rem 1.25rem 0.5rem;">
+              <div class="search-bar">
+                <input type="text" id="memberSearch" placeholder="Search by username…" oninput="filterMembers()"/>
+              </div>
+              <div class="users-list" id="membersList">
+                <div class="empty-state">Loading…</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Roles info -->
+      <!-- Right: session info -->
       <div style="display:flex;flex-direction:column;gap:1.25rem;">
         <div class="card">
-          <div class="card-header"><h3>Role Permissions</h3></div>
-          <div class="card-body" style="font-size:0.85rem;">
-            <div style="margin-bottom:1rem;">
-              <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
-                <span class="role-badge role-badge--admin">Admin</span>
-              </div>
-              <ul style="list-style:none;display:flex;flex-direction:column;gap:0.3rem;padding-left:0.5rem;">
-                <li style="color:var(--text);"><span style="color:var(--green);">✓</span> Manage Notes (Create, Edit, Delete)</li>
-                <li style="color:var(--text);"><span style="color:var(--green);">✓</span> Manage Media (Upload, Delete)</li>
-                <li style="color:var(--text);"><span style="color:var(--green);">✓</span> Manage Users</li>
-                <li style="color:var(--text);"><span style="color:var(--green);">✓</span> Access Settings</li>
-                <li style="color:var(--text);"><span style="color:var(--green);">✓</span> Export / Import Data</li>
-              </ul>
+          <div class="card-header"><h3>Current Session</h3></div>
+          <div class="card-body" style="font-size:0.85rem;display:flex;flex-direction:column;gap:0.65rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="color:var(--text-muted);">Signed in as</span>
+              <strong id="currentUser" style="color:var(--teal);font-size:0.82rem;text-align:right;"></strong>
             </div>
-            <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0;"/>
-            <div>
-              <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
-                <span class="role-badge role-badge--viewer">Viewer</span>
-              </div>
-              <ul style="list-style:none;display:flex;flex-direction:column;gap:0.3rem;padding-left:0.5rem;">
-                <li style="color:var(--text);"><span style="color:var(--green);">✓</span> View Dashboard Stats</li>
-                <li style="color:var(--text);"><span style="color:var(--green);">✓</span> View Notes &amp; Media</li>
-                <li style="color:var(--text-muted);"><span style="color:var(--red);">✗</span> Create or Edit Content</li>
-                <li style="color:var(--text-muted);"><span style="color:var(--red);">✗</span> Access Settings</li>
-                <li style="color:var(--text-muted);"><span style="color:var(--red);">✗</span> Manage Users</li>
-              </ul>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="color:var(--text-muted);">Role</span>
+              <span class="role-badge role-badge--admin">Admin</span>
             </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="color:var(--text-muted);">Session</span>
+              <strong style="color:var(--text);font-size:0.78rem;">Active</strong>
+            </div>
+            <hr style="border:none;border-top:1px solid var(--border);"/>
+            <p style="font-size:0.75rem;color:var(--text-muted);line-height:1.5;">Multiple admins can be signed in simultaneously — each with their own account. Only emails in the admin whitelist can access this panel.</p>
+            <button class="btn btn--danger btn--sm btn--full" data-logout>Log Out</button>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-header"><h3>Session Info</h3></div>
-          <div class="card-body" style="font-size:0.85rem;display:flex;flex-direction:column;gap:0.6rem;">
-            <div style="display:flex;justify-content:space-between;">
-              <span style="color:var(--text-muted);">Logged in as</span>
-              <strong id="currentUser" style="color:var(--text);"></strong>
-            </div>
-            <div style="display:flex;justify-content:space-between;">
-              <span style="color:var(--text-muted);">Role</span>
-              <span class="role-badge role-badge--admin">Admin</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;">
-              <span style="color:var(--text-muted);">Session expires</span>
-              <strong id="sessionExpiry" style="color:var(--text);font-size:0.78rem;"></strong>
-            </div>
-            <hr style="border:none;border-top:1px solid var(--border);"/>
-            <button class="btn btn--danger btn--sm btn--full" data-logout>Log Out</button>
+          <div class="card-header"><h3>Admin Whitelist</h3></div>
+          <div class="card-body" style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">
+            Only emails stored in <strong style="color:var(--text);">Settings → admin_emails</strong> can log into this panel. Add an email there to grant admin access, or use <strong style="color:var(--text);">Add Admin</strong> above.
           </div>
         </div>
       </div>
@@ -172,54 +152,69 @@
   </main>
 </div>
 
-<!-- Add User Modal -->
-<div class="modal-overlay" id="addUserModal">
+<!-- Add Admin Modal -->
+<div class="modal-overlay" id="addAdminModal">
   <div class="modal">
-    <h2 class="modal-title">Add New Admin User</h2>
-    <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6;">
-      Users are managed through <strong>Supabase Authentication</strong>. To add a new admin:
+    <h2 class="modal-title">Add Admin Account</h2>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6;">
+      Enter the email of the new admin. They will be added to the whitelist and a Supabase auth account will need to be created for them separately.
     </p>
-    <ol style="font-size:0.85rem;color:var(--text);line-height:2;padding-left:1.25rem;">
-      <li>Go to <strong>app.supabase.com</strong></li>
-      <li>Open your project → <strong>Authentication → Users</strong></li>
-      <li>Click <strong>Invite user</strong> and enter their email</li>
-      <li>They will receive a login link by email</li>
-    </ol>
-    <div class="modal-actions" style="margin-top:1.5rem;">
-      <button class="btn btn--ghost" id="addUserCancelBtn">Close</button>
-      <a href="https://app.supabase.com" target="_blank" rel="noopener" class="btn btn--teal">Open Supabase</a>
+    <div class="login-alert" id="addAdminAlert"></div>
+    <div style="margin-bottom:1rem;">
+      <label style="display:block;font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.4rem;">Email Address</label>
+      <input class="form-control" type="email" id="newAdminEmail" placeholder="newadmin@example.com"/>
     </div>
-  </div>
-</div>
-
-<!-- Delete User confirm -->
-<div class="modal-overlay" id="deleteUserModal">
-  <div class="modal">
-    <h2 class="modal-title">Remove User?</h2>
-    <p style="font-size:0.9rem;color:var(--text-muted);">This user will be removed from the CMS. You cannot remove the primary admin account.</p>
     <div class="modal-actions">
-      <button class="btn btn--ghost" id="delUserCancelBtn">Cancel</button>
-      <button class="btn btn--danger" id="delUserConfirmBtn">Remove</button>
+      <button class="btn btn--ghost" id="addAdminCancelBtn">Cancel</button>
+      <button class="btn btn--teal" id="addAdminSaveBtn">Add to Whitelist</button>
     </div>
   </div>
 </div>
 
-<div class="toast-container" id="toastContainer"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Remove Admin confirm -->
+<div class="modal-overlay" id="removeAdminModal">
+  <div class="modal">
+    <h2 class="modal-title">Remove Admin?</h2>
+    <p style="font-size:0.9rem;color:var(--text-muted);"><span id="removeAdminEmailLabel" style="color:var(--text);font-weight:600;"></span> will lose admin access immediately.</p>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" id="removeAdminCancelBtn">Cancel</button>
+      <button class="btn btn--danger" id="removeAdminConfirmBtn">Remove</button>
+    </div>
+  </div>
+</div>
+
+<!-- View Member Modal -->
+<div class="modal-overlay" id="memberModal">
+  <div class="modal" style="max-width:480px;">
+    <h2 class="modal-title" id="memberModalTitle">Member</h2>
+    <div id="memberModalBody" style="font-size:0.85rem;color:var(--text-muted);"></div>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" id="memberModalCloseBtn">Close</button>
+      <a id="memberModalProfileLink" href="#" target="_blank" class="btn btn--teal">View Profile</a>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
 <script src="admin.js"></script>
 <script>
-const USERS_KEY = 'ib_users';
+let allMembers = [];
+let adminEmails = [];
+let currentUserEmail = '';
+let pendingRemoveEmail = null;
 
-function getUsers() {
-  return JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+function showTab(tab, btn) {
+  document.getElementById('tabAdmins').style.display   = tab === 'admins'    ? 'block' : 'none';
+  document.getElementById('tabCommunity').style.display = tab === 'community' ? 'block' : 'none';
+  document.querySelectorAll('.users-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }
-function saveUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-function logActivity(msg) {
-  const log = JSON.parse(localStorage.getItem('ib_activity') || '[]');
-  log.unshift({ msg, time: new Date().toISOString() });
-  localStorage.setItem('ib_activity', JSON.stringify(log.slice(0, 20)));
+
+function initials(str) {
+  return (str || '?')[0].toUpperCase();
 }
 
 function showToast(msg, type = 'success') {
@@ -231,113 +226,202 @@ function showToast(msg, type = 'success') {
   setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000);
 }
 
-function initials(name) {
-  return name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+/* ---- Render admin list ---- */
+function renderAdmins() {
+  const list = document.getElementById('adminsList');
+  document.getElementById('adminCount').textContent = `${adminEmails.length} account${adminEmails.length!==1?'s':''}`;
+
+  if (!adminEmails.length) {
+    list.innerHTML = '<div class="empty-state">No admin accounts configured.</div>';
+    return;
+  }
+
+  list.innerHTML = adminEmails.map(email => {
+    const isSelf = email.toLowerCase() === currentUserEmail.toLowerCase();
+    return `
+      <div class="user-card">
+        <div class="user-avatar user-avatar--admin">${email[0].toUpperCase()}</div>
+        <div class="user-info">
+          <h3>${sanitize(email)} ${isSelf ? '<span class="admin-self-badge">You</span>' : ''}</h3>
+          <p>Admin account &bull; Can access panel</p>
+        </div>
+        <div class="user-actions">
+          <span class="role-badge role-badge--admin">Admin</span>
+          ${!isSelf ? `<button class="btn btn--danger btn--sm btn--icon" data-remove="${sanitize(email)}" title="Remove admin">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  list.querySelectorAll('[data-remove]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      pendingRemoveEmail = btn.dataset.remove;
+      document.getElementById('removeAdminEmailLabel').textContent = pendingRemoveEmail;
+      document.getElementById('removeAdminModal').classList.add('open');
+    });
+  });
 }
 
+/* ---- Render community members ---- */
+function renderMembers(members) {
+  const list = document.getElementById('membersList');
+  document.getElementById('memberCount').textContent = `${allMembers.length} member${allMembers.length!==1?'s':''}`;
+
+  if (!members.length) {
+    list.innerHTML = '<div class="empty-state">No community members yet.</div>';
+    return;
+  }
+
+  list.innerHTML = members.map(m => {
+    const joined = new Date(m.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    return `
+      <div class="user-card" style="cursor:pointer;" data-member='${JSON.stringify({id:m.id,username:m.username,display:m.display_name,bio:m.bio,joined,posts:m.post_count,badges:m.badge_count})}'>
+        <div class="user-avatar user-avatar--community">${initials(m.username)}</div>
+        <div class="user-info">
+          <h3>${sanitize(m.username)}${m.display_name && m.display_name !== m.username ? ` <span style="font-weight:400;color:var(--text-muted);">${sanitize(m.display_name)}</span>` : ''}</h3>
+          <p>Joined ${joined}</p>
+        </div>
+        <div class="user-actions">
+          <span class="member-stat">📝 ${m.post_count || 0}</span>
+          <span class="member-stat">🏅 ${m.badge_count || 0}</span>
+          <span class="role-badge role-badge--community">Member</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  list.querySelectorAll('[data-member]').forEach(card => {
+    card.addEventListener('click', () => {
+      const m = JSON.parse(card.dataset.member);
+      document.getElementById('memberModalTitle').textContent = m.username;
+      document.getElementById('memberModalBody').innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;"><span>Display name</span><strong style="color:var(--text);">${sanitize(m.display||m.username)}</strong></div>
+          <div style="display:flex;justify-content:space-between;"><span>Joined</span><strong style="color:var(--text);">${sanitize(m.joined)}</strong></div>
+          <div style="display:flex;justify-content:space-between;"><span>Posts</span><strong style="color:var(--text);">${m.posts || 0}</strong></div>
+          <div style="display:flex;justify-content:space-between;"><span>Badges earned</span><strong style="color:var(--text);">${m.badges || 0}</strong></div>
+          ${m.bio ? `<div style="margin-top:0.5rem;padding:0.75rem;background:rgba(255,255,255,0.04);border-radius:6px;font-size:0.82rem;line-height:1.5;color:var(--text);">${sanitize(m.bio)}</div>` : ''}
+        </div>`;
+      document.getElementById('memberModalProfileLink').href = `../profile.html?user=${encodeURIComponent(m.username)}`;
+      document.getElementById('memberModal').classList.add('open');
+    });
+  });
+}
+
+function filterMembers() {
+  const q = document.getElementById('memberSearch').value.trim().toLowerCase();
+  const filtered = q ? allMembers.filter(m => (m.username||'').toLowerCase().includes(q) || (m.display_name||'').toLowerCase().includes(q)) : allMembers;
+  renderMembers(filtered);
+}
+
+/* ---- Load admin whitelist from settings ---- */
+async function loadAdminEmails() {
+  const { data } = await supabase.from('settings')
+    .select('setting_value').eq('setting_key','admin_emails').maybeSingle();
+  adminEmails = Array.isArray(data?.setting_value) ? data.setting_value : [];
+  renderAdmins();
+}
+
+async function saveAdminEmails(emails) {
+  await supabase.from('settings')
+    .upsert({ setting_key: 'admin_emails', setting_value: emails });
+  adminEmails = emails;
+  renderAdmins();
+}
+
+/* ---- Load community members from profiles ---- */
+async function loadMembers() {
+  const { data: profiles } = await supabase.from('profiles')
+    .select('*').order('created_at', { ascending: false });
+
+  if (!profiles || !profiles.length) {
+    allMembers = [];
+    renderMembers([]);
+    return;
+  }
+
+  // Get post counts per user
+  const userIds = profiles.map(p => p.user_id);
+  const { data: posts } = await supabase.from('posts')
+    .select('user_id').in('user_id', userIds);
+  const postCountMap = {};
+  (posts || []).forEach(p => { postCountMap[p.user_id] = (postCountMap[p.user_id] || 0) + 1; });
+
+  // Get badge counts per user
+  const { data: badges } = await supabase.from('user_badges')
+    .select('user_id').in('user_id', userIds);
+  const badgeCountMap = {};
+  (badges || []).forEach(b => { badgeCountMap[b.user_id] = (badgeCountMap[b.user_id] || 0) + 1; });
+
+  allMembers = profiles.map(p => ({
+    ...p,
+    post_count:  postCountMap[p.user_id]  || 0,
+    badge_count: badgeCountMap[p.user_id] || 0
+  }));
+
+  document.getElementById('memberCount').textContent = `${allMembers.length} member${allMembers.length!==1?'s':''}`;
+  renderMembers(allMembers);
+}
+
+/* ---- Main ---- */
 (async () => {
   if (!await AUTH.guard()) return;
 
-  const currentUser = AUTH.getUser();
-  document.getElementById('currentUser').textContent = currentUser ? currentUser.email : 'Admin';
-  document.getElementById('sessionExpiry').textContent = 'Active (2-hour session)';
+  const user = AUTH.getUser();
+  currentUserEmail = user ? user.email : '';
+  document.getElementById('currentUser').textContent = currentUserEmail;
+  document.getElementById('topbarWho').textContent = currentUserEmail;
 
-  let pendingDeleteId = null;
-  const addModal    = document.getElementById('addUserModal');
-  const deleteModal = document.getElementById('deleteUserModal');
+  await loadAdminEmails();
+  await loadMembers();
 
-  /* Seed primary admin in users list if not present */
-  let users = getUsers();
-  if (!users.find(u => u.role === 'admin' && u.isPrimary)) {
-    users.unshift({ id: 'primary-admin', username: currentUser ? currentUser.email : 'admin', displayName: 'Administrator', role: 'admin', isPrimary: true, added: new Date().toISOString().slice(0,10) });
-    saveUsers(users);
-  }
-
-  function renderUsers() {
-    users = getUsers();
-    const list = document.getElementById('usersList');
-    document.getElementById('userCount').textContent = `${users.length} user${users.length!==1?'s':''}`;
-
-    list.innerHTML = users.map(u => `
-      <div class="user-card">
-        <div class="user-avatar user-avatar--${u.role}">${initials(u.displayName || u.username)}</div>
-        <div class="user-info">
-          <h3>${sanitize(u.displayName || u.username)} ${u.isPrimary?'<span style="font-size:0.7rem;color:var(--text-muted);">(You)</span>':''}</h3>
-          <p>@${sanitize(u.username)} &bull; Added ${u.added || 'N/A'}</p>
-        </div>
-        <div class="user-actions">
-          <span class="role-badge role-badge--${u.role}">${u.role}</span>
-          ${!u.isPrimary ? `<button class="btn btn--danger btn--sm btn--icon" data-deluser="${u.id}" title="Remove user">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-          </button>` : ''}
-        </div>
-      </div>
-    `).join('');
-
-    list.querySelectorAll('[data-deluser]').forEach(btn => {
-      btn.addEventListener('click', () => { pendingDeleteId = btn.dataset.deluser; deleteModal.classList.add('open'); });
-    });
-  }
-
-  renderUsers();
-
-  /* Activity log */
-  const actLog = JSON.parse(localStorage.getItem('ib_activity') || '[]');
-  const logEl  = document.getElementById('activityLog');
-  if (actLog.length === 0) {
-    logEl.innerHTML = '<p style="font-size:0.85rem;color:var(--text-muted);text-align:center;padding:1rem 0;">No recent activity logged.</p>';
-  } else {
-    logEl.innerHTML = actLog.slice(0,8).map(a => `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.45rem 0;border-bottom:1px solid var(--border);">
-        <span style="font-size:0.83rem;color:var(--text);">${sanitize(a.msg)}</span>
-        <span style="font-size:0.72rem;color:var(--text-muted);white-space:nowrap;margin-left:1rem;">${new Date(a.time).toLocaleTimeString()}</span>
-      </div>
-    `).join('');
-  }
-
-  /* Add user modal */
-  document.getElementById('addUserBtn').addEventListener('click', () => {
-    document.getElementById('newUsername').value='';
-    document.getElementById('newDisplayName').value='';
-    document.getElementById('addUserAlert').className='login-alert';
+  /* Add admin modal */
+  const addModal = document.getElementById('addAdminModal');
+  document.getElementById('addAdminBtn').addEventListener('click', () => {
+    document.getElementById('newAdminEmail').value = '';
+    document.getElementById('addAdminAlert').className = 'login-alert';
     addModal.classList.add('open');
   });
-  document.getElementById('addUserCancelBtn').addEventListener('click', () => addModal.classList.remove('open'));
-  addModal.addEventListener('click', (e) => { if (e.target===addModal) addModal.classList.remove('open'); });
+  document.getElementById('addAdminCancelBtn').addEventListener('click', () => addModal.classList.remove('open'));
+  addModal.addEventListener('click', e => { if (e.target === addModal) addModal.classList.remove('open'); });
 
-  document.getElementById('addUserSaveBtn').addEventListener('click', () => {
-    const username = document.getElementById('newUsername').value.trim();
-    const display  = document.getElementById('newDisplayName').value.trim();
-    const role     = document.getElementById('newRole').value;
-    const alertEl  = document.getElementById('addUserAlert');
-
-    if (!username || !display) { alertEl.className='login-alert show error'; alertEl.textContent='Both fields are required.'; return; }
-    if (getUsers().find(u => u.username === username)) { alertEl.className='login-alert show error'; alertEl.textContent='Username already exists.'; return; }
-
-    users = getUsers();
-    users.push({ id: uid(), username, displayName: display, role, isPrimary: false, added: new Date().toISOString().slice(0,10) });
-    saveUsers(users);
-    logActivity(`User "${display}" added as ${role}.`);
+  document.getElementById('addAdminSaveBtn').addEventListener('click', async () => {
+    const email = document.getElementById('newAdminEmail').value.trim().toLowerCase();
+    const alertEl = document.getElementById('addAdminAlert');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alertEl.className = 'login-alert show error'; alertEl.textContent = 'Enter a valid email address.'; return;
+    }
+    if (adminEmails.map(e=>e.toLowerCase()).includes(email)) {
+      alertEl.className = 'login-alert show error'; alertEl.textContent = 'This email is already an admin.'; return;
+    }
+    const updated = [...adminEmails, email];
+    await saveAdminEmails(updated);
     addModal.classList.remove('open');
-    renderUsers();
-    showToast(`User "${display}" added.`);
+    showToast(`${email} added as admin.`);
   });
 
-  /* Delete user */
-  document.getElementById('delUserCancelBtn').addEventListener('click', () => { deleteModal.classList.remove('open'); pendingDeleteId=null; });
-  deleteModal.addEventListener('click', (e) => { if (e.target===deleteModal) { deleteModal.classList.remove('open'); pendingDeleteId=null; } });
-  document.getElementById('delUserConfirmBtn').addEventListener('click', () => {
-    if (!pendingDeleteId) return;
-    const u = getUsers().find(x => x.id===pendingDeleteId);
-    saveUsers(getUsers().filter(x => x.id!==pendingDeleteId));
-    if (u) logActivity(`User "${u.displayName}" removed.`);
-    deleteModal.classList.remove('open');
-    pendingDeleteId = null;
-    renderUsers();
-    showToast('User removed.', 'error');
+  /* Remove admin modal */
+  const removeModal = document.getElementById('removeAdminModal');
+  document.getElementById('removeAdminCancelBtn').addEventListener('click', () => { removeModal.classList.remove('open'); pendingRemoveEmail = null; });
+  removeModal.addEventListener('click', e => { if (e.target === removeModal) { removeModal.classList.remove('open'); pendingRemoveEmail = null; } });
+  document.getElementById('removeAdminConfirmBtn').addEventListener('click', async () => {
+    if (!pendingRemoveEmail) return;
+    const updated = adminEmails.filter(e => e.toLowerCase() !== pendingRemoveEmail.toLowerCase());
+    await saveAdminEmails(updated);
+    removeModal.classList.remove('open');
+    showToast(`${pendingRemoveEmail} removed from admin.`, 'error');
+    pendingRemoveEmail = null;
   });
 
-  document.addEventListener('keydown', (e) => { if (e.key==='Escape') { addModal.classList.remove('open'); deleteModal.classList.remove('open'); } });
+  /* Member modal close */
+  document.getElementById('memberModalCloseBtn').addEventListener('click', () => document.getElementById('memberModal').classList.remove('open'));
+  document.getElementById('memberModal').addEventListener('click', e => { if (e.target === document.getElementById('memberModal')) document.getElementById('memberModal').classList.remove('open'); });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { addModal.classList.remove('open'); removeModal.classList.remove('open'); document.getElementById('memberModal').classList.remove('open'); }
+  });
+
+  document.querySelectorAll('[data-logout]').forEach(b => b.addEventListener('click', () => AUTH.logout()));
 })();
 </script>
 </body>
