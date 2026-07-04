@@ -333,37 +333,11 @@
           <h2 class="section-title">THE MINDS BEHIND<br/><span>IMPACT BUILDS</span></h2>
           <p class="section-subtitle">SideQuest is the three-person capstone team designing, building, and testing Impact Builds from the ground up.</p>
         </div>
-        <div class="team-grid">
-          <div class="team-card">
-            <div class="team-card__avatar">JBB</div>
-            <h3 class="team-card__name">John Benedict Balayan</h3>
-            <p class="team-card__lead">Project Head &amp; Project Manager</p>
-            <div class="team-card__roles">
-              <span>Game Developer</span>
-              <span>Programmer</span>
-              <span>3D Artist</span>
-              <span>Music Design</span>
-            </div>
-          </div>
-          <div class="team-card">
-            <div class="team-card__avatar">AL</div>
-            <h3 class="team-card__name">Aly Lopez</h3>
-            <p class="team-card__lead">Creative Designer &amp; Game Designer</p>
-            <div class="team-card__roles">
-              <span>Programmer</span>
-              <span>3D Artist</span>
-              <span>Music Design</span>
-            </div>
-          </div>
-          <div class="team-card">
-            <div class="team-card__avatar">JAB</div>
-            <h3 class="team-card__name">Jeremie Allen Bicaldo</h3>
-            <p class="team-card__lead">Game Developer &amp; Website Developer</p>
-            <div class="team-card__roles">
-              <span>Programmer</span>
-              <span>3D Artist</span>
-            </div>
-          </div>
+        <div class="team-grid" id="teamGrid">
+          <!-- Populated by script.js from the team_members table -->
+        </div>
+        <div class="notes-empty" id="teamEmpty" style="display:none;">
+          <p>Meet the team soon &mdash; profiles are being added!</p>
         </div>
       </div>
     </section>
@@ -378,7 +352,7 @@
           <h2 class="section-title">CAN YOUR PC<br/><span>RUN IMPACT BUILDS?</span></h2>
           <p class="section-subtitle">Target specs for the current build &mdash; subject to change as development continues.</p>
         </div>
-        <div class="sysreq-table-wrap">
+        <div class="sysreq-table-wrap" id="sysreqWrap">
           <table class="sysreq-table">
             <thead>
               <tr>
@@ -387,32 +361,8 @@
                 <th>Recommended Requirements</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>Operating System</td>
-                <td>Windows 10</td>
-                <td>Windows 10 or Windows 11</td>
-              </tr>
-              <tr>
-                <td>Processor</td>
-                <td>Intel Core i3 (3rd Gen) or Ryzen 3 (1st Gen)</td>
-                <td>Intel Core i5 (6th Gen) or Ryzen 5 (1st Gen)</td>
-              </tr>
-              <tr>
-                <td>Graphics</td>
-                <td>Integrated HD Graphics</td>
-                <td>GeForce GTX 1050 or Radeon RX 560</td>
-              </tr>
-              <tr>
-                <td>Memory</td>
-                <td>4 GB</td>
-                <td>8 GB</td>
-              </tr>
-              <tr>
-                <td>Storage</td>
-                <td>2 GB (HDD)</td>
-                <td>2 GB (SSD)</td>
-              </tr>
+            <tbody id="sysreqBody">
+              <!-- Populated by script.js from settings.system_requirements -->
             </tbody>
           </table>
         </div>
@@ -447,35 +397,11 @@
           <span class="section-tag">Got Questions?</span>
           <h2 class="section-title">FREQUENTLY ASKED<br/><span>QUESTIONS</span></h2>
         </div>
-        <div class="faq-list">
-          <details class="faq-item">
-            <summary>What is Impact Builds?</summary>
-            <p>Impact Builds is a 3D single-player building game where you design and construct infrastructure, then see it tested against natural disasters like earthquakes, floods, storms, and fires. It's developed as a capstone academic project bridging game-based learning with disaster preparedness research.</p>
-          </details>
-          <details class="faq-item">
-            <summary>What platforms will Impact Builds be available on?</summary>
-            <p>Impact Builds is being built for PC (Windows). See our <a href="#requirements">Technical Feasibility</a> section for target system specs.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Is there multiplayer?</summary>
-            <p>No &mdash; Impact Builds is a single-player experience focused on infrastructure planning and disaster response.</p>
-          </details>
-          <details class="faq-item">
-            <summary>When can I download the game?</summary>
-            <p>Impact Builds is still in active development. Follow our <a href="#notes">Dev's Notes</a> for progress updates &mdash; we'll announce the download link here as soon as it's ready.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Will Impact Builds be free?</summary>
-            <p>Impact Builds is being developed as a capstone academic project. Pricing and distribution details will be announced closer to release.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Who's making this game?</summary>
-            <p>Impact Builds is developed by <strong>SideQuest</strong>, a three-person student team. Meet the team <a href="#team">here</a>.</p>
-          </details>
-          <details class="faq-item">
-            <summary>How can I give feedback or report a bug?</summary>
-            <p>Use the contact form below, or join our <a href="feed.html">Community</a> and post under the "Bug Reports" category.</p>
-          </details>
+        <div class="faq-list" id="faqList">
+          <!-- Populated by script.js from the faq_items table -->
+        </div>
+        <div class="notes-empty" id="faqEmpty" style="display:none;">
+          <p>FAQs are coming soon!</p>
         </div>
       </div>
     </section>

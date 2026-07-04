@@ -236,6 +236,67 @@ const CMS = {
   async saveSettings(key, value) {
     const { error } = await supabase.from('settings').upsert({ setting_key: key, setting_value: value }, { onConflict: 'setting_key' });
     return { ok: !error, message: error?.message };
+  },
+
+  /* ---- Team members ---- */
+  async getTeam() {
+    const { data } = await supabase.from('team_members').select('*').order('sort_order', { ascending: true });
+    return data || [];
+  },
+  async saveTeamMember(member) {
+    const row = {
+      id:         member.id || uid(),
+      name:       member.name,
+      lead_role:  member.leadRole || null,
+      roles:      member.roles || [],
+      avatar_url: member.avatarUrl || null,
+      sort_order: member.sortOrder ?? 0
+    };
+    const { error } = await supabase.from('team_members').upsert(row, { onConflict: 'id' });
+    return { ok: !error, message: error?.message };
+  },
+  async deleteTeamMember(id) {
+    const { error } = await supabase.from('team_members').delete().eq('id', id);
+    return { ok: !error };
+  },
+  async uploadTeamPhoto(id, file) {
+    const ext  = file.name.split('.').pop();
+    const path = `team/${id}/${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from('team-photos').upload(path, file);
+    if (upErr) return { ok: false, message: upErr.message };
+    const { data } = supabase.storage.from('team-photos').getPublicUrl(path);
+    return { ok: true, url: data.publicUrl };
+  },
+
+  /* ---- FAQ items ---- */
+  async getFAQ() {
+    const { data } = await supabase.from('faq_items').select('*').order('sort_order', { ascending: true });
+    return data || [];
+  },
+  async saveFAQItem(item) {
+    const row = {
+      id:         item.id || uid(),
+      question:   item.question,
+      answer:     item.answer,
+      sort_order: item.sortOrder ?? 0
+    };
+    const { error } = await supabase.from('faq_items').upsert(row, { onConflict: 'id' });
+    return { ok: !error, message: error?.message };
+  },
+  async deleteFAQItem(id) {
+    const { error } = await supabase.from('faq_items').delete().eq('id', id);
+    return { ok: !error };
+  },
+
+  /* ---- System requirements (stored in settings) ---- */
+  async getSystemRequirements() {
+    const { data } = await supabase.from('settings').select('setting_value').eq('setting_key', 'system_requirements').maybeSingle();
+    return Array.isArray(data?.setting_value) ? data.setting_value : [];
+  },
+  async saveSystemRequirements(rows) {
+    const { error } = await supabase.from('settings')
+      .upsert({ setting_key: 'system_requirements', setting_value: rows }, { onConflict: 'setting_key' });
+    return { ok: !error, message: error?.message };
   }
 };
 

@@ -521,6 +521,113 @@ function spawnMsgTruck() {
 })();
 
 /* =============================================
+   LOAD TEAM MEMBERS from Supabase
+   ============================================= */
+(async function loadTeam() {
+  const grid  = $('#teamGrid');
+  const empty = $('#teamEmpty');
+  if (!grid) return;
+
+  function sanitize(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(String(str)));
+    return d.innerHTML;
+  }
+  function initials(name) {
+    return name.split(/\s+/).filter(Boolean).map(w => w[0]).join('').slice(0, 3).toUpperCase();
+  }
+
+  let team = [];
+  try {
+    const { data } = await supabase.from('team_members').select('*').order('sort_order', { ascending: true });
+    team = data || [];
+  } catch (e) { /* not configured */ }
+
+  if (team.length === 0) {
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+
+  grid.innerHTML = team.map(m => `
+    <div class="team-card">
+      ${m.avatar_url
+        ? `<img class="team-card__avatar" src="${m.avatar_url}" alt="${sanitize(m.name)}" style="object-fit:cover;"/>`
+        : `<div class="team-card__avatar">${initials(m.name)}</div>`}
+      <h3 class="team-card__name">${sanitize(m.name)}</h3>
+      ${m.lead_role ? `<p class="team-card__lead">${sanitize(m.lead_role)}</p>` : ''}
+      <div class="team-card__roles">${(m.roles || []).map(r => `<span>${sanitize(r)}</span>`).join('')}</div>
+    </div>
+  `).join('');
+  $$('.team-card', grid).forEach(el => REVEAL.observe(el, ''));
+})();
+
+/* =============================================
+   LOAD SYSTEM REQUIREMENTS from Supabase
+   ============================================= */
+(async function loadRequirements() {
+  const body = $('#sysreqBody');
+  const wrap = $('#sysreqWrap');
+  if (!body) return;
+
+  function sanitize(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(String(str)));
+    return d.innerHTML;
+  }
+
+  let rows = [];
+  try {
+    const { data } = await supabase.from('settings').select('setting_value').eq('setting_key', 'system_requirements').maybeSingle();
+    rows = Array.isArray(data?.setting_value) ? data.setting_value : [];
+  } catch (e) { /* not configured */ }
+
+  if (rows.length === 0) return;
+
+  body.innerHTML = rows.map(r => `
+    <tr>
+      <td>${sanitize(r.spec)}</td>
+      <td>${sanitize(r.minimum)}</td>
+      <td>${sanitize(r.recommended)}</td>
+    </tr>
+  `).join('');
+  if (wrap) REVEAL.observe(wrap, 'drop');
+})();
+
+/* =============================================
+   LOAD FAQ from Supabase
+   ============================================= */
+(async function loadFAQ() {
+  const list  = $('#faqList');
+  const empty = $('#faqEmpty');
+  if (!list) return;
+
+  function sanitize(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(String(str)));
+    return d.innerHTML;
+  }
+
+  let items = [];
+  try {
+    const { data } = await supabase.from('faq_items').select('*').order('sort_order', { ascending: true });
+    items = data || [];
+  } catch (e) { /* not configured */ }
+
+  if (items.length === 0) {
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+
+  list.innerHTML = items.map(f => `
+    <details class="faq-item">
+      <summary>${sanitize(f.question)}</summary>
+      <p>${sanitize(f.answer)}</p>
+    </details>
+  `).join('');
+  $$('.faq-item', list).forEach(el => REVEAL.observe(el, ''));
+})();
+
+/* =============================================
    LOAD CMS MEDIA (screenshots) from Supabase
    ============================================= */
 (async function loadMedia() {
