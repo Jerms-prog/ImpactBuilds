@@ -169,8 +169,19 @@
           <div class="card-header"><h3>What you can do</h3></div>
           <div class="card-body" style="font-size:0.78rem;color:var(--text-muted);line-height:1.7;display:flex;flex-direction:column;gap:0.35rem;">
             <div>✏️ <strong style="color:var(--text);">Edit</strong> username, display name, and bio</div>
-            <div>⭐ <strong style="color:var(--teal);">Grant or revoke</strong> Staff status</div>
+            <div>🛡️ <strong style="color:#c084fc;">Grant or revoke</strong> Moderator status</div>
+            <div>⭐ <strong style="color:var(--teal);">Grant or revoke</strong> Admin status</div>
             <div>🗑️ <strong style="color:#e06060;">Delete</strong> account and all their content</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Recent Activity</h3>
+            <span style="font-size:0.75rem;color:var(--text-muted);">Last 10 actions</span>
+          </div>
+          <div id="recentActivityLog" style="padding:0 1.25rem 0.75rem;max-height:300px;overflow-y:auto;">
+            <div style="font-size:0.78rem;color:var(--text-muted);padding:0.75rem 0;">Loading…</div>
           </div>
         </div>
       </div>
@@ -219,7 +230,7 @@
       <div class="mm-header-info">
         <div class="mm-username">
           <span id="mmHeaderUsername"></span>
-          <span class="role-badge role-badge--admin" id="mmStaffIndicator" style="display:none;">Staff</span>
+          <span class="role-badge role-badge--admin" id="mmStaffIndicator" style="display:none;">Admin</span>
           <span class="role-badge" id="mmModIndicator" style="display:none;background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.25);">Mod</span>
         </div>
         <div class="mm-joined" id="mmHeaderJoined"></div>
@@ -263,8 +274,8 @@
         </div>
         <div class="staff-row">
           <div class="staff-row-info">
-            <strong>Staff</strong>
-            <span>Shows Staff badge. Can post announcements + everything Mods can.</span>
+            <strong>Admin</strong>
+            <span>Shows Admin badge in community. Can post announcements + moderate any content.</span>
           </div>
           <button class="btn btn--sm" id="mmStaffToggleBtn" onclick="toggleMemberStaff()"></button>
         </div>
@@ -442,10 +453,10 @@ function openMemberModal(userId) {
 function updateStaffToggleBtn(isStaff) {
   const btn = document.getElementById('mmStaffToggleBtn');
   if (isStaff) {
-    btn.textContent = 'Revoke Staff';
+    btn.textContent = 'Revoke Admin';
     btn.className   = 'btn btn--danger btn--sm';
   } else {
-    btn.textContent = 'Grant Staff';
+    btn.textContent = 'Grant Admin';
     btn.className   = 'btn btn--teal btn--sm';
   }
 }
@@ -462,6 +473,53 @@ function updateModToggleBtn(isMod) {
   }
 }
 
+/* ---- Activity log ---- */
+const ACTION_LABELS = {
+  grant_mod:    { icon: '🛡️', text: 'granted Mod to' },
+  revoke_mod:   { icon: '🔻', text: 'revoked Mod from' },
+  grant_admin:  { icon: '⭐', text: 'granted Admin to' },
+  revoke_admin: { icon: '⬇️', text: 'revoked Admin from' },
+  delete_user:  { icon: '🗑️', text: 'deleted account' },
+  edit_profile: { icon: '✏️', text: 'edited profile of' },
+};
+
+async function logAction(action, targetUsername) {
+  const user = AUTH.getUser();
+  if (!user) return;
+  const { data: { session } } = await supabase.auth.getSession();
+  await supabase.from('mod_actions').insert({
+    actor_user_id: session?.user?.id || null,
+    actor_username: user.displayName || user.email.split('@')[0],
+    target_username: targetUsername,
+    action
+  });
+  await loadRecentActivity();
+}
+
+async function loadRecentActivity() {
+  const el = document.getElementById('recentActivityLog');
+  if (!el) return;
+  const { data } = await supabase.from('mod_actions')
+    .select('*').order('created_at', { ascending: false }).limit(10);
+  if (!data || !data.length) {
+    el.innerHTML = '<div style="font-size:0.78rem;color:var(--text-muted);padding:0.75rem 0;">No actions logged yet.</div>';
+    return;
+  }
+  el.innerHTML = data.map(a => {
+    const lbl  = ACTION_LABELS[a.action] || { icon: '•', text: a.action };
+    const date = new Date(a.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return `<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:0.9rem;flex-shrink:0;">${lbl.icon}</span>
+      <div style="font-size:0.76rem;line-height:1.45;">
+        <strong style="color:var(--teal);">${sanitize(a.actor_username)}</strong>
+        <span style="color:var(--text-muted);"> ${lbl.text} </span>
+        <strong style="color:var(--text);">${sanitize(a.target_username)}</strong>
+        <div style="font-size:0.68rem;color:var(--text-dim);margin-top:0.1rem;">${date}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 /* ---- Toggle Moderator ---- */
 async function toggleMemberModerator() {
   if (!currentMember) return;
@@ -476,6 +534,7 @@ async function toggleMemberModerator() {
   document.getElementById('mmModIndicator').style.display = newVal ? 'inline-block' : 'none';
   renderMembers(allMembers);
   showToast(newVal ? `${currentMember.username} is now a Moderator.` : `${currentMember.username} Moderator status removed.`);
+  await logAction(newVal ? 'grant_mod' : 'revoke_mod', currentMember.username);
 }
 
 /* ---- Toggle Staff ---- */
@@ -493,7 +552,8 @@ async function toggleMemberStaff() {
   updateStaffToggleBtn(newVal);
   document.getElementById('mmStaffIndicator').style.display = newVal ? 'inline-block' : 'none';
   renderMembers(allMembers);
-  showToast(newVal ? `${currentMember.username} is now Staff.` : `${currentMember.username} Staff status removed.`);
+  showToast(newVal ? `${currentMember.username} is now Admin.` : `${currentMember.username} Admin status removed.`);
+  await logAction(newVal ? 'grant_admin' : 'revoke_admin', currentMember.username);
 }
 
 /* ---- Save profile edits ---- */
@@ -576,6 +636,7 @@ async function confirmDeleteMember() {
   document.getElementById('memberCount').textContent = `${allMembers.length} member${allMembers.length!==1?'s':''}`;
   renderMembers(allMembers);
   showToast(`${username} deleted.`, 'error');
+  await logAction('delete_user', username);
   currentMember = null;
 }
 
@@ -638,6 +699,7 @@ async function loadMembers() {
 
   await loadAdminEmails();
   await loadMembers();
+  await loadRecentActivity();
 
   /* Add admin modal */
   const addModal = document.getElementById('addAdminModal');

@@ -312,7 +312,7 @@
         const isOwnPost    = currentSession && post.user_id === currentSession.user.id;
         const canDelete    = isOwnPost || canModerate;
         const annLabel     = post.is_announcement ? `<span class="announcement-pin">📢 Announcement</span>` : '';
-        const authorBadges = (author.is_staff ? '<span class="staff-badge">Staff</span>' : '')
+        const authorBadges = (author.is_staff ? '<span class="staff-badge">Admin</span>' : '')
                            + (author.is_moderator ? '<span class="mod-badge">Mod</span>' : '');
 
         const card = document.createElement('a');

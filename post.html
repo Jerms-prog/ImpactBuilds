@@ -129,7 +129,7 @@
       const dateStr  = new Date(post.created_at).toLocaleDateString('en-US',{ year:'numeric', month:'long', day:'numeric' });
       const tagsHtml = tags.map(t => `<span class="c-tag">#${t}</span>`).join('');
       const authorInitial  = (author?.username || '?')[0].toUpperCase();
-      const authorBadges   = (author?.is_staff ? '<span class="staff-badge">Staff</span>' : '')
+      const authorBadges   = (author?.is_staff ? '<span class="staff-badge">Admin</span>' : '')
                            + (author?.is_moderator ? '<span class="mod-badge">Mod</span>' : '');
       const canDeletePost  = currentSession && (post.user_id === currentSession.user.id || currentProfile?.is_staff || currentProfile?.is_moderator);
       const annBanner      = post.is_announcement ? `<div style="margin-bottom:0.75rem;"><span class="announcement-pin">📢 Announcement</span></div>` : '';
@@ -234,7 +234,7 @@
         const nestedHtml = repliesForThis.length
           ? `<div class="comment-replies">${repliesForThis.map(r => renderComment(r, true)).join('')}</div>`
           : '';
-        const authorBadges = (auth.is_staff ? '<span class="staff-badge">Staff</span>' : '')
+        const authorBadges = (auth.is_staff ? '<span class="staff-badge">Admin</span>' : '')
                            + (auth.is_moderator ? '<span class="mod-badge">Mod</span>' : '');
         return `
           <div class="comment-item" id="comment-${c.id}">
