@@ -1688,3 +1688,163 @@ img { max-width: 100%; display: block; }
 
 /* Community bubble needs relative so scan-fx positions inside it */
 .community-bubble { position: relative; overflow: hidden; }
+
+/* =============================================
+   TEAM SECTION
+   ============================================= */
+.team { background: rgba(22,30,58,0.5); backdrop-filter: blur(10px); }
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+.team-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  transition: var(--transition);
+}
+.team-card:hover {
+  background: rgba(255,255,255,0.16);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+.team-card__avatar {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: rgba(0,200,212,0.15);
+  border: 1px solid rgba(0,200,212,0.35);
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-h);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.team-card__name {
+  font-family: var(--font-h);
+  font-size: 1.05rem;
+  color: var(--white);
+  margin-bottom: 0.35rem;
+}
+.team-card__lead {
+  font-size: 0.82rem;
+  color: var(--teal);
+  font-weight: 600;
+  margin-bottom: 0.9rem;
+}
+.team-card__roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+.team-card__roles span {
+  padding: 0.3rem 0.75rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 100px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* =============================================
+   SYSTEM REQUIREMENTS SECTION
+   ============================================= */
+.sysreq { background: rgba(28,36,66,0.55); backdrop-filter: blur(12px); }
+.sysreq-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  backdrop-filter: blur(8px);
+}
+.sysreq-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.sysreq-table th,
+.sysreq-table td {
+  padding: 0.9rem 1.25rem;
+  text-align: left;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+.sysreq-table th {
+  background: rgba(0,200,212,0.12);
+  color: var(--teal);
+  font-family: var(--font-h);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--card-border);
+}
+.sysreq-table td {
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sysreq-table tr:last-child td { border-bottom: none; }
+.sysreq-table td:first-child {
+  color: var(--white);
+  font-weight: 600;
+  white-space: normal;
+}
+
+/* =============================================
+   FAQ SECTION
+   ============================================= */
+.faq { background: rgba(24,32,60,0.5); backdrop-filter: blur(10px); }
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.faq-item {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(8px);
+  transition: var(--transition);
+}
+.faq-item:hover { background: rgba(255,255,255,0.14); }
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1.1rem 1.4rem;
+  font-family: var(--font-h);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: '+';
+  flex-shrink: 0;
+  color: var(--teal);
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+.faq-item[open] summary::after { content: '\2212'; }
+.faq-item p {
+  padding: 0 1.4rem 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.faq-item p a { color: var(--teal); text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .sysreq-table th, .sysreq-table td { padding: 0.75rem 0.9rem; font-size: 0.8rem; }
+}
