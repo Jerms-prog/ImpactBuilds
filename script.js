@@ -407,8 +407,8 @@ function spawnMsgTruck() {
       obs.disconnect();
 
       team.classList.add('hats-in');
-      /* 3 hats hang in by ~1.7s, hold briefly, then rack lifts away */
-      setTimeout(() => team.classList.add('hats-done'), 2100);
+      /* Worker walks in + transforms (~1.3s), then 3 hats hang in by ~3s, hold briefly, then rack lifts away */
+      setTimeout(() => team.classList.add('hats-done'), 3400);
     }, { threshold: 0.2 });
 
     setTimeout(() => obs.observe(team), 350);
