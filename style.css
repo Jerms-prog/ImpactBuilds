@@ -613,19 +613,6 @@ img { max-width: 100%; display: block; }
   text-align: center;
   padding: 0.5rem;
 }
-.screenshot-placeholder {
-  aspect-ratio: 16/10;
-  background: rgba(0,0,0,0.3);
-  border: 1px dashed rgba(255,255,255,0.15);
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-dim);
-  font-size: 0.78rem;
-  text-align: center;
-  padding: 1rem;
-}
 .media-note {
   text-align: center;
   font-size: 0.8rem;

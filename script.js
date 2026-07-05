@@ -593,9 +593,15 @@ function spawnMsgTruck() {
   const grid = $('#screenshotsGrid');
   if (!grid) return;
 
-  const PLACEHOLDERS = [
-    'City Overview', 'Typhoon Simulation', 'Earthquake Aftermath',
-    'Flood Zone', 'Building Inspector', 'Post-Disaster Report'
+  /* Real frames pulled from the gameplay trailer - used whenever there
+     aren't enough admin-uploaded screenshots to fill the grid yet. */
+  const FALLBACK_SHOTS = [
+    { src: 'images/screenshots/screenshot-01-building.jpg',        alt: 'Placing building pieces in the construction editor' },
+    { src: 'images/screenshots/screenshot-02-construction.jpg',    alt: 'A building frame under construction' },
+    { src: 'images/screenshots/screenshot-03-tower.jpg',           alt: 'A completed tower structure' },
+    { src: 'images/screenshots/screenshot-04-earthquake-test.jpg', alt: 'Earthquake hazard simulation comparing metal, concrete, and wood' },
+    { src: 'images/screenshots/screenshot-05-fire-test.jpg',       alt: 'Fire hazard simulation in progress' },
+    { src: 'images/screenshots/screenshot-06-fire-aftermath.jpg',  alt: 'Aftermath of the fire hazard simulation' },
   ];
 
   let media = [];
@@ -604,25 +610,20 @@ function spawnMsgTruck() {
     media = data || [];
   } catch (e) { /* not configured */ }
 
-  if (media.length === 0) {
-    grid.innerHTML = PLACEHOLDERS.map(label => `
-      <div class="screenshot-placeholder">
-        <span>${label}</span><br/>
-        <span style="font-size:0.65rem;opacity:0.6;">Screenshot Coming Soon</span>
-      </div>
-    `).join('');
-    $$('.screenshot-placeholder', grid).forEach(el => REVEAL.observe(el, 'drop'));
-    return;
-  }
-
   const items = media.slice(0, 6);
   while (items.length < 6) items.push(null);
 
   grid.innerHTML = items.map((m, i) => m
-    ? `<div class="screenshot-item"><img src="${m.data}" alt="${m.filename}" loading="lazy"/></div>`
-    : `<div class="screenshot-placeholder"><span>${PLACEHOLDERS[i] || 'Coming Soon'}</span></div>`
+    ? `<div class="screenshot-item"><img src="${m.data}" alt="${sanitize(m.filename)}" loading="lazy"/></div>`
+    : `<div class="screenshot-item"><img src="${FALLBACK_SHOTS[i].src}" alt="${FALLBACK_SHOTS[i].alt}" loading="lazy"/></div>`
   ).join('');
-  $$('.screenshot-item, .screenshot-placeholder', grid).forEach(el => REVEAL.observe(el, 'drop'));
+  $$('.screenshot-item', grid).forEach(el => REVEAL.observe(el, 'drop'));
+
+  function sanitize(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(String(str)));
+    return d.innerHTML;
+  }
 })();
 
 /* =============================================
