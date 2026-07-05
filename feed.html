@@ -304,7 +304,7 @@
         const catSlug  = (CATEGORIES[post.category]?.slug) || 'discussion';
         const tags     = (post.tags || []).slice(0, 4);
         const dateStr  = new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        const tagsHtml = tags.map(t => `<span class="c-tag">#${t}</span>`).join('');
+        const tagsHtml = tags.map(t => `<span class="c-tag">#${escHtml(t)}</span>`).join('');
         const excerpt  = (post.content || '').replace(/\n/g,' ').slice(0, 140) + ((post.content?.length > 140) ? '…' : '');
         const imgHtml  = post.image_url
           ? `<img class="post-card__image" src="${escHtml(post.image_url)}" alt="post image" loading="lazy"/>`
@@ -450,8 +450,12 @@
       const { count: postCount } = await window.supabase
         .from('posts').select('*', { count: 'exact', head: true }).eq('user_id', userId);
 
-      const insertBadge = (id) => window.supabase.from('user_badges')
-        .insert({ user_id: userId, badge_id: id }).maybeSingle();
+      const insertBadge = async (id) => {
+        const { data: existing } = await window.supabase.from('user_badges')
+          .select('user_id').eq('user_id', userId).eq('badge_id', id).maybeSingle();
+        if (existing) return;
+        await window.supabase.from('user_badges').insert({ user_id: userId, badge_id: id });
+      };
 
       if (postCount >= 1)  await insertBadge('pioneer');
       if (postCount >= 10) await insertBadge('master_builder');

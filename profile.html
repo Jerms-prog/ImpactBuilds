@@ -281,7 +281,7 @@
         const catSlug = CATEGORIES[post.category] || 'discussion';
         const dateStr = new Date(post.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
         const excerpt = (post.content||'').replace(/\n/g,' ').slice(0,120) + (post.content?.length > 120 ? '…' : '');
-        const tagsHtml = (post.tags||[]).slice(0,3).map(t=>`<span class="c-tag">#${t}</span>`).join('');
+        const tagsHtml = (post.tags||[]).slice(0,3).map(t=>`<span class="c-tag">#${escHtml(t)}</span>`).join('');
 
         const card = document.createElement('a');
         card.href = `post.html?id=${post.id}`;
