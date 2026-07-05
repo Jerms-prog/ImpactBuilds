@@ -390,93 +390,10 @@ function spawnMsgTruck() {
   setTimeout(arm, 7000);
 })();
 
-/* =============================================
-   TEAM SECTION — HARD HAT RACK
-   Only arms after loading screen finishes (reveal:ready).
-   ============================================= */
-(function initTeamHats() {
-  const team = document.getElementById('team');
-  if (!team) return;
-  let fired = false;
-
-  function arm() {
-    if (fired) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || fired) return;
-      fired = true;
-      obs.disconnect();
-
-      team.classList.add('hats-in');
-      /* Worker walks in + transforms (~1.3s), then 3 hats hang in by ~3s, hold briefly, then rack lifts away */
-      setTimeout(() => team.classList.add('hats-done'), 3400);
-    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
-
-    setTimeout(() => obs.observe(team), 350);
-  }
-
-  document.addEventListener('reveal:ready', arm, { once: true });
-  setTimeout(arm, 7000);
-})();
-
-/* =============================================
-   SYSTEM REQUIREMENTS — DUMP TRUCK FILL-IN
-   Only arms after loading screen finishes (reveal:ready).
-   ============================================= */
-(function initReqTruck() {
-  const req = document.getElementById('requirements');
-  if (!req) return;
-  let fired = false;
-
-  function arm() {
-    if (fired) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || fired) return;
-      fired = true;
-      obs.disconnect();
-
-      req.classList.add('rq-armed');
-      setTimeout(() => req.classList.add('rq-driving'), 50);
-      setTimeout(() => req.classList.add('rq-tipping'), 1050);
-      setTimeout(() => req.classList.add('rq-pouring'), 1350);
-      setTimeout(() => req.classList.add('rq-filled'),  3150);
-      setTimeout(() => req.classList.add('rq-leaving'), 3650);
-      setTimeout(() => req.classList.add('rq-done'),    4550);
-    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
-
-    setTimeout(() => obs.observe(req), 350);
-  }
-
-  document.addEventListener('reveal:ready', arm, { once: true });
-  setTimeout(arm, 7000);
-})();
-
-/* =============================================
-   FAQ SECTION — SIGNPOST HAMMERED IN
-   Only arms after loading screen finishes (reveal:ready).
-   ============================================= */
-(function initFaqSignpost() {
-  const faq = document.getElementById('faq');
-  if (!faq) return;
-  let fired = false;
-
-  function arm() {
-    if (fired) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || fired) return;
-      fired = true;
-      obs.disconnect();
-
-      faq.classList.add('sign-in');
-      /* Post + board finish settling by ~1.9s, hold, then unfold the list */
-      setTimeout(() => faq.classList.add('sign-done'), 2300);
-    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
-
-    setTimeout(() => obs.observe(faq), 350);
-  }
-
-  document.addEventListener('reveal:ready', arm, { once: true });
-  setTimeout(arm, 7000);
-})();
+/* Team, Requirements, and FAQ reveals were scaled back to the
+   simple fade used elsewhere (see REVEAL.observe calls in
+   loadTeam / loadRequirements / loadFAQ below) — no custom
+   scene, nothing gates the real content anymore. */
 
 /* =============================================
    APPLY SITE SETTINGS from Supabase

@@ -333,23 +333,8 @@
           <h2 class="section-title">THE MINDS BEHIND<br/><span>IMPACT BUILDS</span></h2>
           <p class="section-subtitle">SideQuest is the three-person capstone team designing, building, and testing Impact Builds from the ground up.</p>
         </div>
-        <div class="team-scene" id="teamScene">
-          <!-- Hard-hat rack overlay: plays once, then reveals the grid -->
-          <div class="hatrack" id="hatrack" aria-hidden="true">
-            <div class="hatrack__walker">
-              <div class="hw-hat"></div>
-              <div class="hw-head"></div>
-              <div class="hw-body"></div>
-              <div class="hw-legs"><div></div><div></div></div>
-            </div>
-            <div class="hatrack__rail"></div>
-            <div class="hatrack__unit hatrack__unit--1"><div class="hatrack__peg"></div><div class="hatrack__hat"></div></div>
-            <div class="hatrack__unit hatrack__unit--2"><div class="hatrack__peg"></div><div class="hatrack__hat"></div></div>
-            <div class="hatrack__unit hatrack__unit--3"><div class="hatrack__peg"></div><div class="hatrack__hat"></div></div>
-          </div>
-          <div class="team-grid" id="teamGrid">
-            <!-- Populated by script.js from the team_members table -->
-          </div>
+        <div class="team-grid" id="teamGrid">
+          <!-- Populated by script.js from the team_members table -->
         </div>
         <div class="notes-empty" id="teamEmpty" style="display:none;">
           <p>Meet the team soon &mdash; profiles are being added!</p>
@@ -367,36 +352,19 @@
           <h2 class="section-title">CAN YOUR PC<br/><span>RUN IMPACT BUILDS?</span></h2>
           <p class="section-subtitle">Target specs for the current build &mdash; subject to change as development continues.</p>
         </div>
-        <div class="reqsite" id="reqsite">
-          <!-- Dump truck overlay: pours fill into the pit, then reveals the table -->
-          <div class="reqsite__scene" id="reqsiteScene" aria-hidden="true">
-            <div class="reqsite__pit"></div>
-            <div class="reqsite__fill" id="reqsiteFill"></div>
-            <div class="reqsite__truck" id="reqsiteTruck">
-              <div class="rq-bed"><div class="rq-lip"></div></div>
-              <div class="rq-cab"><div class="rq-window"></div></div>
-              <div class="rq-wheel rq-wheel--1"></div>
-              <div class="rq-wheel rq-wheel--2"></div>
-            </div>
-            <div class="reqsite__pour" id="reqsitePour">
-              <span></span><span></span><span></span><span></span><span></span>
-            </div>
-            <div class="reqsite__dust" id="reqsiteDust"></div>
-          </div>
-          <div class="sysreq-table-wrap" id="sysreqWrap">
-            <table class="sysreq-table">
-              <thead>
-                <tr>
-                  <th>Specification</th>
-                  <th>Minimum Requirements</th>
-                  <th>Recommended Requirements</th>
-                </tr>
-              </thead>
-              <tbody id="sysreqBody">
-                <!-- Populated by script.js from settings.system_requirements -->
-              </tbody>
-            </table>
-          </div>
+        <div class="sysreq-table-wrap" id="sysreqWrap">
+          <table class="sysreq-table">
+            <thead>
+              <tr>
+                <th>Specification</th>
+                <th>Minimum Requirements</th>
+                <th>Recommended Requirements</th>
+              </tr>
+            </thead>
+            <tbody id="sysreqBody">
+              <!-- Populated by script.js from settings.system_requirements -->
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -429,18 +397,8 @@
           <span class="section-tag">Got Questions?</span>
           <h2 class="section-title">FREQUENTLY ASKED<br/><span>QUESTIONS</span></h2>
         </div>
-        <div class="faq-scene" id="faqScene">
-          <!-- Signpost overlay: hammers in, then the notice board unfolds -->
-          <div class="signscene" id="signscene" aria-hidden="true">
-            <div class="signscene__post">
-              <div class="signscene__board">FAQ</div>
-            </div>
-            <div class="signscene__ground"></div>
-            <div class="signscene__dust"></div>
-          </div>
-          <div class="faq-list" id="faqList">
-            <!-- Populated by script.js from the faq_items table -->
-          </div>
+        <div class="faq-list" id="faqList">
+          <!-- Populated by script.js from the faq_items table -->
         </div>
         <div class="notes-empty" id="faqEmpty" style="display:none;">
           <p>FAQs are coming soon!</p>
