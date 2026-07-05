@@ -193,7 +193,7 @@
     </svg>
   </div>
 
-  <!-- ========== AMBIENT WORKER SPRITES (decorative, follow you down the page) ========== -->
+  <!-- ========== AMBIENT WORKER SPRITES (decorative, walk in place, follow you down the page) ========== -->
   <div class="side-sprite side-sprite--left" aria-hidden="true">
     <div class="sc-fig">
       <div class="sc-fig__hat"></div>
@@ -201,7 +201,6 @@
       <div class="sc-fig__body"></div>
       <div class="sc-fig__legs"><div></div><div></div></div>
     </div>
-    <span class="sc-w-hammer">🔨</span>
   </div>
   <div class="side-sprite side-sprite--right" aria-hidden="true">
     <div class="sc-fig">
@@ -210,7 +209,6 @@
       <div class="sc-fig__body sc-fig__body--alt"></div>
       <div class="sc-fig__legs"><div></div><div></div></div>
     </div>
-    <span class="sc-w-wrench">🔧</span>
   </div>
 
   <!-- ========== HEADER / NAV ========== -->
@@ -260,50 +258,6 @@
 
     <!-- ========== ABOUT SECTION ========== -->
     <section class="about section" id="about">
-      <!-- Construction scene: dissolves when wrecking ball hits -->
-      <div class="about-scaffold" id="aboutScaffold" aria-hidden="true">
-        <div class="sc-pole sc-pole-l"></div>
-        <div class="sc-pole sc-pole-c"></div>
-        <div class="sc-pole sc-pole-r"></div>
-        <div class="sc-beam sc-beam-1"></div>
-        <div class="sc-beam sc-beam-2"></div>
-        <div class="sc-beam sc-beam-3"></div>
-        <div class="sc-plank sc-plank-1"></div>
-        <div class="sc-plank sc-plank-2"></div>
-        <!-- Worker A: upper-left plank, hammering -->
-        <div class="sc-worker sc-worker-a">
-          <div class="sc-fig">
-            <div class="sc-fig__hat"></div>
-            <div class="sc-fig__head"></div>
-            <div class="sc-fig__body"></div>
-            <div class="sc-fig__legs"><div></div><div></div></div>
-          </div>
-          <span class="sc-w-hammer">🔨</span>
-        </div>
-        <!-- Worker B: lower-right plank, wrench -->
-        <div class="sc-worker sc-worker-b">
-          <div class="sc-fig">
-            <div class="sc-fig__hat sc-fig__hat--blue"></div>
-            <div class="sc-fig__head sc-fig__head--alt"></div>
-            <div class="sc-fig__body sc-fig__body--alt"></div>
-            <div class="sc-fig__legs"><div></div><div></div></div>
-          </div>
-          <span class="sc-w-wrench">🔧</span>
-        </div>
-        <!-- Worker C: ground foreman, clipboard -->
-        <div class="sc-worker sc-worker-c">
-          <div class="sc-fig">
-            <div class="sc-fig__hat sc-fig__hat--white"></div>
-            <div class="sc-fig__head"></div>
-            <div class="sc-fig__body sc-fig__body--vest"></div>
-            <div class="sc-fig__legs"><div></div><div></div></div>
-          </div>
-          <span class="sc-w-clip">📋</span>
-        </div>
-        <div class="sc-notice">⚠&nbsp; UNDER CONSTRUCTION &nbsp;⚠</div>
-        <div class="sc-wreck" id="scWreck"></div>
-        <div class="sc-impact"></div>
-      </div>
       <div class="container">
         <div class="about__grid">
           <div class="about__media">
@@ -487,36 +441,6 @@
 
     <!-- ========== MEDIA SECTION ========== -->
     <section class="media section" id="media">
-      <!-- Blueprint overlay: hand-drawn sketch draws itself, then dissolves -->
-      <div class="media-blueprint" aria-hidden="true">
-        <!-- SVG lines that draw themselves like a pencil sketch -->
-        <svg class="media-bp__sketch" viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-          <!-- Outer border lines -->
-          <line pathLength="1" class="sk sl-1" x1="20" y1="20" x2="580" y2="20"/>
-          <line pathLength="1" class="sk sl-2" x1="20" y1="360" x2="580" y2="360"/>
-          <line pathLength="1" class="sk sl-3" x1="20" y1="20" x2="20" y2="360"/>
-          <line pathLength="1" class="sk sl-4" x1="580" y1="20" x2="580" y2="360"/>
-          <!-- Inner content box -->
-          <rect pathLength="1" class="sk sl-5" x="120" y="100" width="360" height="180" rx="2"/>
-          <!-- Title underline -->
-          <line pathLength="1" class="sk sl-6" x1="120" y1="230" x2="480" y2="230"/>
-          <!-- Dimension ticks top -->
-          <line pathLength="1" class="sk sl-7" x1="120" y1="10" x2="120" y2="24"/>
-          <line pathLength="1" class="sk sl-8" x1="480" y1="10" x2="480" y2="24"/>
-          <line pathLength="1" class="sk sl-9" x1="120" y1="14" x2="480" y2="14"/>
-          <!-- Corner survey marks -->
-          <path pathLength="1" class="sk sl-10" d="M 560 36 L 564 20 L 580 20"/>
-          <path pathLength="1" class="sk sl-11" d="M 20 344 L 20 360 L 36 360"/>
-          <!-- Diagonal cross (placeholder drawing) -->
-          <line pathLength="1" class="sk sl-12" x1="120" y1="100" x2="480" y2="280"/>
-          <line pathLength="1" class="sk sl-13" x1="480" y1="100" x2="120" y2="280"/>
-        </svg>
-        <div class="media-bp__inner">
-          <p class="media-bp__title">[ DRAFTING BLUEPRINTS ]</p>
-          <div class="media-bp__ruler"></div>
-          <p class="media-bp__sub">— gallery layout — sketch phase 1 of 1 —</p>
-        </div>
-      </div>
       <div class="container">
         <div class="section-header">
           <span class="section-tag">Gallery</span>

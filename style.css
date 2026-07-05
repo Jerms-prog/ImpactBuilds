@@ -1185,102 +1185,11 @@ img { max-width: 100%; display: block; }
 }
 
 /* =============================================
-   ABOUT SECTION — CONSTRUCTION SCENE + WRECKING BALL
+   ABOUT SECTION
    ============================================= */
-#about { position: relative; overflow: hidden; }
+#about { position: relative; }
 
-/* Hide about content while scaffold is up */
-#about.scaffolding .about__text,
-#about.scaffolding .about__video-box,
-#about.scaffolding .about__tags { opacity: 0 !important; transform: none !important; }
-
-/* Reveal content after wrecking ball breaks through */
-#about.scaffold-done .about__text,
-#about.scaffold-done .about__video-box,
-#about.scaffold-done .about__tags {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: opacity 0.75s ease 0.15s, transform 0.75s ease 0.15s;
-}
-
-/* ---- Overlay ---- */
-.about-scaffold {
-  position: absolute;
-  inset: 0;
-  z-index: 9;
-  pointer-events: none;
-  display: none;
-  overflow: hidden;
-  background: rgba(7, 12, 36, 0.95);
-}
-#about.scaffolding .about-scaffold { display: block; }
-#about.shattered .about-scaffold {
-  animation: sc-blast-out 0.9s ease forwards;
-}
-@keyframes sc-blast-out {
-  0%  { opacity: 1; transform: scale(1);    filter: brightness(1); }
-  10% { opacity: 1; transform: scale(1.04); filter: brightness(5) saturate(0); }
-  100%{ opacity: 0; transform: scale(1.1);  filter: blur(28px) brightness(0); }
-}
-
-/* ---- Vertical steel poles ---- */
-.sc-pole {
-  position: absolute;
-  top: 0; bottom: 0;
-  width: 8px;
-  background: linear-gradient(90deg, #768898, #a8bcc8, #768898);
-  border-radius: 4px;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.6);
-}
-.sc-pole-l { left: 12%; }
-.sc-pole-c { left: 46%; }
-.sc-pole-r { left: 80%; }
-
-/* ---- Horizontal beams ---- */
-.sc-beam {
-  position: absolute;
-  left: 0; right: 0;
-  height: 8px;
-  background: linear-gradient(to bottom, #a8bcc8, #768898);
-  border-radius: 4px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.6);
-}
-.sc-beam-1 { top: 27%; }
-.sc-beam-2 { top: 54%; }
-.sc-beam-3 { top: 80%; }
-
-/* ---- Wooden planks ---- */
-.sc-plank {
-  position: absolute;
-  height: 13px;
-  background: repeating-linear-gradient(
-    90deg,
-    #6e4718 0px, #6e4718 20px,
-    #8a5c26 20px, #8a5c26 22px,
-    #7c5120 22px, #7c5120 42px,
-    #6e4718 42px
-  );
-  border-radius: 1px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.5);
-}
-.sc-plank-1 { top: calc(27% + 8px); left: 12%; right: 46%; }
-.sc-plank-2 { top: calc(54% + 8px); left: 46%; right: 12%; }
-
-/* ---- Workers (CSS figures) ---- */
-.sc-worker {
-  position: absolute;
-  display: flex;
-  align-items: flex-end;
-  gap: 5px;
-  filter: drop-shadow(0 3px 10px rgba(0,0,0,0.7));
-}
-
-/* Worker positions */
-.sc-worker-a { left: calc(12% + 8px);  top: calc(27% - 138px); }
-.sc-worker-b { left: calc(46% + 8px);  top: calc(54% - 138px); }
-.sc-worker-c { left: 25%;              bottom: 13%; }
-
-/* ---- Figure shape ---- */
+/* ---- Figure shape (reused by the ambient side sprites) ---- */
 .sc-fig {
   display: flex;
   flex-direction: column;
@@ -1387,107 +1296,6 @@ img { max-width: 100%; display: block; }
   margin-left: -2px;
 }
 
-/* ---- Tool emojis (held at side of figure) ---- */
-.sc-w-hammer,
-.sc-w-wrench,
-.sc-w-clip { font-size: 2.8rem; display: block; line-height: 1; }
-
-.sc-w-hammer { animation: hammer-hit 0.38s ease-in-out infinite; transform-origin: 55% 78%; }
-.sc-w-wrench { animation: wrench-turn 0.65s ease-in-out infinite; transform-origin: 50% 80%; }
-.sc-w-clip   { animation: clipboard-nod 1.4s ease-in-out infinite; transform-origin: 50% 10%; }
-
-@keyframes hammer-hit {
-  0%, 100% { transform: rotate(-42deg) translateY(-7px); }
-  45%       { transform: rotate(18deg)  translateY(9px);  }
-}
-@keyframes wrench-turn {
-  0%, 100% { transform: rotate(-28deg); }
-  50%       { transform: rotate(32deg); }
-}
-@keyframes clipboard-nod {
-  0%, 100% { transform: rotate(-5deg) translateY(0); }
-  50%       { transform: rotate(5deg)  translateY(-6px); }
-}
-#about.shattered .sc-w-hammer,
-#about.shattered .sc-w-wrench,
-#about.shattered .sc-w-clip { animation: none; }
-
-/* ---- Under construction sign ---- */
-.sc-notice {
-  position: absolute;
-  bottom: 9%; left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Cheddar', sans-serif;
-  font-size: clamp(0.7rem, 1.8vw, 1.1rem);
-  letter-spacing: 0.2em;
-  color: #FFB800;
-  background: rgba(0,0,0,0.6);
-  border: 1.5px solid rgba(255,184,0,0.3);
-  padding: 5px 16px;
-  border-radius: 4px;
-  white-space: nowrap;
-  animation: sign-flicker 4s ease infinite;
-}
-@keyframes sign-flicker {
-  0%,94%,100% { opacity: 1; }
-  95% { opacity: 0.15; }
-  97% { opacity: 0.9; }
-  98% { opacity: 0.3; }
-}
-
-/* ---- Wrecking ball: slides in from right with pendulum arc ---- */
-.sc-wreck {
-  position: absolute;
-  top: -4px;
-  left: 50%;
-  transform-origin: 0 0;
-  /* 65deg = ball to the right (before swing) */
-  transform: rotate(65deg);
-  width: 4px;
-  height: 44%;
-  background: linear-gradient(to bottom, #909aaa, #707880);
-  border-radius: 2px;
-}
-/* Ball at end of cable */
-.sc-wreck::after {
-  content: '';
-  position: absolute;
-  bottom: -28px; left: 50%;
-  width: 54px; height: 54px;
-  background: radial-gradient(circle at 33% 30%, #666 0%, #111 70%);
-  border-radius: 50%;
-  transform: translateX(-50%);
-  box-shadow:
-    0 8px 24px rgba(0,0,0,0.8),
-    inset 0 -4px 8px rgba(255,255,255,0.08),
-    inset 2px -2px 4px rgba(255,255,255,0.15);
-}
-/* Swing: from right (65deg) accelerating to left (-30deg) — hits scaffold center */
-#about.swinging .sc-wreck {
-  animation: wreck-swing 1.5s cubic-bezier(0.36, 0, 0.66, 0) forwards;
-}
-@keyframes wreck-swing {
-  0%   { transform: rotate(65deg);  }
-  100% { transform: rotate(-30deg); }
-}
-
-/* ---- Impact dust/flash ---- */
-.sc-impact {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 55% 42%, rgba(255,220,140,0.75) 0%, rgba(255,180,60,0.15) 35%, transparent 65%);
-  opacity: 0;
-}
-#about.shattered .sc-impact {
-  animation: impact-flash 0.6s ease forwards;
-}
-@keyframes impact-flash {
-  0%   { opacity: 0; transform: scale(0.3); }
-  20%  { opacity: 1; transform: scale(1.05);}
-  100% { opacity: 0; transform: scale(1.4); }
-}
-
 /* =============================================
    NOTES — "✓ DELIVERED" STAMP ON CARDS
    ============================================= */
@@ -1559,122 +1367,6 @@ img { max-width: 100%; display: block; }
    ============================================= */
 #msgLetter {
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
-}
-
-/* =============================================
-   MEDIA — SKETCH → REVEAL OVERLAY
-   ============================================= */
-#media { position: relative; overflow: hidden; }
-
-/* Gallery looks like a blueprint sketch while overlay is up */
-#media:not(.blueprint-done) #screenshotsGrid {
-  filter: sepia(0.7) hue-rotate(195deg) brightness(0.65) saturate(0.4);
-  transition: filter 1.4s ease;
-}
-#media.blueprint-done #screenshotsGrid { filter: none; }
-
-/* Sketch-paper overlay: cream paper with pencil grid */
-.media-blueprint {
-  position: absolute;
-  inset: 0;
-  z-index: 8;
-  pointer-events: none;
-  background-color: #e8e0c8;
-  background-image:
-    linear-gradient(rgba(30,55,110,0.14) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(30,55,110,0.14) 1px, transparent 1px),
-    linear-gradient(rgba(30,55,110,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(30,55,110,0.06) 1px, transparent 1px);
-  background-size: 48px 48px, 48px 48px, 12px 12px, 12px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 1.3s ease;
-}
-#media.blueprint-done .media-blueprint { opacity: 0; pointer-events: none; }
-
-/* ---- SVG sketch that draws itself ---- */
-.media-bp__sketch {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-/* All SVG lines start as invisible (dashoffset = pathLength = 1) */
-.sk {
-  stroke: rgba(30,55,120,0.45);
-  stroke-width: 1.6;
-  fill: none;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-}
-/* Outer border — draw first */
-.sl-1 { animation: sk-draw 0.5s ease  0.05s forwards; }
-.sl-2 { animation: sk-draw 0.5s ease  0.25s forwards; }
-.sl-3 { animation: sk-draw 0.35s ease 0.1s  forwards; }
-.sl-4 { animation: sk-draw 0.35s ease 0.3s  forwards; }
-/* Inner box */
-.sl-5 { animation: sk-draw 0.7s ease  0.55s forwards; stroke: rgba(30,55,120,0.55); stroke-width: 2; }
-/* Title underline */
-.sl-6 { animation: sk-draw 0.45s ease 0.9s  forwards; }
-/* Dimension ticks */
-.sl-7 { animation: sk-draw 0.15s ease 0.45s forwards; }
-.sl-8 { animation: sk-draw 0.15s ease 0.48s forwards; }
-.sl-9 { animation: sk-draw 0.4s ease  0.5s  forwards; }
-/* Survey corner marks */
-.sl-10 { animation: sk-draw 0.2s ease 0.32s forwards; stroke: rgba(30,55,120,0.6); stroke-width: 2.2; }
-.sl-11 { animation: sk-draw 0.2s ease 0.34s forwards; stroke: rgba(30,55,120,0.6); stroke-width: 2.2; }
-/* Diagonal cross (placeholder box content) */
-.sl-12 { animation: sk-draw 0.5s ease 1.0s  forwards; stroke: rgba(30,55,120,0.2); stroke-width: 1.2; }
-.sl-13 { animation: sk-draw 0.5s ease 1.05s forwards; stroke: rgba(30,55,120,0.2); stroke-width: 1.2; }
-@keyframes sk-draw { to { stroke-dashoffset: 0; } }
-
-/* ---- Inner content (over the SVG) ---- */
-.media-bp__inner {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 22px 40px 16px;
-  background: rgba(232, 224, 200, 0.85);
-  border: 1px solid rgba(30,55,110,0.2);
-  border-radius: 2px;
-}
-
-.media-bp__title {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(1rem, 2.8vw, 1.8rem);
-  letter-spacing: 0.14em;
-  color: #1a3060;
-  font-weight: bold;
-  display: inline-block;
-  transform: rotate(-0.7deg);
-  clip-path: inset(0 100% 0 0);
-  animation: sketch-draw 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards;
-  white-space: nowrap;
-}
-@keyframes sketch-draw { to { clip-path: inset(0 0% 0 0); } }
-
-.media-bp__ruler {
-  height: 12px;
-  margin: 10px -20px 0;
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(30,55,110,0.3) 0px, rgba(30,55,110,0.3) 1px,
-    transparent 1px, transparent 8px,
-    rgba(30,55,110,0.2) 8px, rgba(30,55,110,0.2) 9px,
-    transparent 9px, transparent 16px
-  );
-}
-
-.media-bp__sub {
-  display: block;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.64rem;
-  letter-spacing: 0.18em;
-  color: rgba(26,48,96,0.55);
-  font-style: italic;
-  margin-top: 8px;
 }
 
 /* =============================================
@@ -1923,11 +1615,10 @@ img { max-width: 100%; display: block; }
 
 /* =============================================
    AMBIENT SIDE SPRITES
-   Little construction workers that stay put in the
-   side margins as you scroll — purely decorative,
-   reuses the .sc-fig figure + tool sprites from the
-   About scaffold scene. Hidden once there's no real
-   margin to sit in.
+   Little construction workers that walk in place in
+   the side margins as you scroll — purely decorative,
+   reuses the .sc-fig figure from the About section.
+   Hidden once there's no real margin to sit in.
    ============================================= */
 .side-sprite {
   position: fixed;
@@ -1943,12 +1634,23 @@ img { max-width: 100%; display: block; }
 }
 .side-sprite--left  { left: 14px;  transform-origin: left bottom; }
 .side-sprite--right { right: 14px; transform-origin: right bottom; }
-.side-sprite .sc-fig { animation: side-sprite-sway 3.2s ease-in-out infinite; }
-.side-sprite--right .sc-fig { animation-delay: -1.6s; }
-@keyframes side-sprite-sway {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(-4px) rotate(-1.5deg); }
+
+/* Whole figure bobs with each step */
+.side-sprite .sc-fig { animation: side-sprite-bob 0.7s ease-in-out infinite; }
+.side-sprite--right .sc-fig { animation-delay: -0.35s; }
+@keyframes side-sprite-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
 }
+
+/* Legs alternate to read as a walk cycle */
+.side-sprite .sc-fig__legs > div:nth-child(1) { animation: side-sprite-step 0.7s ease-in-out infinite; }
+.side-sprite .sc-fig__legs > div:nth-child(2) { animation: side-sprite-step 0.7s ease-in-out infinite -0.35s; }
+@keyframes side-sprite-step {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50%      { transform: translateY(-3px) scaleY(0.85); }
+}
+
 @media (max-width: 1450px) {
   .side-sprite { display: none; }
 }

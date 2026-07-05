@@ -175,12 +175,11 @@ const REVEAL = (() => {
    REVEAL.start() fires after loading screen
    ============================================= */
 (function initReveal() {
-  /* about__text, about__video-box, about__tags excluded — initAboutScaffold handles those */
-  $$('.section-header, .community-msg')
+  $$('.section-header, .community-msg, .about__text')
     .forEach(el => REVEAL.observe(el, 'pull'));
-  $$('.media-video')
+  $$('.media-video, .about__video-box')
     .forEach(el => REVEAL.observe(el, 'drop'));
-  $$('.community__form')
+  $$('.community__form, .about__tags')
     .forEach(el => REVEAL.observe(el, ''));
   $$('.hero-logo')
     .forEach(el => REVEAL.observe(el, 'drop'));
@@ -281,67 +280,10 @@ function spawnMsgTruck() {
   });
 }
 
-/* =============================================
-   ABOUT SECTION — CONSTRUCTION SCENE + WRECKING BALL
-   Only arms after loading screen finishes (reveal:ready).
-   ============================================= */
-(function initAboutScaffold() {
-  const about = document.getElementById('about');
-  if (!about) return;
-  let fired = false;
-
-  function arm() {
-    if (fired) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || fired) return;
-      fired = true;
-      obs.disconnect();
-
-      about.classList.add('scaffolding');
-      /* Workers hammer for 2.5s before wrecking ball swings */
-      setTimeout(() => about.classList.add('swinging'),   2500);
-      /* Swing takes 1.5s → shatter at 4.0s */
-      setTimeout(() => about.classList.add('shattered'),  3950);
-      /* Content fully revealed at 4.6s */
-      setTimeout(() => {
-        about.classList.add('scaffold-done');
-        about.classList.remove('scaffolding');
-      }, 4600);
-    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
-
-    /* Small delay after reveal:ready so sections in view don't fire instantly */
-    setTimeout(() => obs.observe(about), 350);
-  }
-
-  document.addEventListener('reveal:ready', arm, { once: true });
-  setTimeout(arm, 7000); /* fallback if reveal:ready never fires */
-})();
-
-/* =============================================
-   MEDIA SECTION — BLUEPRINT SKETCH OVERLAY
-   Only arms after loading screen finishes (reveal:ready).
-   ============================================= */
-(function initMediaBlueprint() {
-  const media = document.getElementById('media');
-  if (!media) return;
-  let fired = false;
-
-  function arm() {
-    if (fired) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || fired) return;
-      fired = true;
-      obs.disconnect();
-      /* Sketch lines finish drawing by ~1.9s; brief hold, then dissolve */
-      setTimeout(() => media.classList.add('blueprint-done'), 2400);
-    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
-
-    setTimeout(() => obs.observe(media), 350);
-  }
-
-  document.addEventListener('reveal:ready', arm, { once: true });
-  setTimeout(arm, 7000);
-})();
+/* About's scaffold/wrecking-ball scene and Media's blueprint-sketch
+   overlay were removed — both sections now just use the standard
+   REVEAL.observe fade (see initReveal below), same as the rest of
+   the site. */
 
 /* =============================================
    CONTACT SECTION — RADIO TRANSMISSION
