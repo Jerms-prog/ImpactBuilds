@@ -1099,10 +1099,10 @@ img { max-width: 100%; display: block; }
 /* Pulled in from the left — like a truck towing it */
 .reveal.reveal--pull {
   opacity: 0;
-  transform: translateX(-60px);
+  transform: translateX(-90px);
   transition:
-    opacity  0.72s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity  0.75s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .reveal.reveal--pull.revealed {
   opacity: 1;
@@ -1112,10 +1112,10 @@ img { max-width: 100%; display: block; }
 /* Dropped from above — like a crane lowering it into place */
 .reveal.reveal--drop {
   opacity: 0;
-  transform: translateY(-50px) scale(0.94);
+  transform: translateY(-75px) scale(0.9);
   transition:
-    opacity  0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-    transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity  0.65s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .reveal.reveal--drop.revealed {
   opacity: 1;
@@ -1622,18 +1622,18 @@ img { max-width: 100%; display: block; }
    ============================================= */
 .side-sprite {
   position: fixed;
-  top: 62%;
+  top: 60%;
   z-index: 2;
   display: flex;
   align-items: flex-end;
   gap: 4px;
   pointer-events: none;
-  transform: scale(0.6);
-  opacity: 0.75;
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
+  transform: scale(0.75);
+  opacity: 0.95;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.45));
 }
-.side-sprite--left  { left: 14px;  transform-origin: left bottom; }
-.side-sprite--right { right: 14px; transform-origin: right bottom; }
+.side-sprite--left  { left: 8px;  transform-origin: left bottom; }
+.side-sprite--right { right: 8px; transform-origin: right bottom; }
 
 /* Whole figure bobs with each step */
 .side-sprite .sc-fig { animation: side-sprite-bob 0.7s ease-in-out infinite; }
@@ -1651,6 +1651,6 @@ img { max-width: 100%; display: block; }
   50%      { transform: translateY(-3px) scaleY(0.85); }
 }
 
-@media (max-width: 1450px) {
+@media (max-width: 1280px) {
   .side-sprite { display: none; }
 }
