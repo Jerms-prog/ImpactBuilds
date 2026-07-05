@@ -578,23 +578,8 @@ function spawnMsgTruck() {
   $$('.faq-item', list).forEach(el => REVEAL.observe(el, 'pull'));
 })();
 
-/* =============================================
-   LOAD TRAILER VIDEO from Supabase
-   ============================================= */
-(async function loadTrailer() {
-  const box = $('#aboutVideoBox');
-  if (!box) return;
-
-  let video = null;
-  try {
-    const { data } = await supabase.from('settings').select('setting_value').eq('setting_key', 'trailer_video').maybeSingle();
-    video = data?.setting_value || null;
-  } catch (e) { /* not configured */ }
-
-  if (!video?.url) return;
-
-  box.innerHTML = `<video src="${video.url}" controls playsinline style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);"></video>`;
-})();
+/* The gameplay trailer is a static file (videos/gameplay-trailer.mp4)
+   referenced directly in index.html — no admin upload path anymore. */
 
 /* =============================================
    LOAD CMS MEDIA (screenshots) from Supabase
