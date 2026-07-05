@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Impact Builds — A 3D infrastructure simulation game about building resilient communities against natural disasters."/>
   <title>Impact Builds | Build. Simulate. Survive.</title>
+  <link rel="icon" type="image/png" href="images/pclogo.png"/>
+
+  <!-- Open Graph / social link previews -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Impact Builds | Build. Simulate. Survive."/>
+  <meta property="og:description" content="A 3D infrastructure simulation game about building resilient communities against natural disasters. A capstone project by SideQuest."/>
+  <meta property="og:image" content="images/logo.png"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Impact Builds | Build. Simulate. Survive."/>
+  <meta name="twitter:description" content="A 3D infrastructure simulation game about building resilient communities against natural disasters."/>
+  <meta name="twitter:image" content="images/logo.png"/>
+
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -316,6 +328,9 @@
             </tbody>
           </table>
         </div>
+        <div class="notes-empty" id="sysreqEmpty" style="display:none;">
+          <p>Target specs are being finalized &mdash; check back soon!</p>
+        </div>
       </div>
     </section>
 
@@ -382,15 +397,18 @@
           <form class="community__form" id="contactForm" novalidate>
             <div class="form-row-pub">
               <div class="form-group-pub">
+                <label class="sr-only" for="cName">Your Name</label>
                 <input type="text" id="cName" placeholder="Your Name" required/>
                 <span class="form-err" id="nameErr"></span>
               </div>
               <div class="form-group-pub">
+                <label class="sr-only" for="cEmail">Your Email</label>
                 <input type="email" id="cEmail" placeholder="Your Email" required/>
                 <span class="form-err" id="emailErr"></span>
               </div>
             </div>
             <div class="form-group-pub">
+              <label class="sr-only" for="cSubject">Subject</label>
               <select id="cSubject" required>
                 <option value="" disabled selected>Select a subject</option>
                 <option>General Inquiry</option>
@@ -401,6 +419,7 @@
               </select>
             </div>
             <div class="form-group-pub">
+              <label class="sr-only" for="cMessage">Your Message</label>
               <textarea id="cMessage" rows="5" placeholder="Write your message here…" required></textarea>
               <span class="form-err" id="msgErr"></span>
             </div>

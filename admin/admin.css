@@ -125,7 +125,7 @@ img { max-width: 100%; display: block; }
 .sidebar-link.active { color: var(--teal); border-left-color: var(--teal); background: rgba(0,200,212,0.08); }
 .sidebar-badge {
   margin-left: auto;
-  background: var(--danger);
+  background: var(--red);
   color: #fff;
   font-size: 0.6rem;
   font-weight: 700;

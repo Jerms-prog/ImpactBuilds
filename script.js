@@ -516,8 +516,9 @@ function spawnMsgTruck() {
    LOAD SYSTEM REQUIREMENTS from Supabase
    ============================================= */
 (async function loadRequirements() {
-  const body = $('#sysreqBody');
-  const wrap = $('#sysreqWrap');
+  const body  = $('#sysreqBody');
+  const wrap  = $('#sysreqWrap');
+  const empty = $('#sysreqEmpty');
   if (!body) return;
 
   function sanitize(str) {
@@ -532,7 +533,11 @@ function spawnMsgTruck() {
     rows = Array.isArray(data?.setting_value) ? data.setting_value : [];
   } catch (e) { /* not configured */ }
 
-  if (rows.length === 0) return;
+  if (rows.length === 0) {
+    if (wrap) wrap.style.display = 'none';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
 
   body.innerHTML = rows.map(r => `
     <tr>

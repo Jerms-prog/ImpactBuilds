@@ -57,6 +57,15 @@ img { max-width: 100%; display: block; }
 /* ---- Utility ---- */
 .container { max-width: var(--container); margin: 0 auto; padding: 0 1.5rem; }
 .section { padding: 5.5rem 0; position: relative; z-index: 1; }
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* =============================================
    CITY BACKGROUND SVG (Fixed behind everything)
