@@ -1920,3 +1920,35 @@ img { max-width: 100%; display: block; }
    .revealed rules above, applied via REVEAL.observe calls in
    loadTeam / loadRequirements / loadFAQ) — no custom scene,
    nothing gates the real content. */
+
+/* =============================================
+   AMBIENT SIDE SPRITES
+   Little construction workers that stay put in the
+   side margins as you scroll — purely decorative,
+   reuses the .sc-fig figure + tool sprites from the
+   About scaffold scene. Hidden once there's no real
+   margin to sit in.
+   ============================================= */
+.side-sprite {
+  position: fixed;
+  top: 62%;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  pointer-events: none;
+  transform: scale(0.6);
+  opacity: 0.75;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
+}
+.side-sprite--left  { left: 14px;  transform-origin: left bottom; }
+.side-sprite--right { right: 14px; transform-origin: right bottom; }
+.side-sprite .sc-fig { animation: side-sprite-sway 3.2s ease-in-out infinite; }
+.side-sprite--right .sc-fig { animation-delay: -1.6s; }
+@keyframes side-sprite-sway {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-4px) rotate(-1.5deg); }
+}
+@media (max-width: 1450px) {
+  .side-sprite { display: none; }
+}
