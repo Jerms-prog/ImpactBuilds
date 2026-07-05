@@ -563,7 +563,7 @@ function spawnMsgTruck() {
       <div class="team-card__roles">${(m.roles || []).map(r => `<span>${sanitize(r)}</span>`).join('')}</div>
     </div>
   `).join('');
-  $$('.team-card', grid).forEach(el => REVEAL.observe(el, ''));
+  $$('.team-card', grid).forEach(el => REVEAL.observe(el, 'drop'));
 })();
 
 /* =============================================
@@ -629,7 +629,7 @@ function spawnMsgTruck() {
       <p>${sanitize(f.answer)}</p>
     </details>
   `).join('');
-  $$('.faq-item', list).forEach(el => REVEAL.observe(el, ''));
+  $$('.faq-item', list).forEach(el => REVEAL.observe(el, 'pull'));
 })();
 
 /* =============================================
