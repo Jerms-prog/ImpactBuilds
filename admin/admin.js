@@ -297,6 +297,29 @@ const CMS = {
     const { error } = await supabase.from('settings')
       .upsert({ setting_key: 'system_requirements', setting_value: rows }, { onConflict: 'setting_key' });
     return { ok: !error, message: error?.message };
+  },
+
+  /* ---- Trailer video (stored in settings) ---- */
+  async getTrailerVideo() {
+    const { data } = await supabase.from('settings').select('setting_value').eq('setting_key', 'trailer_video').maybeSingle();
+    return data?.setting_value || null;
+  },
+  async uploadTrailerVideo(file) {
+    const ext  = file.name.split('.').pop();
+    const path = `trailer/${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from('site-videos').upload(path, file);
+    if (upErr) return { ok: false, message: upErr.message };
+    const { data } = supabase.storage.from('site-videos').getPublicUrl(path);
+    const { error } = await supabase.from('settings')
+      .upsert({ setting_key: 'trailer_video', setting_value: { url: data.publicUrl, path, filename: file.name } }, { onConflict: 'setting_key' });
+    return { ok: !error, message: error?.message, url: data.publicUrl };
+  },
+  async removeTrailerVideo() {
+    const current = await this.getTrailerVideo();
+    if (current?.path) await supabase.storage.from('site-videos').remove([current.path]);
+    const { error } = await supabase.from('settings')
+      .upsert({ setting_key: 'trailer_video', setting_value: null }, { onConflict: 'setting_key' });
+    return { ok: !error, message: error?.message };
   }
 };
 

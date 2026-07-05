@@ -67,12 +67,13 @@
 
   <main class="admin-main">
     <h1 class="admin-page-title">Site Content</h1>
-    <p class="admin-page-sub">Manage the Team, FAQ, and Technical Feasibility sections shown on the public website.</p>
+    <p class="admin-page-sub">Manage the Team, FAQ, Technical Feasibility, and Trailer Video sections shown on the public website.</p>
 
     <div class="settings-tabs">
       <button class="tab-btn active" data-tab="team">Team</button>
       <button class="tab-btn" data-tab="faq">FAQ</button>
       <button class="tab-btn" data-tab="requirements">System Requirements</button>
+      <button class="tab-btn" data-tab="trailer">Trailer Video</button>
     </div>
 
     <!-- ===== TEAM ===== -->
@@ -121,6 +122,28 @@
           <p id="reqStatus">Changes apply to the public website in real time.</p>
           <button class="btn btn--primary btn--lg" id="saveReqBtn">Save Changes</button>
         </div>
+      </div></div>
+    </div>
+
+    <!-- ===== TRAILER VIDEO ===== -->
+    <div class="tab-panel" id="tab-trailer">
+      <div class="card"><div class="card-body">
+        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;">Upload the gameplay preview video shown in the About section on the public site. MP4 recommended, up to 100MB.</p>
+        <div id="trailerPreviewWrap" style="display:none;margin-bottom:1rem;">
+          <video id="trailerPreview" controls style="width:100%;max-width:520px;border-radius:var(--radius);background:#000;"></video>
+        </div>
+        <div id="trailerEmpty" style="display:none;padding:1.5rem;text-align:center;color:var(--text-muted);font-size:.85rem;border:1px dashed var(--border);border-radius:var(--radius);margin-bottom:1rem;">
+          No trailer video uploaded yet.
+        </div>
+        <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
+          <label class="btn btn--teal" for="trailerInput" style="cursor:pointer;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Upload Video
+          </label>
+          <input type="file" id="trailerInput" accept="video/*" style="display:none;"/>
+          <button class="btn btn--danger btn--sm" id="removeTrailerBtn" style="display:none;">Remove Video</button>
+        </div>
+        <div class="login-alert" id="trailerAlert" style="margin-top:.75rem;"></div>
       </div></div>
     </div>
   </main>
@@ -523,9 +546,61 @@
     }
   });
 
+  /* =========================================================
+     TRAILER VIDEO TAB
+     ========================================================= */
+  const trailerAlert = document.getElementById('trailerAlert');
+
+  async function renderTrailer() {
+    const video = await CMS.getTrailerVideo();
+    const wrap  = document.getElementById('trailerPreviewWrap');
+    const empty = document.getElementById('trailerEmpty');
+    const removeBtn = document.getElementById('removeTrailerBtn');
+    if (video?.url) {
+      document.getElementById('trailerPreview').src = video.url;
+      wrap.style.display = 'block';
+      empty.style.display = 'none';
+      removeBtn.style.display = 'inline-flex';
+    } else {
+      wrap.style.display = 'none';
+      empty.style.display = 'block';
+      removeBtn.style.display = 'none';
+    }
+  }
+
+  document.getElementById('trailerInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    if (file.size > 100 * 1024 * 1024) {
+      trailerAlert.className = 'login-alert show error';
+      trailerAlert.textContent = 'Video must be under 100MB.';
+      return;
+    }
+    trailerAlert.textContent = '';
+    trailerAlert.className = 'login-alert';
+    showToast('Uploading video… this may take a moment.');
+    const result = await CMS.uploadTrailerVideo(file);
+    if (result.ok) {
+      renderTrailer();
+      showToast('Trailer video uploaded!');
+    } else {
+      trailerAlert.className = 'login-alert show error';
+      trailerAlert.textContent = result.message || 'Upload failed.';
+    }
+  });
+
+  document.getElementById('removeTrailerBtn').addEventListener('click', async () => {
+    if (!confirm('Remove the trailer video? The About section will show "Coming Soon" again.')) return;
+    const result = await CMS.removeTrailerVideo();
+    if (result.ok) { renderTrailer(); showToast('Trailer video removed.', 'error'); }
+    else showToast('Remove failed: ' + (result.message || 'Not authenticated.'), 'error');
+  });
+
   renderTeam();
   renderFaq();
   renderRequirements();
+  renderTrailer();
 })();
 </script>
 </body>

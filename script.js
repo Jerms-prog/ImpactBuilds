@@ -177,7 +177,7 @@ const REVEAL = (() => {
 (function initReveal() {
   $$('.section-header, .community-msg, .about__text')
     .forEach(el => REVEAL.observe(el, 'pull'));
-  $$('.media-video, .about__video-box')
+  $$('.about__video-box')
     .forEach(el => REVEAL.observe(el, 'drop'));
   $$('.community__form, .about__tags')
     .forEach(el => REVEAL.observe(el, ''));
@@ -579,6 +579,24 @@ function spawnMsgTruck() {
 })();
 
 /* =============================================
+   LOAD TRAILER VIDEO from Supabase
+   ============================================= */
+(async function loadTrailer() {
+  const box = $('#aboutVideoBox');
+  if (!box) return;
+
+  let video = null;
+  try {
+    const { data } = await supabase.from('settings').select('setting_value').eq('setting_key', 'trailer_video').maybeSingle();
+    video = data?.setting_value || null;
+  } catch (e) { /* not configured */ }
+
+  if (!video?.url) return;
+
+  box.innerHTML = `<video src="${video.url}" controls playsinline style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);"></video>`;
+})();
+
+/* =============================================
    LOAD CMS MEDIA (screenshots) from Supabase
    ============================================= */
 (async function loadMedia() {
@@ -700,22 +718,6 @@ function spawnMsgTruck() {
 
     /* Delivery truck flies across the screen; badge appears after it exits */
     spawnMsgTruck();
-  });
-})();
-
-/* =============================================
-   PLAY BUTTON (trailer placeholder)
-   ============================================= */
-(function initPlayBtn() {
-  const btn = $('#playBtn');
-  if (!btn) return;
-  btn.addEventListener('click', () => {
-    const inner = btn.closest('.media-video__inner');
-    if (!inner) return;
-    inner.innerHTML = `
-      <p style="font-family:var(--font-h);font-size:1.2rem;font-weight:800;color:#fff;letter-spacing:0.05em;">TRAILER COMING SOON</p>
-      <p style="color:var(--text-muted);font-size:0.85rem;">The official gameplay trailer is in production. Stay tuned!</p>
-    `;
   });
 })();
 
