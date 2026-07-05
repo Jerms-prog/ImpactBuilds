@@ -303,7 +303,7 @@ function spawnMsgTruck() {
         about.classList.add('scaffold-done');
         about.classList.remove('scaffolding');
       }, 4600);
-    }, { threshold: 0.2 });
+    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
 
     /* Small delay after reveal:ready so sections in view don't fire instantly */
     setTimeout(() => obs.observe(about), 350);
@@ -330,7 +330,7 @@ function spawnMsgTruck() {
       obs.disconnect();
       /* Sketch stays visible for 4s so user can watch lines draw in */
       setTimeout(() => media.classList.add('blueprint-done'), 4000);
-    }, { threshold: 0.12 });
+    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
 
     setTimeout(() => obs.observe(media), 350);
   }
@@ -381,7 +381,7 @@ function spawnMsgTruck() {
           }, 55);
         }, 700);
       }
-    }, { threshold: 0.3 });
+    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
 
     setTimeout(() => obs.observe(communityMsg), 350);
   }
@@ -409,7 +409,7 @@ function spawnMsgTruck() {
       team.classList.add('hats-in');
       /* Worker walks in + transforms (~1.3s), then 3 hats hang in by ~3s, hold briefly, then rack lifts away */
       setTimeout(() => team.classList.add('hats-done'), 3400);
-    }, { threshold: 0.2 });
+    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
 
     setTimeout(() => obs.observe(team), 350);
   }
@@ -441,7 +441,7 @@ function spawnMsgTruck() {
       setTimeout(() => req.classList.add('rq-filled'),  3150);
       setTimeout(() => req.classList.add('rq-leaving'), 3650);
       setTimeout(() => req.classList.add('rq-done'),    4550);
-    }, { threshold: 0.2 });
+    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
 
     setTimeout(() => obs.observe(req), 350);
   }
@@ -469,7 +469,7 @@ function spawnMsgTruck() {
       faq.classList.add('sign-in');
       /* Post + board finish settling by ~1.9s, hold, then unfold the list */
       setTimeout(() => faq.classList.add('sign-done'), 2300);
-    }, { threshold: 0.2 });
+    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
 
     setTimeout(() => obs.observe(faq), 350);
   }
