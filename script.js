@@ -182,6 +182,10 @@ const REVEAL = (() => {
     .forEach(el => REVEAL.observe(el, 'drop'));
   $$('.community__form')
     .forEach(el => REVEAL.observe(el, ''));
+  $$('.hero-logo')
+    .forEach(el => REVEAL.observe(el, 'drop'));
+  $$('.btn-download')
+    .forEach(el => REVEAL.observe(el, 'pull'));
   /* note-cards & screenshots are dynamic — registered in loadNotes / loadMedia */
 })();
 
@@ -328,8 +332,8 @@ function spawnMsgTruck() {
       if (!entry.isIntersecting || fired) return;
       fired = true;
       obs.disconnect();
-      /* Sketch stays visible for 4s so user can watch lines draw in */
-      setTimeout(() => media.classList.add('blueprint-done'), 4000);
+      /* Sketch lines finish drawing by ~1.9s; brief hold, then dissolve */
+      setTimeout(() => media.classList.add('blueprint-done'), 2400);
     }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
 
     setTimeout(() => obs.observe(media), 350);
