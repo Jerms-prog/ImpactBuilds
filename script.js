@@ -391,6 +391,94 @@ function spawnMsgTruck() {
 })();
 
 /* =============================================
+   TEAM SECTION — HARD HAT RACK
+   Only arms after loading screen finishes (reveal:ready).
+   ============================================= */
+(function initTeamHats() {
+  const team = document.getElementById('team');
+  if (!team) return;
+  let fired = false;
+
+  function arm() {
+    if (fired) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting || fired) return;
+      fired = true;
+      obs.disconnect();
+
+      team.classList.add('hats-in');
+      /* 3 hats hang in by ~1.7s, hold briefly, then rack lifts away */
+      setTimeout(() => team.classList.add('hats-done'), 2100);
+    }, { threshold: 0.2 });
+
+    setTimeout(() => obs.observe(team), 350);
+  }
+
+  document.addEventListener('reveal:ready', arm, { once: true });
+  setTimeout(arm, 7000);
+})();
+
+/* =============================================
+   SYSTEM REQUIREMENTS — DUMP TRUCK FILL-IN
+   Only arms after loading screen finishes (reveal:ready).
+   ============================================= */
+(function initReqTruck() {
+  const req = document.getElementById('requirements');
+  if (!req) return;
+  let fired = false;
+
+  function arm() {
+    if (fired) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting || fired) return;
+      fired = true;
+      obs.disconnect();
+
+      req.classList.add('rq-armed');
+      setTimeout(() => req.classList.add('rq-driving'), 50);
+      setTimeout(() => req.classList.add('rq-tipping'), 1050);
+      setTimeout(() => req.classList.add('rq-pouring'), 1350);
+      setTimeout(() => req.classList.add('rq-filled'),  3150);
+      setTimeout(() => req.classList.add('rq-leaving'), 3650);
+      setTimeout(() => req.classList.add('rq-done'),    4550);
+    }, { threshold: 0.2 });
+
+    setTimeout(() => obs.observe(req), 350);
+  }
+
+  document.addEventListener('reveal:ready', arm, { once: true });
+  setTimeout(arm, 7000);
+})();
+
+/* =============================================
+   FAQ SECTION — SIGNPOST HAMMERED IN
+   Only arms after loading screen finishes (reveal:ready).
+   ============================================= */
+(function initFaqSignpost() {
+  const faq = document.getElementById('faq');
+  if (!faq) return;
+  let fired = false;
+
+  function arm() {
+    if (fired) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting || fired) return;
+      fired = true;
+      obs.disconnect();
+
+      faq.classList.add('sign-in');
+      /* Post + board finish settling by ~1.9s, hold, then unfold the list */
+      setTimeout(() => faq.classList.add('sign-done'), 2300);
+    }, { threshold: 0.2 });
+
+    setTimeout(() => obs.observe(faq), 350);
+  }
+
+  document.addEventListener('reveal:ready', arm, { once: true });
+  setTimeout(arm, 7000);
+})();
+
+/* =============================================
    APPLY SITE SETTINGS from Supabase
    Colors, maintenance mode, section visibility,
    social links, copyright — all controlled from admin
