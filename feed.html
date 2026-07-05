@@ -336,7 +336,7 @@
               </div>
               <span class="post-card__stat">❤️ ${post.likes_count || 0}</span>
               <span class="post-card__date">${dateStr}</span>
-              ${canDelete ? `<button class="post-card__del" onclick="event.preventDefault();event.stopPropagation();deletePost('${post.id}',this)" title="Delete post">🗑</button>` : ''}
+              ${canDelete ? `<button class="post-card__del" onclick="event.preventDefault();event.stopPropagation();deletePost('${post.id}',this)" title="Delete post" aria-label="Delete post">🗑</button>` : ''}
             </div>
           </div>
           ${imgHtml}`;

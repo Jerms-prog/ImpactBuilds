@@ -20,7 +20,7 @@
   --c-input-bg:    rgba(255,255,255,0.06);
   --c-text:        rgba(255,255,255,0.92);
   --c-muted:       rgba(255,255,255,0.5);
-  --c-dim:         rgba(255,255,255,0.3);
+  --c-dim:         rgba(255,255,255,0.55);
 }
 
 body.community-page {
@@ -240,8 +240,13 @@ body.community-page {
   opacity: 0; transition: opacity 0.15s, color 0.15s, background 0.15s;
   line-height: 1;
 }
-.post-card:hover .post-card__del { opacity: 1; }
+.post-card:hover .post-card__del,
+.post-card:focus-within .post-card__del { opacity: 1; }
 .post-card__del:hover { color: #f87171; background: rgba(248,113,113,0.1); }
+/* Touch devices have no hover - always show it (dimmed) so it's actually reachable */
+@media (hover: none) {
+  .post-card__del { opacity: 0.7; }
+}
 
 .c-tag {
   display: inline-block;
@@ -299,10 +304,12 @@ body.community-page {
 }
 .c-modal-backdrop.open .c-modal { transform: scale(1); }
 .c-modal__close {
-  position: absolute; top: 1rem; right: 1rem;
+  position: absolute; top: 0.6rem; right: 0.6rem;
   background: none; border: none; color: var(--c-dim);
   font-size: 1.4rem; cursor: pointer; line-height: 1;
   padding: 0.25rem; border-radius: 4px; transition: color 0.2s;
+  min-width: 40px; min-height: 40px;
+  display: flex; align-items: center; justify-content: center;
 }
 .c-modal__close:hover { color: var(--c-text); }
 .c-modal__title {
@@ -701,7 +708,7 @@ body.community-page {
   .feed-layout { grid-template-columns: 1fr; padding: 1rem 1rem 3rem; }
   .feed-sidebar { position: static; }
   .cat-filter-list { flex-direction: row; flex-wrap: wrap; }
-  .cat-filter-item { width: auto; }
+  .cat-filter-item { width: auto; min-height: 40px; }
   .post-card__image { width: 90px; }
   .post-detail__content { padding: 1.5rem; }
   .post-detail__title { font-size: 1.3rem; }
@@ -711,6 +718,25 @@ body.community-page {
   .profile-id__top { flex-wrap: wrap; }
   .profile-stats { gap: 1.25rem; }
   .c-nav__links li:not(:first-child) { display: none; }
+
+  /* Never silently clip the auth controls (username/logout or sign-in/join) -
+     wrap them to their own line instead of letting them overflow off-screen. */
+  .c-header { height: auto; }
+  .c-nav {
+    height: auto;
+    min-height: 60px;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+    padding: 0.6rem 1rem;
+  }
+
+  /* iOS Safari auto-zooms into any input under 16px on focus - keep every
+     form control on mobile at 16px regardless of its desktop size. */
+  .c-input, .c-textarea, .c-select,
+  .comment-compose textarea,
+  .reply-compose textarea {
+    font-size: 16px;
+  }
 }
 @media (max-width: 480px) {
   .auth-card { padding: 1.75rem 1.25rem; }

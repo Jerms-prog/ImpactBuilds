@@ -8,7 +8,7 @@
   --white:      #ffffff;
   --text:       rgba(255,255,255,0.95);
   --text-muted: rgba(255,255,255,0.7);
-  --text-dim:   rgba(255,255,255,0.45);
+  --text-dim:   rgba(255,255,255,0.75);
   --teal:       #00c8d4;
   --warning:    #d04040;
   --border:     rgba(255,255,255,0.2);
@@ -227,9 +227,13 @@ img { max-width: 100%; display: block; }
 .nav__hamburger {
   display: none;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
   padding: 0.4rem;
   margin-left: auto;
+  min-width: 44px;
+  min-height: 44px;
 }
 .nav__hamburger span {
   display: block; width: 22px; height: 2px;
@@ -701,10 +705,15 @@ img { max-width: 100%; display: block; }
 .modal-overlay.open .modal-box { transform: translateY(0) scale(1); }
 .modal-close {
   position: absolute;
-  top: 1rem; right: 1.25rem;
+  top: 0.6rem; right: 0.75rem;
   font-size: 1.4rem;
   color: var(--text-dim);
   transition: color var(--transition);
+  min-width: 40px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .modal-close:hover { color: var(--white); }
 .modal-icon {
@@ -834,6 +843,10 @@ img { max-width: 100%; display: block; }
 
   /* Form */
   .form-row-pub { grid-template-columns: 1fr; }
+  /* iOS Safari auto-zooms into any input under 16px on focus */
+  .community__form input,
+  .community__form select,
+  .community__form textarea { font-size: 16px; }
 
   /* Footer */
   .footer__grid { grid-template-columns: 1fr; gap: 1.75rem; }

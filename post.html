@@ -160,7 +160,7 @@
               </a>
               <div style="display:flex;align-items:center;gap:0.5rem;">
                 ${canDeletePost ? `<button class="c-btn-ghost" style="font-size:0.78rem;color:rgba(248,113,113,0.7);padding:0.35rem 0.7rem;" onclick="deleteThisPost()">🗑 Delete Post</button>` : ''}
-                <button class="c-like-btn ${userLiked ? 'liked' : ''}" id="likeBtn" onclick="toggleLike()">
+                <button class="c-like-btn ${userLiked ? 'liked' : ''}" id="likeBtn" onclick="toggleLike()" aria-label="${userLiked ? 'Unlike this post' : 'Like this post'}">
                   <span class="c-like-icon">${userLiked ? '❤️' : '🤍'}</span>
                   <span id="likeCount">${post.likes_count || 0}</span>
                 </button>
@@ -328,6 +328,7 @@
         await window.supabase.from('posts').update({ likes_count: Math.max(0, current - 1) }).eq('id', postId);
         btn.classList.remove('liked');
         btn.querySelector('.c-like-icon').textContent = '🤍';
+        btn.setAttribute('aria-label', 'Like this post');
         countEl.textContent = Math.max(0, current - 1);
       } else {
         await window.supabase.from('post_likes').insert({ post_id: postId, user_id: currentSession.user.id }).maybeSingle();
@@ -335,6 +336,7 @@
         await window.supabase.from('posts').update({ likes_count: newCount }).eq('id', postId);
         btn.classList.add('liked');
         btn.querySelector('.c-like-icon').textContent = '❤️';
+        btn.setAttribute('aria-label', 'Unlike this post');
         countEl.textContent = newCount;
 
         // Check community star badge for post author
