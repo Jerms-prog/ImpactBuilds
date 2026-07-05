@@ -128,7 +128,7 @@
     <!-- ===== TRAILER VIDEO ===== -->
     <div class="tab-panel" id="tab-trailer">
       <div class="card"><div class="card-body">
-        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;">Upload the gameplay preview video shown in the About section on the public site. MP4 recommended, up to 100MB.</p>
+        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;">Upload the gameplay preview video shown in the About section on the public site. MP4 recommended, up to 250MB.</p>
         <div id="trailerPreviewWrap" style="display:none;margin-bottom:1rem;">
           <video id="trailerPreview" controls style="width:100%;max-width:520px;border-radius:var(--radius);background:#000;"></video>
         </div>
@@ -572,9 +572,9 @@
     const file = e.target.files[0];
     e.target.value = '';
     if (!file) return;
-    if (file.size > 100 * 1024 * 1024) {
+    if (file.size > 250 * 1024 * 1024) {
       trailerAlert.className = 'login-alert show error';
-      trailerAlert.textContent = 'Video must be under 100MB.';
+      trailerAlert.textContent = 'Video must be under 250MB.';
       return;
     }
     trailerAlert.textContent = '';
