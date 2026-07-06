@@ -627,26 +627,6 @@ function spawnMsgTruck() {
 })();
 
 /* =============================================
-   DOWNLOAD MODAL
-   ============================================= */
-(function initDownloadModal() {
-  const modal   = $('#downloadModal');
-  const openBtn = $('#downloadBtn');
-  const closeBtn = $('#modalClose');
-  const okBtn   = $('#modalOk');
-  if (!modal) return;
-
-  const open  = () => { modal.classList.add('open'); document.body.style.overflow = 'hidden'; };
-  const close = () => { modal.classList.remove('open'); document.body.style.overflow = ''; };
-
-  if (openBtn) openBtn.addEventListener('click', open);
-  if (closeBtn) closeBtn.addEventListener('click', close);
-  if (okBtn)   okBtn.addEventListener('click', close);
-  modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
-})();
-
-/* =============================================
    CONTACT FORM
    ============================================= */
 (function initContactForm() {
