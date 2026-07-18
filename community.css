@@ -699,6 +699,32 @@ body.community-page {
 .profile-posts { display: flex; flex-direction: column; gap: 0.7rem; }
 
 /* =============================================
+   COMMUNITY FOOTER
+   ============================================= */
+.c-footer {
+  border-top: 1px solid var(--c-border);
+  background: rgba(8,14,31,0.6);
+  margin-top: 3rem;
+  padding: 1.75rem 0;
+}
+.c-footer__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.c-footer__logo { display: inline-flex; }
+.c-footer__logo .custom-logo { height: 28px; width: auto; }
+.c-footer__links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+.c-footer__links a { font-size: 0.82rem; color: var(--c-muted); text-decoration: none; transition: color 0.2s; }
+.c-footer__links a:hover { color: var(--c-yellow); }
+.c-footer__copy { font-size: 0.78rem; color: var(--c-dim); }
+
+/* =============================================
    RESPONSIVE
    ============================================= */
 @media (max-width: 900px) {
@@ -718,6 +744,7 @@ body.community-page {
   .profile-id__top { flex-wrap: wrap; }
   .profile-stats { gap: 1.25rem; }
   .c-nav__links li:not(:first-child) { display: none; }
+  .c-footer__inner { flex-direction: column; text-align: center; }
 
   /* Never silently clip the auth controls (username/logout or sign-in/join) -
      wrap them to their own line instead of letting them overflow off-screen. */
