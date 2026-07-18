@@ -466,35 +466,62 @@ img { max-width: 100%; display: block; }
   gap: 3.5rem;
   align-items: start;
 }
-.community-msg {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
+.community__lead {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
 }
-.community-avatar {
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  background: var(--teal);
-  color: #fff;
-  font-family: var(--font-h);
-  font-weight: 800;
-  font-size: 1rem;
+.community-preview { display: flex; flex-direction: column; gap: 0.75rem; }
+.preview-post {
+  display: block;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.1rem;
+  text-decoration: none;
+  transition: var(--transition);
+}
+.preview-post:hover {
+  background: rgba(255,255,255,0.16);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.preview-post__meta {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 0 0 3px rgba(0,200,212,0.25);
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.68rem;
 }
-.community-bubble {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid var(--card-border);
-  border-radius: 0 var(--radius) var(--radius) var(--radius);
-  padding: 1.1rem 1.25rem;
-  backdrop-filter: blur(6px);
+.preview-post__cat {
+  background: rgba(0,200,212,0.15);
+  color: var(--teal);
+  border: 1px solid rgba(0,200,212,0.25);
+  padding: 0.12rem 0.5rem;
+  border-radius: 100px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
-.community-bubble p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
-.community-bubble p:first-child { font-size: 0.8rem; color: var(--white); font-weight: 600; margin-bottom: 0.5rem; }
-.community-bubble__time { display: block; margin-top: 0.75rem; font-size: 0.72rem; color: var(--text-dim); }
+.preview-post__author { color: var(--text-dim); }
+.preview-post__title {
+  font-family: var(--font-h);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.3rem;
+  line-height: 1.35;
+}
+.preview-post__excerpt {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
 
 /* Public contact form */
 .community__form {
@@ -1183,47 +1210,6 @@ img { max-width: 100%; display: block; }
 #msgLetter {
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
 }
-
-/* =============================================
-   CONTACT — RADIO TRANSMISSION EFFECT
-   ============================================= */
-.transmission-ping {
-  font-family: 'Cheddar', sans-serif;
-  font-size: 0.66rem;
-  letter-spacing: 0.26em;
-  color: #FFB800;
-  margin-bottom: 0.3rem;
-  opacity: 0;
-  transform: translateY(-8px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-.community-msg.transmitting .transmission-ping {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Scanning light that sweeps across the bubble */
-.scan-fx {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    transparent 30%,
-    rgba(0, 200, 212, 0.12) 50%,
-    transparent 70%
-  );
-  transform: translateY(-100%);
-  pointer-events: none;
-}
-.community-msg.transmitting .scan-fx {
-  animation: contact-scan 0.85s ease 0.25s forwards;
-}
-@keyframes contact-scan {
-  from { transform: translateY(-100%); }
-  to   { transform: translateY(200%);  }
-}
-
-/* Community bubble needs relative so scan-fx positions inside it */
-.community-bubble { position: relative; overflow: hidden; }
 
 /* =============================================
    TEAM SECTION

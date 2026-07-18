@@ -175,7 +175,7 @@ const REVEAL = (() => {
    REVEAL.start() fires after loading screen
    ============================================= */
 (function initReveal() {
-  $$('.section-header, .community-msg, .about__text')
+  $$('.section-header, .about__text')
     .forEach(el => REVEAL.observe(el, 'pull'));
   $$('.about__video-box')
     .forEach(el => REVEAL.observe(el, 'drop'));
@@ -285,56 +285,9 @@ function spawnMsgTruck() {
    REVEAL.observe fade (see initReveal below), same as the rest of
    the site. */
 
-/* =============================================
-   CONTACT SECTION — RADIO TRANSMISSION
-   Only arms after loading screen finishes (reveal:ready).
-   ============================================= */
-(function initContactTransmission() {
-  const communityMsg = document.querySelector('#community .community-msg');
-  if (!communityMsg) return;
-  let fired = false;
-
-  /* Inject elements up-front (DOM-only, no animation yet) */
-  const ping = document.createElement('p');
-  ping.className = 'transmission-ping';
-  ping.textContent = '📡 INCOMING TRANSMISSION';
-  communityMsg.insertBefore(ping, communityMsg.firstChild);
-
-  const bubble = communityMsg.querySelector('.community-bubble');
-  const scanFx = document.createElement('div');
-  scanFx.className = 'scan-fx';
-  if (bubble) bubble.appendChild(scanFx);
-
-  const bubblePs = bubble ? bubble.querySelectorAll('p') : [];
-  const msgEl    = bubblePs.length > 1 ? bubblePs[1] : null;
-  const origText = msgEl ? msgEl.textContent : '';
-
-  function arm() {
-    if (fired) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || fired) return;
-      fired = true;
-      obs.disconnect();
-
-      communityMsg.classList.add('transmitting');
-      if (msgEl && origText) {
-        msgEl.textContent = '';
-        let i = 0;
-        setTimeout(() => {
-          const iv = setInterval(() => {
-            msgEl.textContent += origText[i++];
-            if (i >= origText.length) clearInterval(iv);
-          }, 55);
-        }, 700);
-      }
-    }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
-
-    setTimeout(() => obs.observe(communityMsg), 350);
-  }
-
-  document.addEventListener('reveal:ready', arm, { once: true });
-  setTimeout(arm, 7000);
-})();
+/* The community teaser bubble + radio-transmission animation were
+   removed in favor of a real live post preview (see loadCommunityPreview
+   below) - simpler, and shows genuine content instead of a decoration. */
 
 /* Team, Requirements, and FAQ reveals were scaled back to the
    simple fade used elsewhere (see REVEAL.observe calls in
@@ -583,6 +536,59 @@ function spawnMsgTruck() {
   $$('.faq-item', list).forEach(el => REVEAL.observe(el, 'pull'));
 })();
 
+/* =============================================
+   LOAD COMMUNITY PREVIEW (real recent posts) from Supabase
+   Shown directly on the main site so visitors see genuine
+   activity without leaving the page or needing an account.
+   ============================================= */
+(async function loadCommunityPreview() {
+  const wrap  = $('#communityPreview');
+  const empty = $('#communityPreviewEmpty');
+  if (!wrap) return;
+
+  function sanitize(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(String(str)));
+    return d.innerHTML;
+  }
+
+  let posts = [];
+  try {
+    const { data } = await supabase.from('posts').select('*').order('created_at', { ascending: false }).limit(3);
+    posts = data || [];
+  } catch (e) { /* not configured */ }
+
+  if (posts.length === 0) {
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+
+  let profileMap = {};
+  try {
+    const userIds = [...new Set(posts.map(p => p.user_id))];
+    const { data: profiles } = await supabase.from('profiles').select('user_id, username').in('user_id', userIds);
+    profileMap = Object.fromEntries((profiles || []).map(p => [p.user_id, p]));
+  } catch (e) { /* ignore */ }
+
+  wrap.innerHTML = posts.map(p => {
+    const author  = profileMap[p.user_id]?.username || 'Someone';
+    const content = p.content || '';
+    const excerpt = content.replace(/\n/g, ' ').slice(0, 110) + (content.length > 110 ? '…' : '');
+    const dateStr = new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return `
+      <a href="post.html?id=${p.id}" class="preview-post">
+        <div class="preview-post__meta">
+          <span class="preview-post__cat">${sanitize(p.category)}</span>
+          <span class="preview-post__author">by ${sanitize(author)} · ${dateStr}</span>
+        </div>
+        <div class="preview-post__title">${sanitize(p.title)}</div>
+        <div class="preview-post__excerpt">${sanitize(excerpt)}</div>
+      </a>
+    `;
+  }).join('');
+  $$('.preview-post', wrap).forEach(el => REVEAL.observe(el, ''));
+})();
+
 /* The gameplay trailer is a static file (videos/gameplay-trailer.mp4)
    referenced directly in index.html — no admin upload path anymore. */
 
@@ -624,6 +630,26 @@ function spawnMsgTruck() {
     d.appendChild(document.createTextNode(String(str)));
     return d.innerHTML;
   }
+})();
+
+/* =============================================
+   DOWNLOAD MODAL
+   ============================================= */
+(function initDownloadModal() {
+  const modal   = $('#downloadModal');
+  const openBtn = $('#downloadBtn');
+  const closeBtn = $('#modalClose');
+  const okBtn   = $('#modalOk');
+  if (!modal) return;
+
+  const open  = () => { modal.classList.add('open'); document.body.style.overflow = 'hidden'; };
+  const close = () => { modal.classList.remove('open'); document.body.style.overflow = ''; };
+
+  if (openBtn) openBtn.addEventListener('click', open);
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  if (okBtn)   okBtn.addEventListener('click', close);
+  modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
 })();
 
 /* =============================================
