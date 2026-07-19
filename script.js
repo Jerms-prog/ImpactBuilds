@@ -784,22 +784,26 @@ function spawnMsgTruck() {
 
 /* =============================================
    BACKGROUND MUSIC TOGGLE
-   Autoplay-with-sound is blocked by browsers
-   until a user gesture happens, so playback only
-   ever starts from a click on the toggle button.
-   Preference persists across visits via
-   localStorage so returning users don't have to
-   re-decide, but the audio itself still needs a
-   fresh gesture on some browsers — the button
-   always reflects the audio element's real state.
+   Browsers block audio-with-sound from playing
+   until the user has interacted with the page —
+   no code can start it silently on load. So instead
+   of waiting for someone to notice and click the
+   toggle button, the very first click/tap/key press
+   ANYWHERE on the page kicks it off automatically.
+   The toggle button remains as an explicit
+   mute/unmute control and always reflects the
+   audio element's real playing state. The mute
+   choice persists across visits via localStorage;
+   an unset preference is treated as "wants music".
    ============================================= */
 (async function initMusicToggle() {
   const audio = $('#bgMusic');
   const btn   = $('#musicToggle');
   if (!audio || !btn) return;
 
-  const STORAGE_KEY = 'ib-music';
-  audio.volume = 0.35;
+  const STORAGE_KEY  = 'ib-music';
+  const TARGET_VOL   = 0.35;
+  const KICK_EVENTS  = ['pointerdown', 'keydown', 'touchstart', 'click'];
 
   /* Admin can swap the track from the Site Content panel — if one is
      set, it overrides the bundled audio/bg-music.mp3 default. */
@@ -814,23 +818,32 @@ function spawnMsgTruck() {
     btn.setAttribute('aria-label', playing ? 'Mute background music' : 'Play background music');
   }
 
-  btn.addEventListener('click', () => {
-    if (audio.paused) {
-      audio.play()
-        .then(() => { setUI(true); localStorage.setItem(STORAGE_KEY, 'on'); })
-        .catch(() => { setUI(false); });
-    } else {
-      audio.pause();
-      setUI(false);
-      localStorage.setItem(STORAGE_KEY, 'off');
-    }
-  });
+  function fadeIn() {
+    const steps = 30;
+    audio.volume = 0;
+    let i = 0;
+    const iv = setInterval(() => {
+      i++;
+      audio.volume = Math.min(TARGET_VOL, (TARGET_VOL / steps) * i);
+      if (i >= steps) clearInterval(iv);
+    }, 1500 / steps);
+  }
 
-  /* Resume automatically only if the user had it on before AND this
-     page load already carries a user gesture the browser will accept
-     (e.g. arriving via a link click) — otherwise play() silently
-     rejects and the button just stays in its paused state. */
-  if (localStorage.getItem(STORAGE_KEY) === 'on') {
-    audio.play().then(() => setUI(true)).catch(() => setUI(false));
+  audio.addEventListener('play',  () => { fadeIn(); setUI(true);  localStorage.setItem(STORAGE_KEY, 'on'); });
+  audio.addEventListener('pause', () => { setUI(false); localStorage.setItem(STORAGE_KEY, 'off'); });
+
+  function tryPlay() {
+    if (audio.paused) audio.play().catch(() => { /* still blocked — a later gesture will retry */ });
+  }
+
+  btn.addEventListener('click', () => { audio.paused ? tryPlay() : audio.pause(); });
+
+  if (localStorage.getItem(STORAGE_KEY) !== 'off') {
+    tryPlay(); // works immediately for returning visitors the browser already trusts
+    const kick = (e) => { if (!btn.contains(e.target)) tryPlay(); };
+    KICK_EVENTS.forEach(evt => document.addEventListener(evt, kick, { passive: true }));
+    audio.addEventListener('play', () => {
+      KICK_EVENTS.forEach(evt => document.removeEventListener(evt, kick));
+    }, { once: true });
   }
 })();
