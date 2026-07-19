@@ -784,15 +784,14 @@ function spawnMsgTruck() {
 
 /* =============================================
    BACKGROUND MUSIC TOGGLE
-   Even muted autoplay gets blocked by some browser
-   configurations (confirmed via a live NotAllowedError),
-   so this doesn't fight the platform: playback starts
-   for real the moment the visitor does anything at all —
-   click, scroll, tap, or key press — anywhere on the
-   page. The toggle button is the explicit manual
-   control and always reflects the audio element's real
-   state. The mute choice persists across visits via
-   localStorage; an unset preference means "wants music".
+   Autoplay-with-sound is blocked by browsers
+   until a user gesture happens, so playback only
+   ever starts from a click on the toggle button.
+   Preference persists across visits via
+   localStorage so returning users don't have to
+   re-decide, but the audio itself still needs a
+   fresh gesture on some browsers — the button
+   always reflects the audio element's real state.
    ============================================= */
 (function initMusicToggle() {
   const audio = $('#bgMusic');
@@ -800,8 +799,7 @@ function spawnMsgTruck() {
   if (!audio || !btn) return;
 
   const STORAGE_KEY = 'ib-music';
-  const TARGET_VOL  = 0.35;
-  const KICK_EVENTS = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'click'];
+  audio.volume = 0.35;
 
   function setUI(playing) {
     btn.classList.toggle('playing', playing);
@@ -809,43 +807,23 @@ function spawnMsgTruck() {
     btn.setAttribute('aria-label', playing ? 'Mute background music' : 'Play background music');
   }
 
-  function fadeIn() {
-    const steps = 30;
-    audio.volume = 0;
-    let i = 0;
-    const iv = setInterval(() => {
-      i++;
-      audio.volume = Math.min(TARGET_VOL, (TARGET_VOL / steps) * i);
-      if (i >= steps) clearInterval(iv);
-    }, 1500 / steps);
+  btn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play()
+        .then(() => { setUI(true); localStorage.setItem(STORAGE_KEY, 'on'); })
+        .catch(() => { setUI(false); });
+    } else {
+      audio.pause();
+      setUI(false);
+      localStorage.setItem(STORAGE_KEY, 'off');
+    }
+  });
+
+  /* Resume automatically only if the user had it on before AND this
+     page load already carries a user gesture the browser will accept
+     (e.g. arriving via a link click) — otherwise play() silently
+     rejects and the button just stays in its paused state. */
+  if (localStorage.getItem(STORAGE_KEY) === 'on') {
+    audio.play().then(() => setUI(true)).catch(() => setUI(false));
   }
-
-  audio.addEventListener('play',  () => { fadeIn(); setUI(true);  localStorage.setItem(STORAGE_KEY, 'on'); });
-  audio.addEventListener('pause', () => { setUI(false); localStorage.setItem(STORAGE_KEY, 'off'); });
-
-  function tryPlay() {
-    if (audio.paused) audio.play().catch((err) => console.warn('[music] play() failed:', err));
-  }
-
-  btn.addEventListener('click', () => { audio.paused ? tryPlay() : audio.pause(); });
-
-  if (localStorage.getItem(STORAGE_KEY) !== 'off') {
-    tryPlay(); // succeeds immediately for returning visitors the browser already trusts
-    const kick = (e) => { if (!btn.contains(e.target)) tryPlay(); };
-    KICK_EVENTS.forEach(evt => document.addEventListener(evt, kick, { passive: true }));
-    audio.addEventListener('play', () => {
-      KICK_EVENTS.forEach(evt => document.removeEventListener(evt, kick));
-    }, { once: true });
-  }
-
-  /* Admin can swap the track from the Site Content panel. Runs
-     separately so a slow or blocked network call never delays or
-     breaks core playback; only swaps in before anything has started
-     so it can't interrupt audio someone is already hearing. */
-  supabase.from('settings').select('setting_value').eq('setting_key', 'bg_music').maybeSingle()
-    .then(({ data }) => {
-      const url = data?.setting_value?.url;
-      if (url && audio.paused) audio.src = url;
-    })
-    .catch(() => { /* ad-blocked or offline — bundled default keeps playing */ });
 })();
