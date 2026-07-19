@@ -784,35 +784,29 @@ function spawnMsgTruck() {
 
 /* =============================================
    BACKGROUND MUSIC TOGGLE
-   Browsers universally allow autoplay when a media
-   element starts MUTED — no gesture required — but
-   will never allow it to start with sound before a
-   gesture. So the track starts playing muted the
-   instant the page loads (truly automatic), and a
-   pulsing "Tap for sound" hint invites the one click
-   that flips audio.muted to false. Unmuting an
-   element that's already playing is always allowed,
-   even from a plain click, so no further gesture
-   tricks are needed after that. The autoplay attempt
-   and button wiring happen synchronously with no
-   network dependency in the critical path — a
-   Supabase lookup for an admin-uploaded track runs
-   separately afterward so a slow or blocked request
-   can never delay or break core playback.
+   Even muted autoplay gets blocked by some browser
+   configurations (confirmed via a live NotAllowedError),
+   so this doesn't fight the platform: playback starts
+   for real the moment the visitor does anything at all —
+   click, scroll, tap, or key press — anywhere on the
+   page. The toggle button is the explicit manual
+   control and always reflects the audio element's real
+   state. The mute choice persists across visits via
+   localStorage; an unset preference means "wants music".
    ============================================= */
 (function initMusicToggle() {
   const audio = $('#bgMusic');
   const btn   = $('#musicToggle');
-  const hint  = $('#musicHint');
   if (!audio || !btn) return;
 
   const STORAGE_KEY = 'ib-music';
   const TARGET_VOL  = 0.35;
+  const KICK_EVENTS = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'click'];
 
-  function setUI(unmuted) {
-    btn.classList.toggle('playing', unmuted);
-    btn.setAttribute('aria-pressed', unmuted ? 'true' : 'false');
-    btn.setAttribute('aria-label', unmuted ? 'Mute background music' : 'Unmute background music');
+  function setUI(playing) {
+    btn.classList.toggle('playing', playing);
+    btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    btn.setAttribute('aria-label', playing ? 'Mute background music' : 'Play background music');
   }
 
   function fadeIn() {
@@ -826,66 +820,32 @@ function spawnMsgTruck() {
     }, 1500 / steps);
   }
 
-  function hideHint() { if (hint) hint.classList.remove('visible'); }
+  audio.addEventListener('play',  () => { fadeIn(); setUI(true);  localStorage.setItem(STORAGE_KEY, 'on'); });
+  audio.addEventListener('pause', () => { setUI(false); localStorage.setItem(STORAGE_KEY, 'off'); });
 
-  function unmute() {
-    audio.muted = false;
-    /* If the silent autoplay attempt at load never actually started
-       playback (some browsers are stricter for <audio> than <video>),
-       this click is a real user gesture, so play() is guaranteed to
-       succeed here — this is the safety net that makes tapping the
-       hint actually produce sound instead of just flipping a mute
-       flag on an element that was never playing. */
-    if (audio.paused) {
-      audio.play().catch((err) => console.warn('[music] play() failed:', err));
-    }
-    fadeIn();
-    setUI(true);
-    localStorage.setItem(STORAGE_KEY, 'on');
-    hideHint();
-  }
-  function mute() {
-    audio.muted = true;
-    setUI(false);
-    localStorage.setItem(STORAGE_KEY, 'off');
+  function tryPlay() {
+    if (audio.paused) audio.play().catch((err) => console.warn('[music] play() failed:', err));
   }
 
-  btn.addEventListener('click', () => { audio.muted ? unmute() : mute(); });
-  if (hint) hint.addEventListener('click', unmute);
+  btn.addEventListener('click', () => { audio.paused ? tryPlay() : audio.pause(); });
 
-  /* Always start muted — universally allowed without any gesture. */
-  audio.muted  = true;
-  audio.volume = TARGET_VOL;
-  audio.play().catch((err) => console.warn('[music] initial muted play() failed:', err));
-  setUI(false);
-
-  /* Only nag first-time visitors with the hint bubble; returning
-     visitors already know the button is there. */
-  const seenBefore = localStorage.getItem(STORAGE_KEY) !== null;
-  if (hint && !seenBefore) {
-    setTimeout(() => {
-      hint.classList.add('visible');
-      const dismissTimer = setTimeout(hideHint, 9000);
-      document.addEventListener('pointerdown', function onceAway(e) {
-        if (!btn.contains(e.target) && !hint.contains(e.target)) {
-          hideHint();
-          clearTimeout(dismissTimer);
-        }
-      }, { once: true });
-    }, 900);
+  if (localStorage.getItem(STORAGE_KEY) !== 'off') {
+    tryPlay(); // succeeds immediately for returning visitors the browser already trusts
+    const kick = (e) => { if (!btn.contains(e.target)) tryPlay(); };
+    KICK_EVENTS.forEach(evt => document.addEventListener(evt, kick, { passive: true }));
+    audio.addEventListener('play', () => {
+      KICK_EVENTS.forEach(evt => document.removeEventListener(evt, kick));
+    }, { once: true });
   }
 
-  /* Admin can swap the track from the Site Content panel. This runs
-     after playback is already underway — only apply it if the user
-     hasn't unmuted yet, so a late-arriving (or ad-blocked) response
-     can never interrupt sound someone is already hearing. */
+  /* Admin can swap the track from the Site Content panel. Runs
+     separately so a slow or blocked network call never delays or
+     breaks core playback; only swaps in before anything has started
+     so it can't interrupt audio someone is already hearing. */
   supabase.from('settings').select('setting_value').eq('setting_key', 'bg_music').maybeSingle()
     .then(({ data }) => {
       const url = data?.setting_value?.url;
-      if (url && audio.muted) {
-        audio.src = url;
-        audio.play().catch((err) => console.warn('[music] custom-track play() failed:', err));
-      }
+      if (url && audio.paused) audio.src = url;
     })
     .catch(() => { /* ad-blocked or offline — bundled default keeps playing */ });
 })();
