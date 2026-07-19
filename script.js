@@ -832,6 +832,15 @@ function spawnMsgTruck() {
 
   function unmute() {
     audio.muted = false;
+    /* If the silent autoplay attempt at load never actually started
+       playback (some browsers are stricter for <audio> than <video>),
+       this click is a real user gesture, so play() is guaranteed to
+       succeed here — this is the safety net that makes tapping the
+       hint actually produce sound instead of just flipping a mute
+       flag on an element that was never playing. */
+    if (audio.paused) {
+      audio.play().catch((err) => console.warn('[music] play() failed:', err));
+    }
     fadeIn();
     setUI(true);
     localStorage.setItem(STORAGE_KEY, 'on');
@@ -843,16 +852,13 @@ function spawnMsgTruck() {
     localStorage.setItem(STORAGE_KEY, 'off');
   }
 
-  btn.addEventListener('click', () => {
-    if (audio.paused) audio.play().catch(() => {});
-    audio.muted ? unmute() : mute();
-  });
+  btn.addEventListener('click', () => { audio.muted ? unmute() : mute(); });
   if (hint) hint.addEventListener('click', unmute);
 
   /* Always start muted — universally allowed without any gesture. */
   audio.muted  = true;
   audio.volume = TARGET_VOL;
-  audio.play().catch(() => { /* will simply retry once the button is clicked */ });
+  audio.play().catch((err) => console.warn('[music] initial muted play() failed:', err));
   setUI(false);
 
   /* Only nag first-time visitors with the hint bubble; returning
