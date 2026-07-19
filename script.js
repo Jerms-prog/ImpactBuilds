@@ -784,26 +784,25 @@ function spawnMsgTruck() {
 
 /* =============================================
    BACKGROUND MUSIC TOGGLE
-   Browsers block audio-with-sound from playing
-   until the user has interacted with the page —
-   no code can start it silently on load. So instead
-   of waiting for someone to notice and click the
-   toggle button, the very first click/tap/key press
-   ANYWHERE on the page kicks it off automatically.
-   The toggle button remains as an explicit
-   mute/unmute control and always reflects the
-   audio element's real playing state. The mute
-   choice persists across visits via localStorage;
-   an unset preference is treated as "wants music".
+   Browsers universally allow autoplay when a media
+   element starts MUTED — no gesture required — but
+   will never allow it to start with sound before a
+   gesture. So the track starts playing muted the
+   instant the page loads (truly automatic), and a
+   pulsing "Tap for sound" hint invites the one click
+   that flips audio.muted to false. Unmuting an
+   element that's already playing is always allowed,
+   even from a plain click, so no further gesture
+   tricks are needed after that.
    ============================================= */
 (async function initMusicToggle() {
   const audio = $('#bgMusic');
   const btn   = $('#musicToggle');
+  const hint  = $('#musicHint');
   if (!audio || !btn) return;
 
-  const STORAGE_KEY  = 'ib-music';
-  const TARGET_VOL   = 0.35;
-  const KICK_EVENTS  = ['pointerdown', 'keydown', 'touchstart', 'click'];
+  const STORAGE_KEY = 'ib-music';
+  const TARGET_VOL  = 0.35;
 
   /* Admin can swap the track from the Site Content panel — if one is
      set, it overrides the bundled audio/bg-music.mp3 default. */
@@ -812,10 +811,10 @@ function spawnMsgTruck() {
     if (data?.setting_value?.url) audio.src = data.setting_value.url;
   } catch (e) { /* falls back to the bundled default already set as src */ }
 
-  function setUI(playing) {
-    btn.classList.toggle('playing', playing);
-    btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
-    btn.setAttribute('aria-label', playing ? 'Mute background music' : 'Play background music');
+  function setUI(unmuted) {
+    btn.classList.toggle('playing', unmuted);
+    btn.setAttribute('aria-pressed', unmuted ? 'true' : 'false');
+    btn.setAttribute('aria-label', unmuted ? 'Mute background music' : 'Unmute background music');
   }
 
   function fadeIn() {
@@ -829,21 +828,46 @@ function spawnMsgTruck() {
     }, 1500 / steps);
   }
 
-  audio.addEventListener('play',  () => { fadeIn(); setUI(true);  localStorage.setItem(STORAGE_KEY, 'on'); });
-  audio.addEventListener('pause', () => { setUI(false); localStorage.setItem(STORAGE_KEY, 'off'); });
+  function hideHint() { if (hint) hint.classList.remove('visible'); }
 
-  function tryPlay() {
-    if (audio.paused) audio.play().catch(() => { /* still blocked — a later gesture will retry */ });
+  function unmute() {
+    audio.muted = false;
+    fadeIn();
+    setUI(true);
+    localStorage.setItem(STORAGE_KEY, 'on');
+    hideHint();
+  }
+  function mute() {
+    audio.muted = true;
+    setUI(false);
+    localStorage.setItem(STORAGE_KEY, 'off');
   }
 
-  btn.addEventListener('click', () => { audio.paused ? tryPlay() : audio.pause(); });
+  btn.addEventListener('click', () => {
+    if (audio.paused) audio.play().catch(() => {});
+    audio.muted ? unmute() : mute();
+  });
+  if (hint) hint.addEventListener('click', unmute);
 
-  if (localStorage.getItem(STORAGE_KEY) !== 'off') {
-    tryPlay(); // works immediately for returning visitors the browser already trusts
-    const kick = (e) => { if (!btn.contains(e.target)) tryPlay(); };
-    KICK_EVENTS.forEach(evt => document.addEventListener(evt, kick, { passive: true }));
-    audio.addEventListener('play', () => {
-      KICK_EVENTS.forEach(evt => document.removeEventListener(evt, kick));
-    }, { once: true });
+  /* Always start muted — universally allowed without any gesture. */
+  audio.muted  = true;
+  audio.volume = TARGET_VOL;
+  audio.play().catch(() => { /* will simply retry once the button is clicked */ });
+  setUI(false);
+
+  /* Only nag first-time visitors with the hint bubble; returning
+     visitors already know the button is there. */
+  const seenBefore = localStorage.getItem(STORAGE_KEY) !== null;
+  if (hint && !seenBefore) {
+    setTimeout(() => {
+      hint.classList.add('visible');
+      const dismissTimer = setTimeout(hideHint, 9000);
+      document.addEventListener('pointerdown', function onceAway(e) {
+        if (!btn.contains(e.target) && !hint.contains(e.target)) {
+          hideHint();
+          clearTimeout(dismissTimer);
+        }
+      }, { once: true });
+    }, 900);
   }
 })();
