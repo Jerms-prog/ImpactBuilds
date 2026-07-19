@@ -781,3 +781,49 @@ function spawnMsgTruck() {
     });
   });
 })();
+
+/* =============================================
+   BACKGROUND MUSIC TOGGLE
+   Autoplay-with-sound is blocked by browsers
+   until a user gesture happens, so playback only
+   ever starts from a click on the toggle button.
+   Preference persists across visits via
+   localStorage so returning users don't have to
+   re-decide, but the audio itself still needs a
+   fresh gesture on some browsers — the button
+   always reflects the audio element's real state.
+   ============================================= */
+(function initMusicToggle() {
+  const audio = $('#bgMusic');
+  const btn   = $('#musicToggle');
+  if (!audio || !btn) return;
+
+  const STORAGE_KEY = 'ib-music';
+  audio.volume = 0.35;
+
+  function setUI(playing) {
+    btn.classList.toggle('playing', playing);
+    btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    btn.setAttribute('aria-label', playing ? 'Mute background music' : 'Play background music');
+  }
+
+  btn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play()
+        .then(() => { setUI(true); localStorage.setItem(STORAGE_KEY, 'on'); })
+        .catch(() => { setUI(false); });
+    } else {
+      audio.pause();
+      setUI(false);
+      localStorage.setItem(STORAGE_KEY, 'off');
+    }
+  });
+
+  /* Resume automatically only if the user had it on before AND this
+     page load already carries a user gesture the browser will accept
+     (e.g. arriving via a link click) — otherwise play() silently
+     rejects and the button just stays in its paused state. */
+  if (localStorage.getItem(STORAGE_KEY) === 'on') {
+    audio.play().then(() => setUI(true)).catch(() => setUI(false));
+  }
+})();

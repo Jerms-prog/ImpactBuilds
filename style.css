@@ -806,6 +806,45 @@ img { max-width: 100%; display: block; }
 }
 
 /* =============================================
+   MUSIC TOGGLE
+   ============================================= */
+.music-toggle {
+  position: fixed;
+  bottom: 1.75rem; left: 1.75rem;
+  z-index: 500;
+  width: 50px; height: 50px;
+  padding: 0;
+  background: rgba(10,16,42,0.88);
+  border: 1.5px solid rgba(255,255,255,0.18);
+  border-radius: 50%;
+  color: rgba(255,255,255,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all var(--transition);
+}
+.music-toggle:hover {
+  border-color: rgba(255,255,255,0.4);
+  color: var(--white);
+  transform: translateY(-3px);
+}
+.music-toggle.playing {
+  border-color: #FFB800;
+  color: #FFB800;
+  box-shadow: 0 6px 22px rgba(255,184,0,0.18);
+}
+.music-toggle__icon-off { display: block; }
+.music-toggle__icon-on  { display: none; }
+.music-toggle.playing .music-toggle__icon-off { display: none; }
+.music-toggle.playing .music-toggle__icon-on  { display: block; }
+
+@media (max-width: 640px) {
+  .music-toggle { bottom: 1rem; left: 1rem; width: 44px; height: 44px; }
+}
+
+/* =============================================
    SCROLL REVEAL
    ============================================= */
 .reveal {
