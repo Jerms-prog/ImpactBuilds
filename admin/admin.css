@@ -198,6 +198,12 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   gap: 1rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+a.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 .stat-card__icon {
   width: 46px; height: 46px;
@@ -212,6 +218,8 @@ img { max-width: 100%; display: block; }
 .stat-card__icon--teal  { background: rgba(0,200,212,0.12); color: var(--teal); }
 .stat-card__icon--green { background: rgba(39,174,96,0.12);  color: var(--green); }
 .stat-card__icon--orange{ background: rgba(224,85,0,0.12);   color: var(--orange); }
+.stat-card__icon--purple{ background: rgba(142,84,233,0.12); color: #8e54e9; }
+.stat-card__icon--red   { background: rgba(231,76,60,0.12);  color: var(--red); }
 .stat-card__value {
   font-family: var(--font-h);
   font-size: 1.7rem;

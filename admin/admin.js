@@ -191,12 +191,14 @@ const CMS = {
 
   /* ---- Stats ---- */
   async getStats() {
-    const [total, published, drafts, totalMedia, unread] = await Promise.all([
+    const [total, published, drafts, totalMedia, unread, posts, members] = await Promise.all([
       supabase.from('notes').select('*', { count: 'exact', head: true }),
       supabase.from('notes').select('*', { count: 'exact', head: true }).eq('status', 'Published'),
       supabase.from('notes').select('*', { count: 'exact', head: true }).eq('status', 'Draft'),
       supabase.from('media').select('*', { count: 'exact', head: true }),
       supabase.from('messages').select('*', { count: 'exact', head: true }).eq('is_read', false),
+      supabase.from('posts').select('*', { count: 'exact', head: true }),
+      supabase.from('profiles').select('*', { count: 'exact', head: true }),
     ]);
     return {
       totalNotes:     total.count      || 0,
@@ -204,6 +206,8 @@ const CMS = {
       draftNotes:     drafts.count     || 0,
       totalMedia:     totalMedia.count || 0,
       unreadMessages: unread.count     || 0,
+      totalPosts:     posts.count      || 0,
+      totalMembers:   members.count    || 0,
     };
   },
 
