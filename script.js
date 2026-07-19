@@ -793,9 +793,14 @@ function spawnMsgTruck() {
    that flips audio.muted to false. Unmuting an
    element that's already playing is always allowed,
    even from a plain click, so no further gesture
-   tricks are needed after that.
+   tricks are needed after that. The autoplay attempt
+   and button wiring happen synchronously with no
+   network dependency in the critical path — a
+   Supabase lookup for an admin-uploaded track runs
+   separately afterward so a slow or blocked request
+   can never delay or break core playback.
    ============================================= */
-(async function initMusicToggle() {
+(function initMusicToggle() {
   const audio = $('#bgMusic');
   const btn   = $('#musicToggle');
   const hint  = $('#musicHint');
@@ -803,13 +808,6 @@ function spawnMsgTruck() {
 
   const STORAGE_KEY = 'ib-music';
   const TARGET_VOL  = 0.35;
-
-  /* Admin can swap the track from the Site Content panel — if one is
-     set, it overrides the bundled audio/bg-music.mp3 default. */
-  try {
-    const { data } = await supabase.from('settings').select('setting_value').eq('setting_key', 'bg_music').maybeSingle();
-    if (data?.setting_value?.url) audio.src = data.setting_value.url;
-  } catch (e) { /* falls back to the bundled default already set as src */ }
 
   function setUI(unmuted) {
     btn.classList.toggle('playing', unmuted);
@@ -876,4 +874,18 @@ function spawnMsgTruck() {
       }, { once: true });
     }, 900);
   }
+
+  /* Admin can swap the track from the Site Content panel. This runs
+     after playback is already underway — only apply it if the user
+     hasn't unmuted yet, so a late-arriving (or ad-blocked) response
+     can never interrupt sound someone is already hearing. */
+  supabase.from('settings').select('setting_value').eq('setting_key', 'bg_music').maybeSingle()
+    .then(({ data }) => {
+      const url = data?.setting_value?.url;
+      if (url && audio.muted) {
+        audio.src = url;
+        audio.play().catch((err) => console.warn('[music] custom-track play() failed:', err));
+      }
+    })
+    .catch(() => { /* ad-blocked or offline — bundled default keeps playing */ });
 })();
