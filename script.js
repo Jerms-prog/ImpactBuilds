@@ -793,13 +793,20 @@ function spawnMsgTruck() {
    fresh gesture on some browsers — the button
    always reflects the audio element's real state.
    ============================================= */
-(function initMusicToggle() {
+(async function initMusicToggle() {
   const audio = $('#bgMusic');
   const btn   = $('#musicToggle');
   if (!audio || !btn) return;
 
   const STORAGE_KEY = 'ib-music';
   audio.volume = 0.35;
+
+  /* Admin can swap the track from the Site Content panel — if one is
+     set, it overrides the bundled audio/bg-music.mp3 default. */
+  try {
+    const { data } = await supabase.from('settings').select('setting_value').eq('setting_key', 'bg_music').maybeSingle();
+    if (data?.setting_value?.url) audio.src = data.setting_value.url;
+  } catch (e) { /* falls back to the bundled default already set as src */ }
 
   function setUI(playing) {
     btn.classList.toggle('playing', playing);

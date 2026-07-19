@@ -292,6 +292,35 @@ const CMS = {
     return { ok: !error };
   },
 
+  /* ---- Background music (file in storage, pointer in settings) ---- */
+  async getBgMusic() {
+    const { data } = await supabase.from('settings').select('setting_value').eq('setting_key', 'bg_music').maybeSingle();
+    return data?.setting_value || null;
+  },
+  async uploadBgMusic(file) {
+    const ext  = file.name.split('.').pop();
+    const path = `bg-music/${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from('site-audio').upload(path, file);
+    if (upErr) return { ok: false, message: upErr.message };
+    const { data } = supabase.storage.from('site-audio').getPublicUrl(path);
+
+    const previous = await this.getBgMusic();
+
+    const value = { url: data.publicUrl, name: file.name, path };
+    const { error } = await supabase.from('settings').upsert({ setting_key: 'bg_music', setting_value: value }, { onConflict: 'setting_key' });
+    if (error) return { ok: false, message: error.message };
+
+    if (previous?.path) await supabase.storage.from('site-audio').remove([previous.path]);
+    return { ok: true, value };
+  },
+  async removeBgMusic() {
+    const previous = await this.getBgMusic();
+    const { error } = await supabase.from('settings').delete().eq('setting_key', 'bg_music');
+    if (error) return { ok: false, message: error.message };
+    if (previous?.path) await supabase.storage.from('site-audio').remove([previous.path]);
+    return { ok: true };
+  },
+
   /* ---- System requirements (stored in settings) ---- */
   async getSystemRequirements() {
     const { data } = await supabase.from('settings').select('setting_value').eq('setting_key', 'system_requirements').maybeSingle();
