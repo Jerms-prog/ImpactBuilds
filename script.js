@@ -877,20 +877,35 @@ function spawnMsgTruck() {
     }
   });
 
-  /* Play on first real user gesture (click, key, touch).
-     Listeners stay until play() actually succeeds. */
-  function onFirstInteraction() {
-    if (!audio.paused) return;
-    audio.play().then(() => {
-      setUI(true);
-      localStorage.setItem(STORAGE_KEY, 'on');
-      document.removeEventListener('click',      onFirstInteraction);
-      document.removeEventListener('keydown',    onFirstInteraction);
-      document.removeEventListener('touchstart', onFirstInteraction);
-    }).catch(() => {});
+  /* Muted autoplay is allowed by all browsers. Start silent immediately,
+     then unmute on the first scroll/click/key/touch so it feels instant. */
+  function unmute() {
+    audio.muted = false;
+    setUI(true);
+    localStorage.setItem(STORAGE_KEY, 'on');
+    document.removeEventListener('scroll',     unmute, { passive: true });
+    document.removeEventListener('click',      unmute);
+    document.removeEventListener('keydown',    unmute);
+    document.removeEventListener('touchstart', unmute);
   }
 
-  document.addEventListener('click',      onFirstInteraction);
-  document.addEventListener('keydown',    onFirstInteraction);
-  document.addEventListener('touchstart', onFirstInteraction, { passive: true });
+  audio.muted = true;
+  audio.play().then(() => {
+    document.addEventListener('scroll',     unmute, { passive: true });
+    document.addEventListener('click',      unmute);
+    document.addEventListener('keydown',    unmute);
+    document.addEventListener('touchstart', unmute, { passive: true });
+  }).catch(() => {
+    /* Muted autoplay also blocked (very rare) — fall back to click/touch only */
+    audio.muted = false;
+    function onGesture() {
+      audio.play().then(() => { setUI(true); localStorage.setItem(STORAGE_KEY, 'on'); }).catch(() => {});
+      document.removeEventListener('click',      onGesture);
+      document.removeEventListener('keydown',    onGesture);
+      document.removeEventListener('touchstart', onGesture);
+    }
+    document.addEventListener('click',      onGesture);
+    document.addEventListener('keydown',    onGesture);
+    document.addEventListener('touchstart', onGesture, { passive: true });
+  });
 })();
