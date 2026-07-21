@@ -5,18 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Impact Builds — A 3D infrastructure simulation game about building resilient communities against natural disasters."/>
   <title>Impact Builds | Build. Simulate. Survive.</title>
-  <link rel="icon" type="image/png" href="images/pclogo.png"/>
-
-  <!-- Open Graph / social link previews -->
-  <meta property="og:type" content="website"/>
-  <meta property="og:title" content="Impact Builds | Build. Simulate. Survive."/>
-  <meta property="og:description" content="A 3D infrastructure simulation game about building resilient communities against natural disasters. A capstone project by SideQuest."/>
-  <meta property="og:image" content="images/logo.png"/>
-  <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="Impact Builds | Build. Simulate. Survive."/>
-  <meta name="twitter:description" content="A 3D infrastructure simulation game about building resilient communities against natural disasters."/>
-  <meta name="twitter:image" content="images/logo.png"/>
-
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -215,10 +203,8 @@
       <ul class="nav__links" id="navLinks">
         <li><a href="#home"      class="nav__link">Home</a></li>
         <li><a href="#about"     class="nav__link">About</a></li>
-        <li><a href="#media"     class="nav__link">Media</a></li>
-        <li><a href="#team"      class="nav__link">Team</a></li>
         <li><a href="#notes"     class="nav__link">Notes</a></li>
-        <li><a href="#faq"       class="nav__link">FAQ</a></li>
+        <li><a href="#media"     class="nav__link">Media</a></li>
         <li><a href="feed.html"  class="nav__link">Community</a></li>
         <li><a href="#community" class="nav__link">Contact</a></li>
       </ul>
@@ -242,43 +228,89 @@
       <div class="container hero__content">
         <div class="hero__logo-display">
         <img src="images/logo.png" alt="Impact Builds Logo" class="hero-logo">
-        <p class="hero__desc" id="heroTagline" style="display:none;text-align:center;margin:0 0 1.5rem;"></p>
         <button class="btn-download" id="downloadBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           PC DOWNLOAD
         </button>
-        <span class="version-badge" id="versionBadge" style="display:none;"></span>
       </div>
       </div>
     </section>
 
     <!-- ========== ABOUT SECTION ========== -->
     <section class="about section" id="about">
+      <!-- Construction scene: dissolves when wrecking ball hits -->
+      <div class="about-scaffold" id="aboutScaffold" aria-hidden="true">
+        <div class="sc-pole sc-pole-l"></div>
+        <div class="sc-pole sc-pole-c"></div>
+        <div class="sc-pole sc-pole-r"></div>
+        <div class="sc-beam sc-beam-1"></div>
+        <div class="sc-beam sc-beam-2"></div>
+        <div class="sc-beam sc-beam-3"></div>
+        <div class="sc-plank sc-plank-1"></div>
+        <div class="sc-plank sc-plank-2"></div>
+        <!-- Worker A: upper-left plank, hammering -->
+        <div class="sc-worker sc-worker-a">
+          <div class="sc-fig">
+            <div class="sc-fig__hat"></div>
+            <div class="sc-fig__head"></div>
+            <div class="sc-fig__body"></div>
+            <div class="sc-fig__legs"><div></div><div></div></div>
+          </div>
+          <span class="sc-w-hammer">🔨</span>
+        </div>
+        <!-- Worker B: lower-right plank, wrench -->
+        <div class="sc-worker sc-worker-b">
+          <div class="sc-fig">
+            <div class="sc-fig__hat sc-fig__hat--blue"></div>
+            <div class="sc-fig__head sc-fig__head--alt"></div>
+            <div class="sc-fig__body sc-fig__body--alt"></div>
+            <div class="sc-fig__legs"><div></div><div></div></div>
+          </div>
+          <span class="sc-w-wrench">🔧</span>
+        </div>
+        <!-- Worker C: ground foreman, clipboard -->
+        <div class="sc-worker sc-worker-c">
+          <div class="sc-fig">
+            <div class="sc-fig__hat sc-fig__hat--white"></div>
+            <div class="sc-fig__head"></div>
+            <div class="sc-fig__body sc-fig__body--vest"></div>
+            <div class="sc-fig__legs"><div></div><div></div></div>
+          </div>
+          <span class="sc-w-clip">📋</span>
+        </div>
+        <div class="sc-notice">⚠&nbsp; UNDER CONSTRUCTION &nbsp;⚠</div>
+        <div class="sc-wreck" id="scWreck"></div>
+        <div class="sc-impact"></div>
+      </div>
       <div class="container">
         <div class="about__grid">
           <div class="about__media">
-            <div class="about__video-box" id="aboutVideoBox">
-              <video src="videos/gameplay-trailer.mp4" controls playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);"></video>
+            <div class="about__video-box">
+              <div class="about__video-inner">
+                <div class="video-label">GAMEPLAY PREVIEW</div>
+                <div class="video-bars">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <p class="video-coming">Coming Soon</p>
+              </div>
             </div>
           </div>
 
           <div class="about__text">
-            <span class="section-tag">🏗️ What Is Impact Builds?</span>
+            <span class="section-tag">What Is Impact Builds?</span>
             <h2 class="section-title">
               WHAT IS<br/><span>IMPACT BUILDS?</span>
             </h2>
-            <div id="aboutBody">
-              <p>
-                <strong>Impact Builds</strong> is a 3D single-player building game  that challenges you to design, construct, and defend communities against the full force of natural disasters.
-              </p>
-              <p>
-                Every road you lay, every building you erect, and every policy you implement carries real consequence. Experience how infrastructure planning shapes the difference between a community that survives and one that doesn't.
-              </p>
-              <p>
-                Developed as a capstone academic project, Impact Builds bridges game-based learning and genuine disaster preparedness research.
-              </p>
-            </div>
-            <div class="about__tags" id="aboutTags">
+            <p>
+              <strong>Impact Builds</strong> is a 3D single-player building game  that challenges you to design, construct, and defend communities against the full force of natural disasters.
+            </p>
+            <p>
+              Every road you lay, every building you erect, and every policy you implement carries real consequence. Experience how infrastructure planning shapes the difference between a community that survives and one that doesn't.
+            </p>
+            <p>
+              Developed as a capstone academic project, Impact Builds bridges game-based learning and genuine disaster preparedness research.
+            </p>
+            <div class="about__tags">
               <span>Earthquakes</span>
               <span>Floods</span>
               <span>Storms</span>
@@ -291,80 +323,11 @@
 
     <div class="caution-divider" aria-hidden="true"></div>
 
-    <!-- ========== MEDIA SECTION ========== -->
-    <section class="media section" id="media">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag">📸 Gallery</span>
-          <h2 class="section-title">A GLIMPSE INTO THE WORLD</h2>
-          <p class="section-subtitle">Early development captures from our gameplay trailer.</p>
-        </div>
-
-        <!-- Screenshots -->
-        <h3 class="media__sub">SCREENSHOTS</h3>
-        <div class="screenshots-grid" id="screenshotsGrid">
-          <!-- Populated by script.js: admin-uploaded media, falling back to trailer frames -->
-        </div>
-        <p class="media-note">&#8505; Impact Builds is still in active development — visuals, UI, and mechanics shown are a work in progress and subject to change.</p>
-      </div>
-    </section>
-
-    <div class="caution-divider" aria-hidden="true"></div>
-
-    <!-- ========== TEAM SECTION ========== -->
-    <section class="team section" id="team">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag">👷 Meet The Team</span>
-          <h2 class="section-title">THE MINDS BEHIND<br/><span>IMPACT BUILDS</span></h2>
-          <p class="section-subtitle">SideQuest is the three-person capstone team designing, building, and testing Impact Builds from the ground up.</p>
-        </div>
-        <div class="team-grid" id="teamGrid">
-          <!-- Populated by script.js from the team_members table -->
-        </div>
-        <div class="notes-empty" id="teamEmpty" style="display:none;">
-          <p>Meet the team soon &mdash; profiles are being added!</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="caution-divider" aria-hidden="true"></div>
-
-    <!-- ========== SYSTEM REQUIREMENTS SECTION ========== -->
-    <section class="sysreq section" id="requirements">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag">🔧 Technical Feasibility</span>
-          <h2 class="section-title">CAN YOUR PC<br/><span>RUN IMPACT BUILDS?</span></h2>
-          <p class="section-subtitle">Target specs for the current build &mdash; subject to change as development continues.</p>
-        </div>
-        <div class="sysreq-table-wrap" id="sysreqWrap">
-          <table class="sysreq-table">
-            <thead>
-              <tr>
-                <th>Specification</th>
-                <th>Minimum Requirements</th>
-                <th>Recommended Requirements</th>
-              </tr>
-            </thead>
-            <tbody id="sysreqBody">
-              <!-- Populated by script.js from settings.system_requirements -->
-            </tbody>
-          </table>
-        </div>
-        <div class="notes-empty" id="sysreqEmpty" style="display:none;">
-          <p>Target specs are being finalized &mdash; check back soon!</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="caution-divider" aria-hidden="true"></div>
-
     <!-- ========== DEV NOTES SECTION ========== -->
     <section class="notes section" id="notes">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag">📋 From the Team</span>
+          <span class="section-tag">From the Team</span>
           <h2 class="section-title">DEV'S NOTES</h2>
           <p class="section-subtitle">Development updates, design insights, and behind-the-scenes progress from the team.</p>
         </div>
@@ -379,59 +342,39 @@
 
     <div class="caution-divider" aria-hidden="true"></div>
 
-    <!-- ========== FAQ SECTION ========== -->
-    <section class="faq section" id="faq">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag">🦺 Got Questions?</span>
-          <h2 class="section-title">FREQUENTLY ASKED<br/><span>QUESTIONS</span></h2>
-        </div>
-        <div class="faq-list" id="faqList">
-          <!-- Populated by script.js from the faq_items table -->
-        </div>
-        <div class="notes-empty" id="faqEmpty" style="display:none;">
-          <p>FAQs are coming soon!</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="caution-divider" aria-hidden="true"></div>
-
     <!-- ========== COMMUNITY SECTION ========== -->
     <section class="community section" id="community">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag">📡 Connect</span>
+          <span class="section-tag">Connect</span>
           <h2 class="section-title">JOIN THE CONVERSATION</h2>
         </div>
 
         <div class="community__grid">
           <div class="community__info">
-            <p class="community__lead">Browse freely — no account needed. Here's what people are talking about right now:</p>
-            <div class="community-preview" id="communityPreview">
-              <!-- Populated by script.js with real recent posts -->
+            <div class="community-msg">
+              <div class="community-avatar">IB</div>
+              <div class="community-bubble">
+                <p><strong>SideQuest</strong></p>
+                <p>Thanks for playing :D !</p>
+                
+                <span class="community-bubble__time">Capstone 2025</span>
+              </div>
             </div>
-            <div class="notes-empty" id="communityPreviewEmpty" style="display:none;">
-              <p>Be the first to post in the community!</p>
-            </div>
-            <a href="feed.html" class="btn-submit" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;margin-top:1.25rem;">See the Full Feed →</a>
           </div>
 
           <form class="community__form" id="contactForm" novalidate>
             <div class="form-row-pub">
               <div class="form-group-pub">
-                <label class="sr-only" for="cName">Your Name</label>
                 <input type="text" id="cName" placeholder="Your Name" required/>
                 <span class="form-err" id="nameErr"></span>
               </div>
               <div class="form-group-pub">
-                <label class="sr-only" for="cEmail">Your Email</label>
                 <input type="email" id="cEmail" placeholder="Your Email" required/>
                 <span class="form-err" id="emailErr"></span>
               </div>
             </div>
             <div class="form-group-pub">
-              <label class="sr-only" for="cSubject">Subject</label>
               <select id="cSubject" required>
                 <option value="" disabled selected>Select a subject</option>
                 <option>General Inquiry</option>
@@ -442,7 +385,6 @@
               </select>
             </div>
             <div class="form-group-pub">
-              <label class="sr-only" for="cMessage">Your Message</label>
               <textarea id="cMessage" rows="5" placeholder="Write your message here…" required></textarea>
               <span class="form-err" id="msgErr"></span>
             </div>
@@ -455,48 +397,87 @@
       </div>
     </section>
 
+    <div class="caution-divider" aria-hidden="true"></div>
+
+    <!-- ========== MEDIA SECTION ========== -->
+    <section class="media section" id="media">
+      <!-- Blueprint overlay: hand-drawn sketch draws itself, then dissolves -->
+      <div class="media-blueprint" aria-hidden="true">
+        <!-- SVG lines that draw themselves like a pencil sketch -->
+        <svg class="media-bp__sketch" viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <!-- Outer border lines -->
+          <line pathLength="1" class="sk sl-1" x1="20" y1="20" x2="580" y2="20"/>
+          <line pathLength="1" class="sk sl-2" x1="20" y1="360" x2="580" y2="360"/>
+          <line pathLength="1" class="sk sl-3" x1="20" y1="20" x2="20" y2="360"/>
+          <line pathLength="1" class="sk sl-4" x1="580" y1="20" x2="580" y2="360"/>
+          <!-- Inner content box -->
+          <rect pathLength="1" class="sk sl-5" x="120" y="100" width="360" height="180" rx="2"/>
+          <!-- Title underline -->
+          <line pathLength="1" class="sk sl-6" x1="120" y1="230" x2="480" y2="230"/>
+          <!-- Dimension ticks top -->
+          <line pathLength="1" class="sk sl-7" x1="120" y1="10" x2="120" y2="24"/>
+          <line pathLength="1" class="sk sl-8" x1="480" y1="10" x2="480" y2="24"/>
+          <line pathLength="1" class="sk sl-9" x1="120" y1="14" x2="480" y2="14"/>
+          <!-- Corner survey marks -->
+          <path pathLength="1" class="sk sl-10" d="M 560 36 L 564 20 L 580 20"/>
+          <path pathLength="1" class="sk sl-11" d="M 20 344 L 20 360 L 36 360"/>
+          <!-- Diagonal cross (placeholder drawing) -->
+          <line pathLength="1" class="sk sl-12" x1="120" y1="100" x2="480" y2="280"/>
+          <line pathLength="1" class="sk sl-13" x1="480" y1="100" x2="120" y2="280"/>
+        </svg>
+        <div class="media-bp__inner">
+          <p class="media-bp__title">[ DRAFTING BLUEPRINTS ]</p>
+          <div class="media-bp__ruler"></div>
+          <p class="media-bp__sub">— gallery layout — sketch phase 1 of 1 —</p>
+        </div>
+      </div>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Gallery</span>
+          <h2 class="section-title">A GLIMPSE INTO THE WORLD</h2>
+          <p class="section-subtitle">Official gameplay screenshots and trailer coming soon.</p>
+        </div>
+
+        <!-- Video -->
+        <div class="media-video">
+          <div class="media-video__inner">
+            <button class="play-btn" id="playBtn" aria-label="Play trailer">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <p class="media-video__label">Official Gameplay Trailer &mdash; Coming Soon</p>
+          </div>
+        </div>
+
+        <!-- Screenshots -->
+        <h3 class="media__sub">SCREENSHOTS</h3>
+        <div class="screenshots-grid" id="screenshotsGrid">
+          <!-- Populated from CMS; placeholder fallback shown via CSS -->
+        </div>
+        <p class="media-note">&#8505; Official gameplay screenshots and trailer are currently in production. Check back for updates.</p>
+      </div>
+    </section>
+
   </main>
 
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
-    <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <a href="#home" class="nav__logo" style="margin-bottom:0.75rem;display:inline-flex;">
-            <img src="images/pclogo.png" alt="Impact Builds Logo" class="custom-logo">
-          </a>
-          <p id="footerTagline">A 3D infrastructure simulation game about designing communities that can survive real disasters — developed as a capstone project by SideQuest.</p>
-        </div>
-        <div class="footer__col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#media">Media</a></li>
-            <li><a href="#team">Team</a></li>
-            <li><a href="#notes">Dev's Notes</a></li>
-            <li><a href="#faq">FAQ</a></li>
-            <li><a href="#community">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer__col">
-          <h4>Community</h4>
-          <ul>
-            <li><a href="feed.html">Community Feed</a></li>
-            <li><a href="auth.html">Sign In</a></li>
-            <li><a href="auth.html?mode=register">Join Up</a></li>
-          </ul>
-        </div>
-        <div class="footer__col" id="footerSocial" style="display:none;">
-          <h4>Follow Us</h4>
-          <ul id="socialLinksList"></ul>
-        </div>
-      </div>
-      <div class="footer__bottom">
-        <p id="footerCopyright">&copy; 2025 SideQuest. All rights reserved.</p>
-        <a href="admin/login.html" style="font-size:0.7rem;color:rgba(255,255,255,0.2);text-decoration:none;margin-top:0.5rem;display:inline-block;letter-spacing:0.08em;" onmouseover="this.style.color='rgba(255,255,255,0.5)'" onmouseout="this.style.color='rgba(255,255,255,0.2)'">Staff Login</a>
+    <div class="container footer__inner">
+      <a href="#home" class="footer__logo">
+        <img src="images/pclogo.png" alt="Impact Builds" class="custom-logo">
+      </a>
+      <nav class="footer__nav" aria-label="Footer navigation">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#notes">Dev's Notes</a>
+        <a href="#media">Media</a>
+        <a href="#community">Contact</a>
+      </nav>
+      <div class="footer__right">
+        <p id="footerCopyright">&copy; 2025 Impact Builds. All rights reserved.</p>
+        <a href="admin/login.html" class="footer__staff">Staff Login</a>
       </div>
     </div>
+    <div id="footerSocial" style="display:none;"><ul id="socialLinksList"></ul></div>
   </footer>
 
   <!-- ========== DOWNLOAD MODAL ========== -->
@@ -541,27 +522,28 @@
     </svg>
   </button>
 
-  <!-- Background music -->
-  <audio id="bgMusic" src="audio/bg-music.mp3" loop preload="none"></audio>
-  <button class="music-toggle" id="musicToggle" aria-label="Play background music" aria-pressed="false">
-    <svg class="music-toggle__icon-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-    </svg>
-    <svg class="music-toggle__icon-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-      <line x1="23" y1="9" x2="17" y2="15"/>
-      <line x1="17" y1="9" x2="23" y2="15"/>
-    </svg>
-  </button>
-
   <!-- Maintenance overlay (controlled from admin settings) -->
   <div id="maintenanceOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#1a1f36;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-family:'Montserrat',sans-serif;text-align:center;padding:2rem;">
     <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#00c8d4" stroke-width="1.5" style="margin-bottom:1.5rem;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     <h1 style="font-size:2rem;font-weight:800;margin-bottom:0.75rem;">Under Maintenance</h1>
     <p id="maintenanceMsg" style="color:#8090b0;font-size:1.1rem;max-width:500px;line-height:1.7;">We are currently performing maintenance. Please check back later.</p>
-  </div>  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </div>  <!-- Background music (triggers on first user interaction) -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="audio/bg-music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Music toggle button -->
+  <button class="music-btn" id="musicBtn" aria-label="Toggle background music" title="Toggle music">
+    <svg class="music-icon music-icon--on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+    </svg>
+    <svg class="music-icon music-icon--off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+      <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+      <line x1="2" y1="2" x2="22" y2="22"/>
+    </svg>
+  </button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
   <script src="script.js"></script>
   <script>
