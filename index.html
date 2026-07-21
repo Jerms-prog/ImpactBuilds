@@ -242,10 +242,12 @@
       <div class="container hero__content">
         <div class="hero__logo-display">
         <img src="images/logo.png" alt="Impact Builds Logo" class="hero-logo">
+        <p class="hero__desc" id="heroTagline" style="display:none;text-align:center;margin:0 0 1.5rem;"></p>
         <button class="btn-download" id="downloadBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           PC DOWNLOAD
         </button>
+        <span class="version-badge" id="versionBadge" style="display:none;"></span>
       </div>
       </div>
     </section>
@@ -265,16 +267,18 @@
             <h2 class="section-title">
               WHAT IS<br/><span>IMPACT BUILDS?</span>
             </h2>
-            <p>
-              <strong>Impact Builds</strong> is a 3D single-player building game  that challenges you to design, construct, and defend communities against the full force of natural disasters.
-            </p>
-            <p>
-              Every road you lay, every building you erect, and every policy you implement carries real consequence. Experience how infrastructure planning shapes the difference between a community that survives and one that doesn't.
-            </p>
-            <p>
-              Developed as a capstone academic project, Impact Builds bridges game-based learning and genuine disaster preparedness research.
-            </p>
-            <div class="about__tags">
+            <div id="aboutBody">
+              <p>
+                <strong>Impact Builds</strong> is a 3D single-player building game  that challenges you to design, construct, and defend communities against the full force of natural disasters.
+              </p>
+              <p>
+                Every road you lay, every building you erect, and every policy you implement carries real consequence. Experience how infrastructure planning shapes the difference between a community that survives and one that doesn't.
+              </p>
+              <p>
+                Developed as a capstone academic project, Impact Builds bridges game-based learning and genuine disaster preparedness research.
+              </p>
+            </div>
+            <div class="about__tags" id="aboutTags">
               <span>Earthquakes</span>
               <span>Floods</span>
               <span>Storms</span>
@@ -461,7 +465,7 @@
           <a href="#home" class="nav__logo" style="margin-bottom:0.75rem;display:inline-flex;">
             <img src="images/pclogo.png" alt="Impact Builds Logo" class="custom-logo">
           </a>
-          <p>A 3D infrastructure simulation game about designing communities that can survive real disasters — developed as a capstone project by SideQuest.</p>
+          <p id="footerTagline">A 3D infrastructure simulation game about designing communities that can survive real disasters — developed as a capstone project by SideQuest.</p>
         </div>
         <div class="footer__col">
           <h4>Navigation</h4>

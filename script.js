@@ -306,9 +306,18 @@ function spawnMsgTruck() {
     (data || []).forEach(r => { settings[r.setting_key] = r.setting_value; });
   } catch { return; }
 
-  const gen = settings.general || {};
-  const si  = settings.siteinfo || {};
-  const soc = settings.social || {};
+  function sanitize(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(String(str)));
+    return d.innerHTML;
+  }
+
+  const gen   = settings.general || {};
+  const si    = settings.siteinfo || {};
+  const soc   = settings.social || {};
+  const hero  = settings.hero || {};
+  const about = settings.about_content || {};
+  const tags  = Array.isArray(settings.about_tags) ? settings.about_tags.filter(Boolean) : [];
 
   /* Maintenance mode — block entire site */
   if (gen.maintenanceEnabled) {
@@ -358,6 +367,55 @@ function spawnMsgTruck() {
   if (si.copyright) {
     const el = document.getElementById('footerCopyright');
     if (el) el.textContent = si.copyright;
+  }
+
+  /* Game title → browser tab + meta description (SEO); doesn't touch
+     the hero visual since that's the logo image, not text */
+  if (si.gameTitle) {
+    document.title = document.title.replace(/^[^|]*/, si.gameTitle + ' ');
+  }
+  if (si.desc) {
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute('content', si.desc);
+  }
+
+  /* Version badge under the download button */
+  if (si.version) {
+    const el = document.getElementById('versionBadge');
+    if (el) { el.textContent = si.version; el.style.display = 'inline-block'; }
+  }
+
+  /* Team / school in the footer tagline — genuinely useful capstone info */
+  if (si.team || si.school) {
+    const el = document.getElementById('footerTagline');
+    if (el) {
+      const team   = si.team || 'SideQuest';
+      const school = si.school ? ` at ${si.school}` : '';
+      el.textContent = `A 3D infrastructure simulation game about designing communities that can survive real disasters — developed as a capstone project by ${team}${school}.`;
+    }
+  }
+
+  /* Hero tagline */
+  if (hero.tagline) {
+    const el = document.getElementById('heroTagline');
+    if (el) { el.textContent = hero.tagline; el.style.display = 'block'; }
+  }
+
+  /* About section body — admin-edited paragraphs override the default
+     ones; textarea is split on blank lines into separate <p> tags */
+  if (about.body && about.body.trim()) {
+    const el = document.getElementById('aboutBody');
+    if (el) {
+      el.innerHTML = about.body.trim().split(/\n\s*\n/)
+        .map(p => `<p>${sanitize(p.trim())}</p>`)
+        .join('');
+    }
+  }
+
+  /* About disaster tags / feature highlights */
+  if (tags.length > 0) {
+    const el = document.getElementById('aboutTags');
+    if (el) el.innerHTML = tags.map(t => `<span>${sanitize(t)}</span>`).join('');
   }
 
   /* Social links in footer */

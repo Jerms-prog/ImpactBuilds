@@ -73,17 +73,52 @@
 
   <main class="admin-main">
     <h1 class="admin-page-title">Site Content</h1>
-    <p class="admin-page-sub">Manage the Team, FAQ, Technical Feasibility, and Background Music shown on the public website.</p>
+    <p class="admin-page-sub">Manage the Homepage copy, Team, FAQ, Technical Feasibility, and Background Music shown on the public website.</p>
 
     <div class="settings-tabs">
-      <button class="tab-btn active" data-tab="team">Team</button>
+      <button class="tab-btn active" data-tab="homepage">Homepage</button>
+      <button class="tab-btn" data-tab="team">Team</button>
       <button class="tab-btn" data-tab="faq">FAQ</button>
       <button class="tab-btn" data-tab="requirements">System Requirements</button>
       <button class="tab-btn" data-tab="music">Background Music</button>
     </div>
 
+    <!-- ===== HOMEPAGE ===== -->
+    <div class="tab-panel active" id="tab-homepage">
+      <div class="card"><div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Hero Tagline</label>
+          <input class="form-control" type="text" id="hp-tagline" placeholder="e.g. Build. Simulate. Survive."/>
+          <p style="font-size:.75rem;color:var(--text-muted);margin-top:.35rem;">Shown under the logo on the very first screen visitors see. Leave blank to hide.</p>
+        </div>
+      </div></div>
+
+      <div class="card" style="margin-top:1rem;"><div class="card-body">
+        <div class="form-group">
+          <label class="form-label">About Section Text</label>
+          <textarea class="form-control" id="hp-about" rows="6" placeholder="Write each paragraph, separated by a blank line…"></textarea>
+          <p style="font-size:.75rem;color:var(--text-muted);margin-top:.35rem;">Separate paragraphs with a blank line. Leave blank to keep the default text.</p>
+        </div>
+      </div></div>
+
+      <div class="card" style="margin-top:1rem;"><div class="card-body">
+        <label class="form-label">Disaster Tags / Feature Highlights</label>
+        <p style="font-size:.75rem;color:var(--text-muted);margin:.15rem 0 .75rem;">The pill labels shown under the About text (e.g. Earthquakes, Floods). Leave empty to keep the defaults.</p>
+        <div id="hp-tagsList" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.85rem;"></div>
+        <div style="display:flex;gap:.5rem;">
+          <input class="form-control" type="text" id="hp-newTag" placeholder="e.g. Earthquakes" style="max-width:220px;"/>
+          <button class="btn btn--ghost btn--sm" id="hp-addTagBtn">Add Tag</button>
+        </div>
+      </div></div>
+
+      <div class="save-bar" style="margin-top:1.5rem;">
+        <p id="hp-status">Changes apply to the public website in real time.</p>
+        <button class="btn btn--primary btn--lg" id="hp-saveBtn">Save Changes</button>
+      </div>
+    </div>
+
     <!-- ===== TEAM ===== -->
-    <div class="tab-panel active" id="tab-team">
+    <div class="tab-panel" id="tab-team">
       <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
         <button class="btn btn--teal" id="addMemberBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -267,6 +302,70 @@
       btn.classList.add('active');
       document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
     });
+  });
+
+  /* =========================================================
+     HOMEPAGE TAB
+     ========================================================= */
+  let hpTags = [];
+
+  function renderHpTags() {
+    const list = document.getElementById('hp-tagsList');
+    if (hpTags.length === 0) {
+      list.innerHTML = '<span style="font-size:.8rem;color:var(--text-muted);">Using the default tags (Earthquakes, Floods, Storms, Fires).</span>';
+      return;
+    }
+    list.innerHTML = hpTags.map((t, i) => `
+      <span style="display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .5rem .3rem .75rem;background:#eef1fa;border-radius:100px;font-size:.8rem;color:var(--text);">
+        ${sanitize(t)}
+        <button data-remove-tag="${i}" style="border:none;background:none;cursor:pointer;color:var(--text-muted);display:flex;padding:0;" title="Remove">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </span>
+    `).join('');
+    list.querySelectorAll('[data-remove-tag]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        hpTags.splice(Number(btn.dataset.removeTag), 1);
+        renderHpTags();
+      });
+    });
+  }
+
+  async function renderHomepage() {
+    const all = await CMS.getSettings();
+    document.getElementById('hp-tagline').value = (all.hero || {}).tagline || '';
+    document.getElementById('hp-about').value    = (all.about_content || {}).body || '';
+    hpTags = Array.isArray(all.about_tags) ? [...all.about_tags] : [];
+    renderHpTags();
+  }
+
+  document.getElementById('hp-addTagBtn').addEventListener('click', () => {
+    const input = document.getElementById('hp-newTag');
+    const val = input.value.trim();
+    if (!val) return;
+    hpTags.push(val);
+    input.value = '';
+    renderHpTags();
+  });
+  document.getElementById('hp-newTag').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('hp-addTagBtn').click(); }
+  });
+
+  document.getElementById('hp-saveBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('hp-saveBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    const results = await Promise.all([
+      CMS.saveSettings('hero', { tagline: document.getElementById('hp-tagline').value.trim() }),
+      CMS.saveSettings('about_content', { body: document.getElementById('hp-about').value.trim() }),
+      CMS.saveSettings('about_tags', hpTags),
+    ]);
+    btn.disabled = false; btn.textContent = 'Save Changes';
+    if (results.every(r => r.ok)) {
+      document.getElementById('hp-status').textContent = `Saved at ${new Date().toLocaleTimeString()} — refresh the website to see changes.`;
+      showToast('Homepage content saved!');
+    } else {
+      showToast('Save failed: ' + (results.find(r => !r.ok)?.message || 'Not authenticated.'), 'error');
+    }
   });
 
   /* =========================================================
@@ -637,6 +736,7 @@
     }
   });
 
+  renderHomepage();
   renderTeam();
   renderFaq();
   renderRequirements();
