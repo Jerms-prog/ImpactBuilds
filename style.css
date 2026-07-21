@@ -671,46 +671,48 @@ img { max-width: 100%; display: block; }
 .footer {
   position: relative;
   z-index: 1;
-  background: rgba(15,20,42,0.85);
+  background: rgba(15,20,42,0.92);
   backdrop-filter: blur(16px);
   border-top: 1px solid rgba(255,255,255,0.08);
-  padding: 3.5rem 0 1.5rem;
+  padding: 0.9rem 0;
 }
-.footer__grid {
+.footer__inner {
   display: flex;
-  flex-wrap: wrap;
-  gap: 2.5rem;
-  margin-bottom: 2.5rem;
-}
-.footer__brand { flex: 1.6 1 260px; max-width: 380px; }
-.footer__col { flex: 1 1 160px; }
-.footer__brand p {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  line-height: 1.7;
-  margin-top: 0.75rem;
-}
-.footer__col h4 {
-  font-family: var(--font-h);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 1rem;
-}
-.footer__col ul { display: flex; flex-direction: column; gap: 0.6rem; }
-.footer__col li, .footer__col a { font-size: 0.85rem; color: var(--text-dim); transition: color var(--transition); }
-.footer__col a:hover { color: var(--white); }
-.footer__bottom {
-  border-top: 1px solid rgba(255,255,255,0.07);
-  padding-top: 1.25rem;
-  display: flex;
+  align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 1.5rem;
 }
-.footer__bottom p { font-size: 0.78rem; color: var(--text-dim); }
+.footer__logo { display: inline-flex; align-items: center; flex-shrink: 0; }
+.footer__nav {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.footer__nav a {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color var(--transition);
+}
+.footer__nav a:hover { color: var(--white); }
+.footer__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+  flex-shrink: 0;
+}
+.footer__right p { font-size: 0.72rem; color: var(--text-dim); }
+.footer__staff {
+  font-size: 0.66rem;
+  color: rgba(255,255,255,0.18);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  transition: color var(--transition);
+}
+.footer__staff:hover { color: rgba(255,255,255,0.5); }
 
 /* =============================================
    DOWNLOAD MODAL
@@ -884,8 +886,7 @@ img { max-width: 100%; display: block; }
   .about__grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .about__text .section-title { font-size: 1.8rem; }
   .community__grid { grid-template-columns: 1fr; gap: 2rem; }
-  .footer__brand { flex-basis: 100%; max-width: none; }
-  .footer__col { flex-basis: 45%; }
+  .footer__nav { gap: 1rem; }
 }
 
 /* =============================================
@@ -930,9 +931,9 @@ img { max-width: 100%; display: block; }
   .community__form textarea { font-size: 16px; }
 
   /* Footer */
-  .footer__grid { gap: 1.75rem; }
-  .footer__brand, .footer__col { flex-basis: 100%; max-width: none; }
-  .footer__bottom { flex-direction: column; text-align: center; }
+  .footer__inner { flex-direction: column; gap: 0.6rem; text-align: center; }
+  .footer__nav { justify-content: center; gap: 0.85rem; }
+  .footer__right { align-items: center; }
 }
 
 @media (max-width: 480px) {

@@ -10,10 +10,10 @@
   --cat-ideas:       #34d399;
   --cat-bugs:        #fb923c;
 
-  --c-bg:          #080e1f;
-  --c-surface:     #0f1830;
-  --c-surface-2:   #152040;
-  --c-surface-3:   #1a2750;
+  --c-bg:          #111827;
+  --c-surface:     #1a2336;
+  --c-surface-2:   #1f2b42;
+  --c-surface-3:   #243350;
   --c-border:      rgba(255,255,255,0.08);
   --c-border-gold: rgba(255,184,0,0.22);
   --c-yellow:      #FFB800;
@@ -27,6 +27,9 @@ body.community-page {
   background: var(--c-bg);
   min-height: 100vh;
 }
+
+/* Hide the city-bg SVG on community pages — it shows through and strains eyes */
+body.community-page .city-bg { display: none; }
 
 /* =============================================
    NAV

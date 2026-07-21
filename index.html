@@ -459,44 +459,26 @@
 
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
-    <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <a href="#home" class="nav__logo" style="margin-bottom:0.75rem;display:inline-flex;">
-            <img src="images/pclogo.png" alt="Impact Builds Logo" class="custom-logo">
-          </a>
-          <p id="footerTagline">A 3D infrastructure simulation game about designing communities that can survive real disasters — developed as a capstone project by SideQuest.</p>
-        </div>
-        <div class="footer__col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#media">Media</a></li>
-            <li><a href="#team">Team</a></li>
-            <li><a href="#notes">Dev's Notes</a></li>
-            <li><a href="#faq">FAQ</a></li>
-            <li><a href="#community">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer__col">
-          <h4>Community</h4>
-          <ul>
-            <li><a href="feed.html">Community Feed</a></li>
-            <li><a href="auth.html">Sign In</a></li>
-            <li><a href="auth.html?mode=register">Join Up</a></li>
-          </ul>
-        </div>
-        <div class="footer__col" id="footerSocial" style="display:none;">
-          <h4>Follow Us</h4>
-          <ul id="socialLinksList"></ul>
-        </div>
-      </div>
-      <div class="footer__bottom">
+    <div class="container footer__inner">
+      <a href="#home" class="footer__logo">
+        <img src="images/pclogo.png" alt="Impact Builds" class="custom-logo">
+      </a>
+      <nav class="footer__nav">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#media">Media</a>
+        <a href="#team">Team</a>
+        <a href="#notes">Dev's Notes</a>
+        <a href="#faq">FAQ</a>
+        <a href="#community">Contact</a>
+        <a href="feed.html">Community</a>
+      </nav>
+      <div class="footer__right">
         <p id="footerCopyright">&copy; 2025 SideQuest. All rights reserved.</p>
-        <a href="admin/login.html" style="font-size:0.7rem;color:rgba(255,255,255,0.2);text-decoration:none;margin-top:0.5rem;display:inline-block;letter-spacing:0.08em;" onmouseover="this.style.color='rgba(255,255,255,0.5)'" onmouseout="this.style.color='rgba(255,255,255,0.2)'">Staff Login</a>
+        <a href="admin/login.html" class="footer__staff">Staff Login</a>
       </div>
     </div>
+    <div id="footerSocial" style="display:none;"><ul id="socialLinksList"></ul></div>
   </footer>
 
   <!-- ========== DOWNLOAD MODAL ========== -->
