@@ -877,11 +877,22 @@ function spawnMsgTruck() {
     }
   });
 
-  /* Resume automatically only if the user had it on before AND this
-     page load already carries a user gesture the browser will accept
-     (e.g. arriving via a link click) — otherwise play() silently
-     rejects and the button just stays in its paused state. */
-  if (localStorage.getItem(STORAGE_KEY) === 'on') {
-    audio.play().then(() => setUI(true)).catch(() => setUI(false));
+  /* Play on first user interaction (scroll, click, keypress, touch).
+     Removed once triggered so it only fires once. */
+  function onFirstInteraction() {
+    if (!audio.paused) return;
+    audio.play().then(() => {
+      setUI(true);
+      localStorage.setItem(STORAGE_KEY, 'on');
+    }).catch(() => {});
+    document.removeEventListener('scroll',     onFirstInteraction, { passive: true });
+    document.removeEventListener('click',      onFirstInteraction);
+    document.removeEventListener('keydown',    onFirstInteraction);
+    document.removeEventListener('touchstart', onFirstInteraction);
   }
+
+  document.addEventListener('scroll',     onFirstInteraction, { passive: true });
+  document.addEventListener('click',      onFirstInteraction);
+  document.addEventListener('keydown',    onFirstInteraction);
+  document.addEventListener('touchstart', onFirstInteraction, { passive: true });
 })();
