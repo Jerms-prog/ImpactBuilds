@@ -877,21 +877,19 @@ function spawnMsgTruck() {
     }
   });
 
-  /* Play on first user interaction (scroll, click, keypress, touch).
-     Removed once triggered so it only fires once. */
+  /* Play on first real user gesture (click, key, touch).
+     Listeners stay until play() actually succeeds. */
   function onFirstInteraction() {
     if (!audio.paused) return;
     audio.play().then(() => {
       setUI(true);
       localStorage.setItem(STORAGE_KEY, 'on');
+      document.removeEventListener('click',      onFirstInteraction);
+      document.removeEventListener('keydown',    onFirstInteraction);
+      document.removeEventListener('touchstart', onFirstInteraction);
     }).catch(() => {});
-    document.removeEventListener('scroll',     onFirstInteraction, { passive: true });
-    document.removeEventListener('click',      onFirstInteraction);
-    document.removeEventListener('keydown',    onFirstInteraction);
-    document.removeEventListener('touchstart', onFirstInteraction);
   }
 
-  document.addEventListener('scroll',     onFirstInteraction, { passive: true });
   document.addEventListener('click',      onFirstInteraction);
   document.addEventListener('keydown',    onFirstInteraction);
   document.addEventListener('touchstart', onFirstInteraction, { passive: true });
